@@ -15,9 +15,8 @@ def index(request):
         database="thesis_vert",
     )
 
-    sql = """SELECT source, COUNT((source)) FROM thesis_vert.trainingCorpus 
-                where included = 1
-                GROUP BY source;"""
+    sql = """SELECT source, publishedDate, dateAdded, link, linkHash FROM thesis_vert.trainingCorpus 
+                where included = 1;"""
 
     mycursor = mydb.cursor()
     mycursor.execute(sql)
