@@ -10,7 +10,6 @@ import hashlib
 
 
 def get_rss():
-
     load_dotenv()
     now = datetime.now().replace(microsecond=0).isoformat()
 
@@ -32,7 +31,6 @@ def get_rss():
     rss_data = feedparser.parse(rss_url)
 
     for x in rss_data["entries"]:
-
         # print(x)
 
         source = "Dark Reading"
@@ -75,7 +73,7 @@ def get_rss():
 
         # Database writes
 
-        sql = """INSERT IGNORE INTO trainingCorpus (source , author, publishedDate, dateAdded, link, text, linkHash) 
+        sql = """INSERT IGNORE INTO polls_trainingcorpus (source , author, publishedDate, dateAdded, link, text, linkHash) 
                             values (%s, %s, %s, %s, %s, %s, %s);"""
         val = (
             (source),
