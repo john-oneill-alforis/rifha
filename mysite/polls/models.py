@@ -14,7 +14,7 @@ class Choice(models.Model):
     votes = models.IntegerField(default=0)
 
 
-class trainingcorpus(models.Model):
+class trainingCorpus(models.Model):
     entryId = models.IntegerField(primary_key=True)
     source = models.CharField(max_length=200)
     author = models.CharField(max_length=45)
@@ -24,5 +24,5 @@ class trainingcorpus(models.Model):
     text = models.TextField()
     linkHash = models.CharField(max_length=256)
     included = models.IntegerField(default=1)
-    classification = models.CharField(max_length=255)
-    verisCompatible = models.CharField(max_length=45, blank=True)
+    classification = models.CharField(max_length=255, blank=True, null=True)
+    verisCompatible = models.CharField(max_length=45, blank=True, null=True)
