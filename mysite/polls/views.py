@@ -15,8 +15,9 @@ def index(request):
         database="thesis_vert",
     )
 
-    sql = """SELECT source, publishedDate, dateAdded, link, linkHash FROM thesis_vert.trainingCorpus 
-                where included = 1;"""
+    sql = """SELECT source, publishedDate, dateAdded, link, linkHash 
+            FROM thesis_vert.trainingCorpus
+            ORDER BY dateAdded;"""
 
     mycursor = mydb.cursor()
     mycursor.execute(sql)
