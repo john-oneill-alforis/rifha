@@ -1,4 +1,5 @@
 from django.db import models
+import uuid
 
 # Create your models here.
 
@@ -15,7 +16,7 @@ class Choice(models.Model):
 
 
 class trainingCorpus(models.Model):
-    entryId = models.IntegerField(primary_key=True)
+    entryId = models.BigAutoField(primary_key=True)
     source = models.CharField(max_length=200)
     author = models.CharField(max_length=45)
     publishedDate = models.DateField()

@@ -62,7 +62,7 @@ def get_rss():
             x.decompose()
 
         intial_text = soup.findAll("div", {"class": "articleBody"})[0].text
-        print(intial_text)
+        # print(intial_text)
 
         # Database writes
 
