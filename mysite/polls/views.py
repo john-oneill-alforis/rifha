@@ -16,7 +16,7 @@ def index(request):
     )
 
     sql = """SELECT source, publishedDate, dateAdded, link, linkHash 
-            FROM polls_trainingCorpus
+            FROM polls_trainingcorpus
             ORDER BY dateAdded;"""
 
     mycursor = mydb.cursor()
