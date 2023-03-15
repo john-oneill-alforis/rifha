@@ -22,7 +22,7 @@ class trainingCorpus(models.Model):
     dateAdded = models.DateField()
     link = models.TextField()
     text = models.TextField()
-    linkHash = models.CharField(max_length=256)
+    linkHash = models.CharField(max_length=256, db_index=True)
     included = models.IntegerField(default=1)
     classification = models.CharField(max_length=255, blank=True, null=True)
     verisCompatible = models.CharField(max_length=45, blank=True, null=True)
