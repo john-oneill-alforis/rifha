@@ -1,9 +1,12 @@
 from django.shortcuts import render
 from datetime import date
+from django.template import loader
+from django.http import HttpResponse
+
 import mysql.connector
 import os
 
-from django.http import HttpResponse
+data_dict = {}
 
 
 def index(request):
@@ -24,8 +27,16 @@ def index(request):
 
     records = mycursor.fetchall()
 
-    return HttpResponse(records)
+    # return HttpResponse(records)
 
-    mycursor.close()
+    thisdict = {
+        "brand": "Ford",
+        "model": "Mustang",
+        "year": 1964,
+        "brand": "Nissan",
+        "model": "Almera",
+        "year": 2002,
+    }
 
-    # today = date.today()
+    template = loader.get_template("polls/index.html")
+    return HttpResponse(template.render(thisdict, request))
