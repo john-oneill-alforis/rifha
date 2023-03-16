@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html>
 
-<head>
+<body>
 
-    <title></title>
+    <h1>Members</h1>
 
-</head>
 
-<body>Test
 
-    {% for x in thisdict.items %}
-    <li>{{ x.brand }} : {{ x.year }}</li>
-    {% endfor %}
+
+    <table>
+        {% for x in entries %}
+        <tr>
+            <td><a href={{x.link}}>{{ x.source }}</a></td>
+            <td>{{ x.publishedDate }}</td>
+            <td>{{ x.dateAdded }}</td>
+            <td>{{ x.linkHash }}</td>
+            {% endfor %}
+    </table>
 
 </body>
-
-
 
 </html>
