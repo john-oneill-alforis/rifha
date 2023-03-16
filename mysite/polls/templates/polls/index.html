@@ -9,7 +9,12 @@
 
 
     <table>
-        {% for x in entries %}
+        <tr>
+            <td>Link</td>
+            <td>Published Date</td>
+            <td>Date Added to the Corupus</td>
+            <td>Link ID</td>
+            {% for x in entries %}
         <tr>
             <td><a href={{x.link}}>{{ x.source }}</a></td>
             <td>{{ x.publishedDate }}</td>
