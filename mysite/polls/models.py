@@ -15,6 +15,14 @@ class Choice(models.Model):
     votes = models.IntegerField(default=0)
 
 
+class textLabels(models.Model):
+    entryId = models.BigAutoField(primary_key=True)
+    label = models.TextField()
+
+    def __unicode__(self):
+        return self.name
+
+
 class trainingCorpus(models.Model):
     entryId = models.BigAutoField(primary_key=True)
     source = models.CharField(max_length=200)
@@ -27,3 +35,7 @@ class trainingCorpus(models.Model):
     included = models.IntegerField(default=1)
     classification = models.CharField(max_length=255, blank=True, null=True)
     verisCompatible = models.CharField(max_length=45, blank=True, null=True)
+    textLabel = models.ForeignKey(textLabels, on_delete=models.CASCADE, default=1)
+
+    def __unicode__(self):
+        return self.name
