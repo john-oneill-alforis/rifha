@@ -20,7 +20,7 @@ class textLabels(models.Model):
     label = models.TextField()
 
     def __unicode__(self):
-        return self.name
+        return self.label
 
 
 class trainingCorpus(models.Model):
@@ -33,7 +33,7 @@ class trainingCorpus(models.Model):
     text = models.TextField()
     linkHash = models.CharField(max_length=256, db_index=True, unique=True)
     included = models.IntegerField(default=1)
-    classification = models.CharField(max_length=255, blank=True, null=True)
+    # classificationText = models.CharField(max_length=255, blank=True, null=True)
     verisCompatible = models.CharField(max_length=45, blank=True, null=True)
     textLabel = models.ForeignKey(textLabels, on_delete=models.CASCADE, default=1)
 

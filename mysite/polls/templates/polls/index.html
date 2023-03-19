@@ -22,14 +22,16 @@
         <tr>
             <td>Link</td>
             <td>Published Date</td>
-            <td>Date Added to the Corupus</td>
+            <td>Date Added</td>
             <td>Link ID</td>
             {% for x in entries %}
+
         <tr>
             <td><a href={{x.link}}>{{ x.source }}</a></td>
             <td>{{ x.publishedDate|date:'Y-m-d'}}</td>
             <td>{{ x.dateAdded|date:'Y-m-d' }}</td>
-            <td>{{ x.linkHash }}</td>
+            <td><a href=content/{{x.linkHash}}>{{ x.linkHash }}></a></td>
+
             {% endfor %}
     </table>
 

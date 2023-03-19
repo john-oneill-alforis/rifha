@@ -11,32 +11,18 @@ import os
 
 
 def index(request):
-    # Database Connection to Pull Existing Meta Values
-    # mydb = mysql.connector.connect(
-    #    user=(os.getenv("db_user")),
-    #    password=(os.getenv("db_password")),
-    #    host="localhost",
-    #    database="thesis_vert",
-    # )
-
-    # sql = """SELECT source, publishedDate, dateAdded, link, linkHash
-    #        FROM polls_trainingcorpus
-    #        ORDER BY dateAdded;"""
-
-    # mycursor = mydb.cursor()
-    # mycursor.execute(sql)
-
-    # records = mycursor.fetchall()
-
-    # return HttpResponse(records)
-
     corpusData = trainingCorpus.objects.all()
-
     context = {
         "entries": corpusData,
     }
-
-    # return HttpResponse(corpusData)
-
     template = loader.get_template("polls/index.html")
+    return HttpResponse(template.render(context, request))
+
+
+def contentReview(request, msg):
+    articleData = trainingCorpus.objects.filter(linkHash=msg)
+    context = {
+        "articleContent": articleData,
+    }
+    template = loader.get_template("polls/content.html")
     return HttpResponse(template.render(context, request))
