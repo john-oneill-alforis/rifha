@@ -17,9 +17,12 @@ class Choice(models.Model):
 
 class textLabels(models.Model):
     entryId = models.BigAutoField(primary_key=True)
-    label = models.TextField()
+    label = models.TextField(max_length=200)
 
     def __unicode__(self):
+        return self.label
+
+    def __str__(self):
         return self.label
 
 
@@ -33,7 +36,6 @@ class trainingCorpus(models.Model):
     text = models.TextField()
     linkHash = models.CharField(max_length=256, db_index=True, unique=True)
     included = models.IntegerField(default=1)
-    # classificationText = models.CharField(max_length=255, blank=True, null=True)
     verisCompatible = models.CharField(max_length=45, blank=True, null=True)
     textLabel = models.ForeignKey(textLabels, on_delete=models.CASCADE, default=1)
 

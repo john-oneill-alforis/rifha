@@ -3,6 +3,7 @@ from datetime import date
 from django.template import loader
 from django.http import HttpResponse
 from .models import trainingCorpus
+from .models import textLabels
 
 import mysql.connector
 import os
@@ -20,9 +21,17 @@ def index(request):
 
 
 def contentReview(request, msg):
-    articleData = trainingCorpus.objects.filter(linkHash=msg)
+    articleData = (
+        trainingCorpus.objects.all()
+        .filter(linkHash=msg)
+        .select_related("textLabel")
+        .all()
+    )
     context = {
         "articleContent": articleData,
     }
     template = loader.get_template("polls/content.html")
     return HttpResponse(template.render(context, request))
+
+
+# Entry.objects.filter(blog__name="Beatles Blog")
