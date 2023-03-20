@@ -55,13 +55,17 @@
 
         <tr>
             <td colspan="2">
-                <select name="hall" id="hall" value="{{ x.textLabel }}">
-                    <option value="textLabel_Id" selected="true">{{ x.textLabel }}</option>
-                    <option>Green</option>
-                    <option>Blue</option>
+                <select name="hall" id="hall">
+                    {% for option in x.textLabel.all %}
+
+                    <option value="option.textLabel_Id">{{ option.textLabel }}</option>
+
+                    {% endfor %}
                 </select>
 
             </td>
+
+
 
         </tr>
 

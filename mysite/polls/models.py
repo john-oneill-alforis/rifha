@@ -37,7 +37,11 @@ class trainingCorpus(models.Model):
     linkHash = models.CharField(max_length=256, db_index=True, unique=True)
     included = models.IntegerField(default=1)
     verisCompatible = models.CharField(max_length=45, blank=True, null=True)
-    textLabel = models.ForeignKey(textLabels, on_delete=models.CASCADE, default=1)
+    textLabel = models.ForeignKey(
+        textLabels,
+        on_delete=models.CASCADE,
+        default=1,
+    )
 
     def __unicode__(self):
         return self.name

@@ -39,6 +39,7 @@ def get_rss():
         link = x["link"]
         dateAdded = now
         linkHash = hashlib.sha256(link.encode()).hexdigest()
+        print(linkHash)
 
         # Convert The Date Published TimeStamp
 
@@ -66,8 +67,9 @@ def get_rss():
 
         # Database writes
 
-        sql = """INSERT IGNORE INTO polls_trainingcorpus (source , author, publishedDate, dateAdded, link, text, linkHash) 
-                            values (%s, %s, %s, %s, %s, %s, %s);"""
+        sql = """INSERT IGNORE INTO polls_trainingcorpus (source , author, publishedDate, dateAdded, link, text, linkHash, textLabel_Id) 
+                            values (%s, %s, %s, %s, %s, %s, %s, %s);"""
+
         val = (
             (source),
             (author),
@@ -76,6 +78,7 @@ def get_rss():
             (link.strip()),
             (intial_text.strip()),
             (linkHash),
+            (1),
         )
 
         mycursor = mydb.cursor()
