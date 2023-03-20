@@ -3,60 +3,52 @@
 
 <head>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <title>Training Corpus</title>
 
 </head>
 
-
-
 <body>
 
-    <h3>Article Contents</h3>
-
-
-    <table class="table table-bordered">
-        <tr>
-            <td scope="col">Published Date</td>
-            <td scope="col">Date Added</td>
-        </tr>
-
-
+    <div class="container-md">
+        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="/" class="nav-link active" aria-current="page">Home</a></li>
+                <li class="nav-item"><a href="/years" class="nav-link">CVE By Years</a></li>
+            </ul>
+        </header>
 
 
         {% for x in articleContent %}
 
+        <div class="row">
+            <div class="col"><input type="datetime" value="{{x.publishedDate|date:'Y-m-d'}}"></div>
+            <div class="col"><input type="datetime" value="{{ x.dateAdded|date:'Y-m-d' }}"></div>
+        </div>
 
 
 
-        <tr>
 
-            <td><input type="datetime" value="{{x.publishedDate|date:'Y-m-d'}}"> </td>
-            <td><input type="datetime" value="{{ x.dateAdded|date:'Y-m-d' }}"></td>
+        <div class="row">
+            <div class="col"><a href="{{ x.link }}" target="_blank">{{ x.link }}</a></div>
+        </div>
 
-        </tr>
+        <div class="row">
+            <div class="col"><textarea rows="30" cols="90">{{x.text}}</textarea></div>
+        </div>
 
-        <tr>
-            <td colspan="2"><a href="{{ x.link }}" target="_blank">{{ x.link }}</a></td>
-        </tr>
+        <div class="row">
+            <div class="col">Hash</div>
+        </div>
 
-        <tr>
-            <td colspan="2"><textarea rows="30" cols="90">{{x.text}}</textarea></td>
-
-        </tr>
-
-        <tr>
-            <td colspan="2" scope="col">Hash</td>
-        </tr>
-
-        <tr>
-            <td colspan="2"><input type="text" value="{{ x.linkHash }}" size="90"></td>
-        </tr>
+        <div class="row">
+            <div class="col"><input type="text" value="{{ x.linkHash }}" size="90"></div>
+        </div>
 
 
-        <tr>
-            <td colspan="2">
+        <div class="row">
+            <div class="col">
                 <select name="hall" id="hall">
                     <option value="option.textLabel_Id" selected="true">{{ x.textLabel }}</option>
 
@@ -67,19 +59,17 @@
                     {% endfor %}
 
                 </select>
+            </div>
+        </div>
 
-            </td>
 
+        <div class="row">
+            <div class="col"><input type="button" value="Submit"></div>
 
+            {% endfor %}
 
-        </tr>
-
-        <tr>
-            <td colspan="2"><input type="button" value="Submit"></td>
-        </tr>
-        {% endfor %}
-    </table>
-
+        </div>
+    </div>
 </body>
 
 </html>
