@@ -11,43 +11,46 @@
 
 <body>
 
-    <div class="container-md">
+    <div class="container-sm">
         <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
             <ul class="nav nav-pills">
                 <li class="nav-item"><a href="/" class="nav-link active" aria-current="page">Home</a></li>
-                <li class="nav-item"><a href="/years" class="nav-link">CVE By Years</a></li>
+
             </ul>
         </header>
 
 
         {% for x in articleContent %}
 
-        <div class="row">
-            <div class="col"><input type="datetime" value="{{x.publishedDate|date:'Y-m-d'}}"></div>
-            <div class="col"><input type="datetime" value="{{ x.dateAdded|date:'Y-m-d' }}"></div>
+        <div class="row g-2">
+            <div class="col center border" align="center"><input type="datetime"
+                    value="{{x.publishedDate|date:'Y-m-d'}}">
+            </div>
+            <div class="col center border" align="center"><input type="datetime" value="{{ x.dateAdded|date:'Y-m-d' }}">
+            </div>
         </div>
 
 
 
 
-        <div class="row">
-            <div class="col"><a href="{{ x.link }}" target="_blank">{{ x.link }}</a></div>
+        <div class="row gy-5">
+            <div class="col center border" align="center"><a href="{{ x.link }}" target="_blank">{{ x.link }}</a></div>
         </div>
 
-        <div class="row">
-            <div class="col"><textarea rows="30" cols="90">{{x.text}}</textarea></div>
+        <div class="row gy-5">
+            <div class="col center border" align="center"><textarea rows="30" cols="90">{{x.text}}</textarea></div>
         </div>
 
-        <div class="row">
-            <div class="col">Hash</div>
+        <div class="row gy-5">
+            <div class="col center border" align="center">Hash</div>
         </div>
 
-        <div class="row">
-            <div class="col"><input type="text" value="{{ x.linkHash }}" size="90"></div>
+        <div class="row gy-5">
+            <div class="col center border" align="center"><input type="text" value="{{ x.linkHash }}" size="90"></div>
         </div>
 
 
-        <div class="row">
+        <div class="row gy-5">
             <div class="col">
                 <select name="hall" id="hall">
                     <option value="option.textLabel_Id" selected="true">{{ x.textLabel }}</option>
@@ -63,7 +66,7 @@
         </div>
 
 
-        <div class="row">
+        <div class="row gy-5">
             <div class="col"><input type="button" value="Submit"></div>
 
             {% endfor %}
