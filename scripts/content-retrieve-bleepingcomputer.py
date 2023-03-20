@@ -39,7 +39,7 @@ def get_rss():
         link = x["link"]
         dateAdded = now
         linkHash = hashlib.sha256(link.encode()).hexdigest()
-        print(linkHash)
+        # print(linkHash)
 
         # Convert The Date Published TimeStamp
 
