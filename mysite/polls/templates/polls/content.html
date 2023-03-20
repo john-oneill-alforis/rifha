@@ -11,7 +11,7 @@
 
 <body>
 
-    <div class="container-sm">
+    <div class="container">
         <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
             <ul class="nav nav-pills">
                 <li class="nav-item"><a href="/" class="nav-link active" aria-current="page">Home</a></li>
@@ -23,37 +23,40 @@
         {% for x in articleContent %}
 
         <div class="row g-2">
-            <div class="col center border" align="center"><input type="datetime"
-                    value="{{x.publishedDate|date:'Y-m-d'}}">
+            <div class="col d-flex justify-content-center p-2 ">Date Published :
+                {{x.publishedDate|date:'Y-m-d'}}
             </div>
-            <div class="col center border" align="center"><input type="datetime" value="{{ x.dateAdded|date:'Y-m-d' }}">
+            <div class="col d-flex justify-content-center p-2 ">Date Added : {{x.dateAdded|date:'Y-m-d'}}
             </div>
         </div>
 
 
 
 
-        <div class="row gy-5">
-            <div class="col center border" align="center"><a href="{{ x.link }}" target="_blank">{{ x.link }}</a></div>
+        <div class="row g-2">
+            <div class="col d-flex justify-content-center p-2 "><a href="{{ x.link }}" target="_blank">{{x.link }}</a>
+            </div>
         </div>
 
-        <div class="row gy-5">
-            <div class="col center border" align="center"><textarea rows="30" cols="90">{{x.text}}</textarea></div>
+        <div class="row g-2">
+            <div class="col d-flex justify-content-center p-2 "><textarea rows="30" cols="90">{{x.text}}</textarea>
+            </div>
         </div>
 
-        <div class="row gy-5">
-            <div class="col center border" align="center">Hash</div>
+        <div class="row g-2">
+            <div class="col d-flex justify-content-center p-2">Hash</div>
         </div>
 
-        <div class="row gy-5">
-            <div class="col center border" align="center"><input type="text" value="{{ x.linkHash }}" size="90"></div>
+        <div class="row g-2">
+            <div class="col d-flex justify-content-center p-2">{{ x.linkHash }}</div>
         </div>
 
 
-        <div class="row gy-5">
-            <div class="col">
-                <select name="hall" id="hall">
-                    <option value="option.textLabel_Id" selected="true">{{ x.textLabel }}</option>
+        <div class="row g-2">
+            <div class="col d-flex justify-content-center p-2">
+                <select name="hall" id="hall" class="list-group">
+                    <option value="option.textLabel_Id" selected="true" class="list-group-item active">{{ x.textLabel }}
+                    </option>
 
                     {% for x in articleClassification %}
 
@@ -62,12 +65,15 @@
                     {% endfor %}
 
                 </select>
+                <div class="col d-flex justify-content-center p-2"></div>
             </div>
         </div>
 
 
-        <div class="row gy-5">
-            <div class="col"><input type="button" value="Submit"></div>
+        <div class="row g-2">
+            <div class="col d-flex justify-content-center p-2"><input type="button" value="Submit">
+            </div>
+            <div class="col d-flex justify-content-center p-2"></div>
 
             {% endfor %}
 
