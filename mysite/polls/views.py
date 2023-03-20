@@ -28,7 +28,7 @@ def contentReview(request, msg):
         .all()
     )
 
-    articleClassification = textLabels.objects.all()
+    articleClassification = textLabels.objects.all().order_by("label").values()
 
     template = loader.get_template("polls/content.html")
     return HttpResponse(
