@@ -33,6 +33,10 @@
         </tr>
 
         <tr>
+            <td colspan="2"><a href="{{ x.link }}" target="_blank">{{ x.link }}</a></td>
+        </tr>
+
+        <tr>
             <td colspan="2"><textarea rows="30" cols="90">{{x.text}}</textarea></td>
 
         </tr>
@@ -52,7 +56,7 @@
         <tr>
             <td colspan="2">
                 <select name="hall" id="hall" value="{{ x.textLabel }}">
-                    <option>Red</option>
+                    <option value="textLabel_Id" selected="true">{{ x.textLabel }}</option>
                     <option>Green</option>
                     <option>Blue</option>
                 </select>
