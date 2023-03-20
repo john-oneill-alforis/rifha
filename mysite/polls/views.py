@@ -27,11 +27,16 @@ def contentReview(request, msg):
         .select_related("textLabel")
         .all()
     )
-    context = {
-        "articleContent": articleData,
-    }
+
+    articleClassification = textLabels.objects.all()
+
     template = loader.get_template("polls/content.html")
-    return HttpResponse(template.render(context, request))
-
-
-# Entry.objects.filter(blog__name="Beatles Blog")
+    return HttpResponse(
+        template.render(
+            {
+                "articleContent": articleData,
+                "articleClassification": articleClassification,
+            },
+            request,
+        )
+    )

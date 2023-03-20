@@ -23,7 +23,12 @@
         </tr>
 
 
+
+
         {% for x in articleContent %}
+
+
+
 
         <tr>
 
@@ -56,11 +61,14 @@
         <tr>
             <td colspan="2">
                 <select name="hall" id="hall">
-                    {% for option in x.textLabel.all %}
+                    <option value="option.textLabel_Id" selected="true">{{ x.textLabel }}</option>
 
-                    <option value="option.textLabel_Id">{{ option.textLabel }}</option>
+                    {% for x in articleClassification %}
+
+                    <option value="{{x.entryId}}">{{ x.label }}</option>
 
                     {% endfor %}
+
                 </select>
 
             </td>
