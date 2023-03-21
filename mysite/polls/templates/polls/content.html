@@ -19,55 +19,60 @@
             </ul>
         </header>
 
-
         {% for x in articleContent %}
-
-        <div class="row g-2">
-            <div class="col d-flex justify-content-center p-2 ">Date Published :
-                {{x.publishedDate|date:'Y-m-d'}}
-            </div>
-            <div class="col d-flex justify-content-center p-2 ">Date Added : {{x.dateAdded|date:'Y-m-d'}}
-            </div>
-        </div>
+        <form action="/tcupdate/{{ x.linkHash }}" method="post">
+            {% csrf_token %}
 
 
 
-
-        <div class="row g-2">
-            <div class="col d-flex justify-content-center p-2 "><a href="{{ x.link }}" target="_blank">{{x.link }}</a>
-            </div>
-        </div>
-
-        <div class="row g-2">
-            <div class="col d-flex justify-content-center p-2"><textarea class="form-control"
-                    rows="30">{{x.text}}</textarea>
-            </div>
-        </div>
-
-        <div class="row g-2">
-            <div class="col d-flex justify-content-center p-2">
-                <select name="hall" id="hall" class="form-select">
-                    <option value="option.textLabel_Id" selected="true">{{ x.textLabel }}
-                    </option>
-
-                    {% for x in articleClassification %}
-
-                    <option value="{{x.entryId}}">{{ x.label }}</option>
-
-                    {% endfor %}
-
-                </select>
-                <div class="col d-flex justify-content-center p-2"><input type="button" value="Submit"
-                        class="btn btn-outline-secondary">
+            <div class="row g-2">
+                <div class="col d-flex justify-content-center p-2 ">Date Published :
+                    {{x.publishedDate|date:'Y-m-d'}}
+                </div>
+                <div class="col d-flex justify-content-center p-2 ">Date Added : {{x.dateAdded|date:'Y-m-d'}}
                 </div>
             </div>
 
 
 
 
-            {% endfor %}
+            <div class="row g-2">
+                <div class="col d-flex justify-content-center p-2 "><a href="{{ x.link }}"
+                        target="_blank">{{x.link}}</a>
+                </div>
+            </div>
 
-        </div>
+            <div class="row g-2">
+                <div class="col d-flex justify-content-center p-2"><textarea name="text" id="text" class="form-control"
+                        rows="30">{{x.text}}</textarea>
+                </div>
+            </div>
+
+            <div class="row g-2">
+                <div class="col d-flex justify-content-center p-2">
+                    <select name="textlabelValues" id="textlabelValues" class="form-select">
+                        <option value="option.textLabel_Id" selected="true">{{ x.textLabel }}
+                        </option>
+
+                        {% for x in articleClassification %}
+
+                        <option value="{{x.entryId}}">{{ x.label }}</option>
+
+                        {% endfor %}
+
+                    </select>
+                    <div class="col d-flex justify-content-center p-2"><input type="submit" value="Submit"
+                            class="btn btn-outline-secondary">
+                    </div>
+                </div>
+
+
+
+
+                {% endfor %}
+
+            </div>
+        </form>
     </div>
 </body>
 

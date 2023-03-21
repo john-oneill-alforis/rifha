@@ -2,6 +2,7 @@ from django.shortcuts import render
 from datetime import date
 from django.template import loader
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from .models import trainingCorpus
 from .models import textLabels
 
@@ -40,3 +41,17 @@ def contentReview(request, msg):
             request,
         )
     )
+
+
+def tcUpdate(request, msg):
+    articleContent = request.POST["text"]
+    textLabel = request.POST["textlabelValues"]
+
+    articleUpdate = trainingCorpus.objects.get(linkHash=msg)
+
+    articleUpdate.text = articleContent
+    articleUpdate.textLabel_id = textLabel
+
+    articleUpdate.save(update_fields=["text", "textLabel"])
+
+    return HttpResponseRedirect(redirect_to="/content/" + msg)
