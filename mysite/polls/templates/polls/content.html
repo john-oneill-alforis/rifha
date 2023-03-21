@@ -12,21 +12,24 @@
 <body>
 
     <div class="container">
-        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <header class="d-flex flex-wrap justify-content-left py-3 mb-4 border-bottom">
             <ul class="nav nav-pills">
                 <li class="nav-item"><a href="/" class="nav-link active" aria-current="page">Home</a></li>
 
             </ul>
         </header>
 
+
         {% for x in articleContent %}
+
+
         <form action="/tcupdate/{{ x.linkHash }}" method="post">
             {% csrf_token %}
 
 
 
             <div class="row g-2">
-                <div class="col d-flex justify-content-left p-2 ">Date Published :
+                <div class="col d-flex justify-content-center p-2 ">Date Published :
                     {{x.publishedDate|date:'Y-m-d'}}
                 </div>
                 <div class="col d-flex justify-content-center p-2 ">Date Added : {{x.dateAdded|date:'Y-m-d'}}
@@ -51,17 +54,19 @@
             <div class="row g-2">
                 <div class="col d-flex justify-content-center p-2">
                     <select name="textlabelValues" id="textlabelValues" class="form-select">
-                        <option value="option.textLabel_Id" selected="true">{{ x.textLabel }}
+                        <option value="{{x.textLabel_id}}" selected>{{ x.textLabel }}
                         </option>
 
-                        {% for x in articleClassification %}
+                        {% for option in articleClassification %}
 
-                        <option value="{{x.entryId}}">{{ x.label }}</option>
+                        <option value={{option.entryId}}>
+
+                            {{ option.label }} </option>
 
                         {% endfor %}
 
                     </select>
-                    <div class="col d-flex justify-content-center p-2"><input type="submit" value="Submit"
+                    <div class=" col d-flex justify-content-center p-2"><input type="submit" value="Submit"
                             class="btn btn-outline-secondary">
                     </div>
                 </div>
