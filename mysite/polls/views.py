@@ -12,7 +12,7 @@ import os
 
 
 def index(request):
-    corpusData = trainingCorpus.objects.all()
+    corpusData = trainingCorpus.objects.all().order_by("dateAdded")
     context = {
         "entries": corpusData,
     }
