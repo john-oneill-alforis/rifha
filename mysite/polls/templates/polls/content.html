@@ -49,12 +49,11 @@
             <div class="row g-2">
                 <div class="col d-flex justify-content-center p-2">
                     <select name="textlabelValues" id="textlabelValues" class="form-select">
-                        <option value="{{x.textLabel_id}}" selected>{{ x.textLabel }}
-                        </option>
+                        
 
                         {% for option in articleClassification %}
 
-                        <option value={{option.entryId}}>
+                        <option {% if option.entryId == x.textLabel_id %} selected {% endif%} value={{option.entryId}}>
 
                             {{ option.label }} </option>
 
