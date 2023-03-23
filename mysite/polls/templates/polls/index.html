@@ -7,47 +7,90 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Training Corpus</title>
 
+    
+
 </head>
 
-
-
 <body>
-
-
-
-
-
-
-    <div class="container">
+        <div class="container">
         <div class="col-3 d-flex justify-content-left p-2">
             <h3>Training Corpus</h3>
         </div>
         <header class="d-flex flex-wrap justify-content-left py-3 mb-4 border-bottom">
             <ul class="nav nav-pills">
                 <li class="nav-item p-1"><a href="/" class="nav-link active" aria-current="page">Home</a></li>
-                <li class="nav-item p-1"><a href="#" class="nav-link active" aria-current="page">Training Corpus</a>
+                <li class="nav-item p-1"><a href="/trainingcorpus" class="nav-link active" aria-current="page">Training Corpus</a>
                 </li>
             </ul>
         </header>
 
-
         <div class="row g-2">
-            <div class="col-3 d-flex justify-content-left p-2">Link</div>
-            <div class="col-2 d-flex justify-content-left p-2">Published Date</div>
-            <div class="col-2 d-flex justify-content-left p-2">Date Added</div>
-            <div class="col-2 d-flex justify-content-left p-2">Link ID</div>
+            <div class="col d-flex justify-content-center p-2 ">
+
+                <canvas id="sourceContribution" ></canvas>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script>
+                        const ctx = document.getElementById('sourceContribution').getContext('2d');
+                        const myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels : [{% for item in sources %}"{{ item.source }}",{% endfor %}],
+                                datasets: [{
+                                    label: "Contribution Sources",
+                                    data : [{% for item in sources %}{{ item.total }},{% endfor %}],
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                </script>
+
+            </div>
         </div>
 
-        {% for x in entries %}
-
         <div class="row g-2">
-            <div class="col-3 d-flex justify-content-left p-2"><a href={{x.link}}>{{ x.source }}</a></div>
-            <div class="col-2 d-flex justify-content-left p-2">{{ x.publishedDate|date:'Y-m-d'}}</div>
-            <div class="col-2 d-flex justify-content-left p-2">{{ x.dateAdded|date:'Y-m-d' }}</div>
-            <div class="col-2 d-flex justify-content-left p-2"><a href=content/{{x.linkHash}}>{{ x.linkHash }}</a></div>
+            <div class="col d-flex justify-content-center p-2 ">
+
+                <canvas id="statusCounts" ></canvas>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script>
+                        const ctx = document.getElementById('statusCounts').getContext('2d');
+                        const statusCountsChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels : [{% for x in labels %}"{{ x.textLabel }}",{% endfor %}],
+                                datasets: [{
+                                    label: "Status Labels",
+                                    data : [{% for x in labels %}{{ x.total }},{% endfor %}],
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                </script>
+
+            </div>
         </div>
 
-        {% endfor %}
+
+        
+       
     </div>
 
 </body>
