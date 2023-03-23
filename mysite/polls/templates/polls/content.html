@@ -14,8 +14,7 @@
     <div class="container">
         <header class="d-flex flex-wrap justify-content-left py-3 mb-4 border-bottom">
             <ul class="nav nav-pills">
-                <li class="nav-item"><a href="/" class="nav-link active" aria-current="page">Home</a></li>
-
+                <li class="nav-item p-1"><a href="/" class="nav-link active" aria-current="page">Home</a></li>
             </ul>
         </header>
 
@@ -50,7 +49,6 @@
                 <div class="col d-flex justify-content-center p-2">
                     <select name="textlabelValues" id="textlabelValues" class="form-select">
                         
-
                         {% for option in articleClassification %}
 
                         <option {% if option.entryId == x.textLabel_id %} selected {% endif%} value={{option.entryId}}>
@@ -60,9 +58,12 @@
                         {% endfor %}
 
                     </select>
-                    <div class=" col d-flex justify-content-center p-2"><input type="submit" value="Submit"
+            
+                    <div class=" col d-flex justify-content-center p-2"><input type="submit" value="Update"
                             class="btn btn-outline-secondary">
                     </div>
+                </div>
+                </div>
                 </div>
 
                 {% endfor %}
