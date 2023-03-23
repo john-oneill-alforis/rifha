@@ -69,10 +69,7 @@ def dashboard(request):
     )
 
     labelCounts = (
-        trainingCorpus.objects.all()
-        .values("textLabel")
-        .annotate(total=Count("textLabel"))
-        .order_by("total")
+        textLabels.objects.all().values("entryId").annotate(count=Count("label"))
     )
 
     context = {"sources": sourceCounts, "labels": labelCounts}
