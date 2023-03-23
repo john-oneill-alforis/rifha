@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from .models import trainingCorpus
 from .models import textLabels
+from django.db.models import Count
 
 import mysql.connector
 import os
@@ -12,12 +13,12 @@ import os
 # data_dict = {}
 
 
-def index(request):
+def contentList(request):
     corpusData = trainingCorpus.objects.all().order_by("dateAdded")
     context = {
         "entries": corpusData,
     }
-    template = loader.get_template("polls/index.html")
+    template = loader.get_template("polls/contentList.html")
     return HttpResponse(template.render(context, request))
 
 
@@ -55,3 +56,25 @@ def tcUpdate(request, msg):
     articleUpdate.save(update_fields=["text", "textLabel"])
 
     return HttpResponseRedirect(redirect_to="/content/" + msg)
+
+
+def dashboard(request):
+    template = loader.get_template("polls/index.html")
+
+    sourceCounts = (
+        trainingCorpus.objects.all()
+        .values("source")
+        .annotate(total=Count("source"))
+        .order_by("total")
+    )
+
+    labelCounts = (
+        trainingCorpus.objects.all()
+        .values("textLabel")
+        .annotate(total=Count("textLabel"))
+        .order_by("total")
+    )
+
+    context = {"sources": sourceCounts, "labels": labelCounts}
+
+    return HttpResponse(template.render(context, request))
