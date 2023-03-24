@@ -24,8 +24,8 @@
             </ul>
         </header>
 
-        <div class="row g-2">
-            <div class="col d-flex justify-content-center p-2 ">
+        <div class="row g-2 w-100" style="height: 300px;">
+            <div class="col col-sm-10 justify-content-center p-2 ">
 
                 <canvas id="sourceContribution"></canvas>
                 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -44,6 +44,8 @@
                                 }]
                             },
                             options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
                                 scales: {
                                     y: {
                                         beginAtZero: true
@@ -56,8 +58,8 @@
             </div>
         </div>
 
-        <div class="row g-2">
-            <div class="col d-flex justify-content-center p-2 ">
+        <div class="row g-2 w-100" style="height: 300px;">
+            <div class="col col-sm-10 justify-content-center p-2 ">
 
                 <canvas id="labelCount"></canvas>
                 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -76,6 +78,8 @@
                                 }]
                             },
                             options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
                                 scales: {
                                     y: {
                                         beginAtZero: true
