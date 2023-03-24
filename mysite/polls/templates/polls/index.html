@@ -30,8 +30,8 @@
                 <canvas id="sourceContribution"></canvas>
                 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                 <script>
-                        const ctx = document.getElementById('sourceContribution').getContext('2d');
-                        const myChart = new Chart(ctx, {
+                        const ctx_sourceContribution = document.getElementById('sourceContribution').getContext('2d');
+                        const sourceContribution = new Chart(ctx_sourceContribution, {
                             type: 'bar',
                             data: {
                                 labels : [{% for item in sources %}"{{ item.source }}",{% endfor %}],
@@ -59,17 +59,17 @@
         <div class="row g-2">
             <div class="col d-flex justify-content-center p-2 ">
 
-                <canvas id="statusCounts"></canvas>
+                <canvas id="labelCount"></canvas>
                 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                 <script>
-                        const ctx = document.getElementById('statusCounts').getContext('2d');
-                        const statusCountsChart = new Chart(ctx, {
+                        const ctx_labelCount = document.getElementById('labelCount').getContext('2d');
+                        const labelCount = new Chart(ctx_labelCount, {
                             type: 'bar',
                             data: {
-                                labels : [{% for x in labels %}"{{ x.textLabel }}",{% endfor %}],
+                                labels : [{% for item in labels %}"{{ item.label }}",{% endfor %}],
                                 datasets: [{
-                                    label: "Status Labels",
-                                    data : [{% for x in labels %}{{ x.total }},{% endfor %}],
+                                    label: "Classification Count",
+                                    data : [{% for item in labels %}{{ item.num_entries }},{% endfor %}],
                                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
                                     borderColor: 'rgba(75, 192, 192, 1)',
                                     borderWidth: 1

@@ -68,8 +68,8 @@ def dashboard(request):
         .order_by("total")
     )
 
-    labelCounts = (
-        textLabels.objects.all().values("entryId").annotate(count=Count("label"))
+    labelCounts = textLabels.objects.values("label").annotate(
+        num_entries=Count("trainingcorpus")
     )
 
     context = {"sources": sourceCounts, "labels": labelCounts}
