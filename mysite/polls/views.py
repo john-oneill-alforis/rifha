@@ -74,6 +74,8 @@ def dashboard(request):
         num_entries=Count("trainingcorpus")
     )
 
-    context = {"sources": sourceCounts, "labels": labelCounts}
+    totalCount = trainingCorpus.objects.all().count()
+
+    context = {"sources": sourceCounts, "labels": labelCounts, "count": totalCount}
 
     return HttpResponse(template.render(context, request))
