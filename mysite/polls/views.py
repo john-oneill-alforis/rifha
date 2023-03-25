@@ -76,6 +76,13 @@ def dashboard(request):
 
     totalCount = trainingCorpus.objects.all().count()
 
-    context = {"sources": sourceCounts, "labels": labelCounts, "count": totalCount}
+    classifiedEntries = trainingCorpus.objects.exclude(textLabel=1).count()
+
+    context = {
+        "sources": sourceCounts,
+        "labels": labelCounts,
+        "count": totalCount,
+        "classified": classifiedEntries,
+    }
 
     return HttpResponse(template.render(context, request))
