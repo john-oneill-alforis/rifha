@@ -14,7 +14,9 @@ import os
 
 
 def contentList(request):
-    corpusData = trainingCorpus.objects.all().order_by("dateAdded")
+    corpusData = (
+        trainingCorpus.objects.all().filter(textLabel_id=1).order_by("dateAdded")
+    )
     context = {
         "entries": corpusData,
     }
@@ -55,7 +57,7 @@ def tcUpdate(request, msg):
 
     articleUpdate.save(update_fields=["text", "textLabel"])
 
-    return HttpResponseRedirect(redirect_to="/content/" + msg)
+    return HttpResponseRedirect(redirect_to="/trainingcorpus")
 
 
 def dashboard(request):
