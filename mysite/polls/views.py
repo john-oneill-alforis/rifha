@@ -70,8 +70,10 @@ def dashboard(request):
         .order_by("total")
     )
 
-    labelCounts = textLabels.objects.values("label").annotate(
-        num_entries=Count("trainingcorpus")
+    labelCounts = (
+        textLabels.objects.values("label")
+        .annotate(num_entries=Count("trainingcorpus"))
+        .order_by("label")
     )
 
     totalCount = trainingCorpus.objects.all().count()
