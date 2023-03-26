@@ -5,7 +5,6 @@ import pandas as pd
 
 
 def process_veris_information():
-
     # Creat a list to hold entries for later count
     veris_geo_count = []
 
@@ -16,12 +15,11 @@ def process_veris_information():
     toplevel_path = Path(__file__).parents[1]
 
     # Concat paths for both the submitted and validated folders
-    veris_submitted_data = toplevel_path / "veris_data/data/json/submitted"
-    veris_validated_data = toplevel_path / "veris_data/data/json/validated"
+    # veris_submitted_data = toplevel_path / "veris_data/data/json/submitted"
+    veris_validated_data = toplevel_path / "veris-data/VCDB/data/json/validated"
 
     # Grab the data from the validated reports
     for p in veris_validated_data.rglob("*.json"):
-
         # Load the data from the json file
         json_file = veris_validated_data / p.name
 
@@ -35,19 +33,19 @@ def process_veris_information():
             print(p.name)
 
     # Grab the data from the submitted reports
-    for p in veris_submitted_data.rglob("*.json"):
+    # for p in veris_submitted_data.rglob("*.json"):
 
-        # Load the data from the json file
-        json_file = veris_submitted_data / p.name
+    # Load the data from the json file
+    # json_file = veris_submitted_data / p.name
 
-        try:
-            data = json.loads(json_file.read_bytes())
-            for x in data["victim"]["country"]:
-                print(x)
-                veris_geo_count.append(x)
+    # try:
+    #    data = json.loads(json_file.read_bytes())
+    #    for x in data["victim"]["country"]:
+    #        print(x)
+    #        veris_geo_count.append(x)
 
-        except:
-            print(p.name)
+    # except:
+    #    print(p.name)
 
     df = pd.DataFrame(veris_geo_count, columns=["Location"])
 
