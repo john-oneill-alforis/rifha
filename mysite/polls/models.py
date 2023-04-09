@@ -18,6 +18,7 @@ class Choice(models.Model):
 class textLabels(models.Model):
     entryId = models.BigAutoField(primary_key=True)
     label = models.TextField(max_length=200)
+    modelAssociated = models.BooleanField()
 
     def __unicode__(self):
         return self.label

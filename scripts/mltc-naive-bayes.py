@@ -49,7 +49,7 @@ def classify():
     print(df.head())
 
     df_train, df_test = train_test_split(
-        df, test_size=0.33, random_state=123, stratify=df.label
+        df, test_size=0.3, random_state=123, stratify=df.label
     )
 
     vec = CountVectorizer(
