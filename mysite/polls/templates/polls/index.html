@@ -107,6 +107,38 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col p-2" style="width: 200px; height: 500px">
+
+                <canvas id="associatedlabelCount"></canvas>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script>
+                        const ctx_associatedlabelCount = document.getElementById('associatedlabelCount').getContext('2d');
+                        const associatedlabelCount = new Chart(ctx_associatedlabelCount, {
+                            type: 'bar',
+                            data: {
+                                labels : [{% for item in associated %}"{{ item.label }}",{% endfor %}],
+                                datasets: [{
+                                    label: "Associated Classification Count",
+                                    data : [{% for item in associated %}{{ item.num_entries }},{% endfor %}],
+                                    
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                </script>
+
+            </div>
+        </div>
 
         
        
