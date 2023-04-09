@@ -13,6 +13,7 @@ import os
 # data_dict = {}
 
 
+# Pull all of the unclassfied data to be shown on the classification screen
 def contentList(request):
     corpusData = (
         trainingCorpus.objects.all().filter(textLabel_id=1).order_by("dateAdded")
@@ -24,6 +25,7 @@ def contentList(request):
     return HttpResponse(template.render(context, request))
 
 
+# Pull the article so it can be classified
 def contentReview(request, msg):
     articleData = (
         trainingCorpus.objects.all()
@@ -46,6 +48,9 @@ def contentReview(request, msg):
     )
 
 
+# Text Classification Update
+
+
 def tcUpdate(request, msg):
     articleContent = request.POST["text"]
     textLabel = request.POST["textlabelValues"]
@@ -58,6 +63,9 @@ def tcUpdate(request, msg):
     articleUpdate.save(update_fields=["text", "textLabel"])
 
     return HttpResponseRedirect(redirect_to="/trainingcorpus")
+
+
+# Dashboard Screen
 
 
 def dashboard(request):
@@ -76,6 +84,13 @@ def dashboard(request):
         .order_by("label")
     )
 
+    assoclabelCounts = (
+        textLabels.objects.values("label")
+        .exclude(modelAssociated=0)
+        .annotate(num_entries=Count("trainingcorpus"))
+        .order_by("label")
+    )
+
     totalCount = trainingCorpus.objects.all().count()
 
     classifiedEntries = trainingCorpus.objects.exclude(textLabel=1).count()
@@ -85,6 +100,7 @@ def dashboard(request):
         "labels": labelCounts,
         "count": totalCount,
         "classified": classifiedEntries,
+        "associated": assoclabelCounts,
     }
 
     return HttpResponse(template.render(context, request))
