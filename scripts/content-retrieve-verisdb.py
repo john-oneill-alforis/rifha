@@ -14,6 +14,7 @@ def sync_veris():
 
     except:
         print("Git Pull Failed")
+        print(cdir)
 
 
 sync_veris()
