@@ -16,8 +16,7 @@ def sync_veris():
         origin.pull()
 
     except:
-        cdir = os.getcwd()
-        print("Current Directory: ", cdir)
+        print("Git Pull Failed")
 
 
 sync_veris()
