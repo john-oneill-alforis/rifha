@@ -12,7 +12,7 @@ def sync_veris():
         origin.pull()
 
     except:
-        Repo.clone_from("https://github.com/vz-risk/VCDB.git", "veris-data/")
+        print("Repo Does Not Exsist")
 
 
 sync_veris()
