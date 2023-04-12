@@ -8,7 +8,6 @@ def sync_veris():
         os.path.exists("veris-data/.git")
 
         repo = Repo("veris-data")
-
         origin = repo.remote(name="origin")
         origin.pull()
 
