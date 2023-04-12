@@ -9,7 +9,7 @@ def sync_veris():
         # print("Current Directory: ", cdir)
         # print("Parent Directory: ", os.path.dirname(cdir))
 
-        os.path.exists(cdir + "veris-data/.git")
+        os.path.exists(cdir + "/veris-data/.git")
 
         repo = Repo("veris-data")
         origin = repo.remote(name="origin")
