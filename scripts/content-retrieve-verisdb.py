@@ -11,7 +11,7 @@ def sync_veris():
 
         os.path.exists(cdir + "/veris-data/.git")
 
-        repo = Repo("veris-data")
+        repo = Repo(cdir + "/veris-data")
         origin = repo.remote(name="origin")
         origin.pull()
 
