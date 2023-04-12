@@ -29,7 +29,7 @@ def classify():
         database="thesis_vert",
     )
 
-    query = """SELECT text,textLabel_id, label FROM polls_trainingCorpus inner join polls_textlabels ON polls_textlabels.entryId = polls_trainingcorpus.textLabel_id where polls_trainingcorpus.textLabel_id IN (2,8,16,26)"""
+    query = """SELECT text,textLabel_id, label FROM polls_trainingCorpus inner join polls_textlabels ON polls_textlabels.entryId = polls_trainingcorpus.textLabel_id where polls_trainingcorpus.textLabel_id IN (8,16,26)"""
 
     df = pd.read_sql(query, mydb)
 
