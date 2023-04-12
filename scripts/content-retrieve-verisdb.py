@@ -11,6 +11,7 @@ def sync_veris():
         repo = Repo(cdir + "/veris-data")
         origin = repo.remote(name="origin")
         origin.pull()
+        print("Pull Success")
 
     except:
         print("Git Pull Failed")
