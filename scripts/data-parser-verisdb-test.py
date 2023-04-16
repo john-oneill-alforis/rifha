@@ -28,7 +28,7 @@ def process_veris_information():
         veris = db.Table("veris_test", metadata, autoload_with=engine)
         veris_action = db.Table("veris_test_action", metadata, autoload_with=engine)
         veris_action_meta = db.Table(
-            "veris_test_action", metadata, autoload_with=engine
+            "veris_test_action_meta", metadata, autoload_with=engine
         )
 
         veris = metadata.tables["veris_test"]
@@ -104,8 +104,20 @@ def process_veris_information():
                     if type(v) == list:
                         for meta in v:
                             print(method_id, k, meta)
+                            query = insert(veris_action_meta).values(
+                                veris_test_action_ref=method_id,
+                                key=k,
+                                data=meta,
+                            )
                     else:
-                        print(method_id, k, v)
+                        query = insert(veris_action_meta).values(
+                            veris_test_action_ref=method_id,
+                            key=k,
+                            data=v,
+                        )
+
+                    result = conn.execute(query)
+                    conn.commit()
 
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
