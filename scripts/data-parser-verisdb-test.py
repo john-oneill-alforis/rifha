@@ -25,14 +25,18 @@ def process_veris_information():
         )
         conn = engine.connect()
         metadata = db.MetaData()
+
+        # Load the Database Tables we will need for the insertion
         veris = db.Table("veris_test", metadata, autoload_with=engine)
         veris_action = db.Table("veris_test_action", metadata, autoload_with=engine)
         veris_action_meta = db.Table(
             "veris_test_action_meta", metadata, autoload_with=engine
         )
+        veris_victim = db.Table("veris_test_victim", metadata, autoload_with=engine)
 
         veris = metadata.tables["veris_test"]
         veris_action = metadata.tables["veris_test_action"]
+        veris_victim = metadata.tables["veris_test_victim"]
 
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -85,7 +89,7 @@ def process_veris_information():
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, exc_obj, fname, exc_tb.tb_lineno, datetime.datetime.now())
 
-        # Code block to take the incident ID and write the actack methods to a sperate table
+        # Code block to take the incident ID and write the attack methods to a sperate table
 
         try:
             for attack_method in data["action"].keys():
@@ -118,6 +122,32 @@ def process_veris_information():
 
                     result = conn.execute(query)
                     conn.commit()
+
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, exc_obj, fname, exc_tb.tb_lineno, datetime.datetime.now())
+
+        # Code block to take the incident ID and write the attack methods to a sperate table
+
+        try:
+            print(data["victim"].keys())
+            for k, v in data["victim"].itemsw():
+                if type(k) == list:
+                    print("tits")
+                    for meta in v:
+                        query = insert(veris_victim).values(
+                            incident_id=data["incident_id"].lower(),
+                            key=k,
+                            data=meta,
+                        )
+                else:
+                    query = insert(veris_victim).values(
+                        incident_id=data["incident_id"].lower(), key=k, data=v
+                    )
+
+                result = conn.execute(query)
+                conn.commit()
 
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
