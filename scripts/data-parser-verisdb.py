@@ -23,14 +23,31 @@ def process_veris_information():
         conn = engine.connect()
         metadata = db.MetaData()
 
+        ############################################################
         # Load the Database Tables we will need for the insertion
+        ############################################################
+
         veris = db.Table("polls_veris_incident_details", metadata, autoload_with=engine)
         veris = metadata.tables["veris_test"]
+
+        veris_error_capture = db.Table(
+            "polls_errorcapture", metadata, autoload_with=engine
+        )
+        # veris = metadata.tables["`polls_errorcapture`"]
 
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, exc_obj, fname, exc_tb.tb_lineno, datetime.datetime.now())
+        query = insert(veris_error_capture).values(
+            execution_type=exc_type,
+            execution_object=exc_obj,
+            file_name=fname,
+            file_line=exc_tb.tb_lineno,
+        )
+
+        conn.execute(query)
+        conn.commit()
 
     # VERIS Data should be located on the same folder
     # level as the scripts folder
@@ -73,6 +90,15 @@ def process_veris_information():
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, exc_obj, fname, exc_tb.tb_lineno, datetime.datetime.now())
+            query = insert(veris_error_capture).values(
+                execution_type=exc_type,
+                execution_object=exc_obj,
+                file_name=fname,
+                file_line=exc_tb.tb_lineno,
+            )
+
+            conn.execute(query)
+            conn.commit()
 
         try:
             # print(query)
@@ -82,6 +108,15 @@ def process_veris_information():
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, exc_obj, fname, exc_tb.tb_lineno, datetime.datetime.now())
+            query = insert(veris_error_capture).values(
+                execution_type=exc_type,
+                execution_object=exc_obj,
+                file_name=fname,
+                file_line=exc_tb.tb_lineno,
+            )
+
+            conn.execute(query)
+            conn.commit()
 
 
 process_veris_information()
