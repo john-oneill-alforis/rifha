@@ -123,7 +123,7 @@ def dashboard(request):
 
 
 def verisDashboard(request):
-    template = loader.get_template("polls/veris_dash.html")
+    template = loader.get_template("polls/verisDash.html")
 
     yearCounts = (
         veris_incident_details.objects.annotate(year=TruncYear("created"))
