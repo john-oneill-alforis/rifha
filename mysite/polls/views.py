@@ -13,7 +13,9 @@ import os
 # data_dict = {}
 
 
+###########################################################################################
 # Pull all of the unclassfied data to be shown on the classification screen
+###########################################################################################
 def contentList(request):
     corpusData = (
         trainingCorpus.objects.all().filter(textLabel_id=1).order_by("dateAdded")
@@ -25,7 +27,9 @@ def contentList(request):
     return HttpResponse(template.render(context, request))
 
 
+###########################################################################################
 # Pull the article so it can be classified
+###########################################################################################
 def contentReview(request, msg):
     articleData = (
         trainingCorpus.objects.all()
@@ -48,7 +52,9 @@ def contentReview(request, msg):
     )
 
 
+###########################################################################################
 # Text Classification Update
+###########################################################################################
 
 
 def tcUpdate(request, msg):
@@ -65,7 +71,52 @@ def tcUpdate(request, msg):
     return HttpResponseRedirect(redirect_to="/trainingcorpus")
 
 
+###########################################################################################
 # Dashboard Screen
+###########################################################################################
+
+
+def dashboard(request):
+    template = loader.get_template("polls/index.html")
+
+    sourceCounts = (
+        trainingCorpus.objects.all()
+        .values("source")
+        .annotate(total=Count("source"))
+        .order_by("total")
+    )
+
+    labelCounts = (
+        textLabels.objects.values("label")
+        .annotate(num_entries=Count("trainingcorpus"))
+        .order_by("label")
+    )
+
+    assoclabelCounts = (
+        textLabels.objects.values("label")
+        .exclude(modelAssociated=0)
+        .annotate(num_entries=Count("trainingcorpus"))
+        .order_by("label")
+    )
+
+    totalCount = trainingCorpus.objects.all().count()
+
+    classifiedEntries = trainingCorpus.objects.exclude(textLabel=1).count()
+
+    context = {
+        "sources": sourceCounts,
+        "labels": labelCounts,
+        "count": totalCount,
+        "classified": classifiedEntries,
+        "associated": assoclabelCounts,
+    }
+
+    return HttpResponse(template.render(context, request))
+
+
+###########################################################################################
+# Veris Information Screens
+###########################################################################################
 
 
 def dashboard(request):
