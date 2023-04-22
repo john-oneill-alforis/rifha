@@ -62,3 +62,40 @@ class veris_incident_details(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+######################################################################
+# Veris Incident Information Tables
+######################################################################
+
+
+class veris_incident_details(models.Model):
+    incident_id = models.CharField(max_length=45, primary_key=True)
+    security_incident = models.CharField(max_length=45)
+    source_id = models.CharField(max_length=45)
+
+    summary = models.TextField
+    analysis_status = models.CharField(max_length=200)
+    created = models.DateTimeField(auto_now=False, auto_now_add=False)
+
+    master_id = models.CharField(max_length=45)
+    modified = models.DateTimeField(auto_now=False, auto_now_add=False)
+
+    def __unicode__(self):
+        return self.name
+
+
+######################################################################
+# Error Logging for Scripts
+######################################################################
+
+
+class errorCapture(models.Model):
+    incident_id = models.BigAutoField(primary_key=True)
+    error = models.TextField()
+    script = models.CharField(max_length=200)
+    line = models.TextField(max_length=5)
+    error_date_stamp = models.DateField
+
+    def __unicode__(self):
+        return self.name
