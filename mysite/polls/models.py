@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+import datetime
 
 # Create your models here.
 
@@ -88,15 +89,3 @@ class veris_incident_details(models.Model):
 ######################################################################
 # Error Logging for Scripts
 ######################################################################
-
-
-class errorCapture(models.Model):
-    incident_id = models.BigAutoField(primary_key=True)
-    execution_type = models.TextField()
-    execution_object = models.TextField()
-    file_name = models.TextField()
-    file_line = models.IntegerField(max_length=4)
-    date = models.DateTimeField(auto_now=yes)
-
-    def __unicode__(self):
-        return self.name
