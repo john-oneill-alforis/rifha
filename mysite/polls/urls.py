@@ -7,4 +7,5 @@ urlpatterns = [
     path("trainingcorpus", views.contentList, name="contentList"),
     path("content/<str:msg>", views.contentReview, name="article"),
     path("tcupdate/<str:msg>", views.tcUpdate, name="tcUpdate"),
+    path("verisData", views.verisDashboard, name="verisDashboard"),
 ]

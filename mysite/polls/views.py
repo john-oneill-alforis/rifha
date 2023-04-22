@@ -5,7 +5,10 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from .models import trainingCorpus
 from .models import textLabels
+from .models import veris_incident_details
 from django.db.models import Count
+from django.db.models.functions import TruncYear
+
 
 import mysql.connector
 import os
@@ -119,39 +122,17 @@ def dashboard(request):
 ###########################################################################################
 
 
-def dashboard(request):
-    template = loader.get_template("polls/index.html")
+def verisDashboard(request):
+    template = loader.get_template("polls/veris_dash.html")
 
-    sourceCounts = (
-        trainingCorpus.objects.all()
-        .values("source")
-        .annotate(total=Count("source"))
-        .order_by("total")
+    yearCounts = (
+        veris_incident_details.objects.annotate(year=TruncYear("created"))
+        .values("year")
+        .annotate(experiments=Count("incident_id"))
     )
-
-    labelCounts = (
-        textLabels.objects.values("label")
-        .annotate(num_entries=Count("trainingcorpus"))
-        .order_by("label")
-    )
-
-    assoclabelCounts = (
-        textLabels.objects.values("label")
-        .exclude(modelAssociated=0)
-        .annotate(num_entries=Count("trainingcorpus"))
-        .order_by("label")
-    )
-
-    totalCount = trainingCorpus.objects.all().count()
-
-    classifiedEntries = trainingCorpus.objects.exclude(textLabel=1).count()
 
     context = {
-        "sources": sourceCounts,
-        "labels": labelCounts,
-        "count": totalCount,
-        "classified": classifiedEntries,
-        "associated": assoclabelCounts,
+        "year_count": yearCounts,
     }
 
     return HttpResponse(template.render(context, request))
