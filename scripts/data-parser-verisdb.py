@@ -1,7 +1,5 @@
 from pathlib import Path
 import json
-import matplotlib.pyplot as plt
-import pandas as pd
 import sqlalchemy as db
 import os
 from dotenv import load_dotenv
