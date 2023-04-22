@@ -75,7 +75,7 @@ class veris_incident_details(models.Model):
     security_incident = models.CharField(max_length=45)
     source_id = models.CharField(max_length=45)
 
-    summary = models.TextField
+    summary = models.TextField(default="None")
     analysis_status = models.CharField(max_length=200)
     created = models.DateTimeField(auto_now=False, auto_now_add=False)
 
@@ -96,7 +96,7 @@ class errorCapture(models.Model):
     execution_type = models.TextField(blank=True)
     execution_object = models.CharField(max_length=250)
     file_name = models.CharField(max_length=250)
-    file_line = models.IntegerField()
+    file_line = models.IntegerField(blank=True)
     date = models.DateTimeField(default=datetime.datetime.now(), blank=True)
 
     def __unicode__(self):
