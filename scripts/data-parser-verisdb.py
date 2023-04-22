@@ -12,42 +12,26 @@ import datetime
 def process_veris_information():
     load_dotenv()
     # Load up the database
-    try:
-        engine = db.create_engine(
-            "mysql+mysqldb://"
-            + (os.getenv("db_user"))
-            + ":"
-            + (os.getenv("db_password"))
-            + "@localhost/thesis_vert"
-        )
-        conn = engine.connect()
-        metadata = db.MetaData()
 
-        ############################################################
-        # Load the Database Tables we will need for the insertion
-        ############################################################
+    engine = db.create_engine(
+        "mysql+mysqldb://"
+        + (os.getenv("db_user"))
+        + ":"
+        + (os.getenv("db_password"))
+        + "@localhost/thesis_vert"
+    )
+    conn = engine.connect()
+    metadata = db.MetaData()
 
-        veris = db.Table("polls_veris_incident_details", metadata, autoload_with=engine)
-        veris = metadata.tables["veris_test"]
+    ############################################################
+    # Load the Database Tables we will need for the insertion
+    ############################################################
 
-        veris_error_capture = db.Table(
-            "polls_errorcapture", metadata, autoload_with=engine
-        )
-        # veris = metadata.tables["`polls_errorcapture`"]
+    veris = db.Table("polls_veris_incident_details", metadata, autoload_with=engine)
+    veris = metadata.tables["polls_veris_incident_details"]
 
-    except Exception as e:
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, exc_obj, fname, exc_tb.tb_lineno, datetime.datetime.now())
-        query = insert(veris_error_capture).values(
-            execution_type=exc_type,
-            execution_object=exc_obj,
-            file_name=fname,
-            file_line=exc_tb.tb_lineno,
-        )
-
-        conn.execute(query)
-        conn.commit()
+    veris_error_capture = db.Table("polls_errorcapture", metadata, autoload_with=engine)
+    veris_error_capture = metadata.tables["polls_errorcapture"]
 
     # VERIS Data should be located on the same folder
     # level as the scripts folder
@@ -86,6 +70,10 @@ def process_veris_information():
                     modified=data["plus"]["modified"],
                 )
             )
+
+            conn.execute(query)
+            conn.commit()
+
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -95,24 +83,7 @@ def process_veris_information():
                 execution_object=exc_obj,
                 file_name=fname,
                 file_line=exc_tb.tb_lineno,
-            )
-
-            conn.execute(query)
-            conn.commit()
-
-        try:
-            # print(query)
-            conn.execute(query)
-            conn.commit()
-        except Exception as e:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, exc_obj, fname, exc_tb.tb_lineno, datetime.datetime.now())
-            query = insert(veris_error_capture).values(
-                execution_type=exc_type,
-                execution_object=exc_obj,
-                file_name=fname,
-                file_line=exc_tb.tb_lineno,
+                date=datetime.datetime.now(),
             )
 
             conn.execute(query)
