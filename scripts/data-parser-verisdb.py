@@ -56,7 +56,7 @@ def process_veris_information():
         ########################################################
 
         try:
-            created_time_str = data["plus"]["created"][0:10pyth]
+            created_time_str = data["plus"]["created"][0:10]
             created_date_obj = datetime.strptime(created_time_str, "%Y-%m-%d")
 
             query = (
