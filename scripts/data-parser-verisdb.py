@@ -92,5 +92,65 @@ def process_veris_information():
             conn.execute(query)
             conn.commit()
 
+        ########################################################
+        # Code block to write the incident 'action' data
+        ########################################################
+
+        veris_action = db.Table("veris_action", metadata, autoload_with=engine)
+        veris_action_meta = db.Table(
+            "veris_action_meta", metadata, autoload_with=engine
+        )
+
+        ########################################################
+        # Code block to write the incident action data to the DB
+        ########################################################
+
+        try:
+            for attack_method in data["action"].keys():
+                # print(x)
+                query = insert(veris_action).values(
+                    incident_id=data["incident_id"].lower(),
+                    action=attack_method,
+                )
+
+                result = conn.execute(query)
+                # method_id = result.lastrowid
+                conn.commit()
+
+                # Code block to write the attack methods decsriptions to a table
+                # for k, v in data["action"][attack_method].items():
+                #    if type(v) == list:
+                #        for meta in v:
+                #            # print(method_id, k, meta)
+                #            query = insert(veris_action_meta).values(
+                #                veris_test_action_ref=method_id,
+                #                key=k,
+                #                data=meta,
+                #            )
+                #    else:
+                #        query = insert(veris_action_meta).values(
+                #            veris_test_action_ref=method_id,
+                #            key=k,
+                #            data=v,
+                #        )
+
+                #    result = conn.execute(query)
+                #    conn.commit()
+
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, exc_obj, fname, exc_tb.tb_lineno, datetime.now())
+            query = insert(veris_error_capture).values(
+                execution_type=exc_type,
+                execution_object=exc_obj,
+                file_name=fname,
+                file_line=exc_tb.tb_lineno,
+                date=datetime.now(),
+            )
+
+            conn.execute(query)
+            conn.commit()
+
 
 process_veris_information()
