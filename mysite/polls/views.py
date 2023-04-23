@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from datetime import date
+from datetime import date, timezone
+import zoneinfo
 from django.template import loader
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -124,15 +125,18 @@ def dashboard(request):
 
 def verisDashboard(request):
     template = loader.get_template("polls/verisDash.html")
+    totalCount = veris_incident_details.objects.all().count()
 
     yearCounts = (
         veris_incident_details.objects.annotate(year=TruncYear("created"))
         .values("year")
-        .annotate(experiments=Count("incident_id"))
+        .annotate(total=Count("incident_id"))
+        .order_by("year")
     )
 
     context = {
-        "year_count": yearCounts,
+        "total_count": totalCount,
+        "year_counts": yearCounts,
     }
 
     return HttpResponse(template.render(context, request))

@@ -77,7 +77,7 @@ class veris_incident_details(models.Model):
 
     summary = models.TextField(default="None")
     analysis_status = models.CharField(max_length=200)
-    created = models.DateTimeField(auto_now=False, auto_now_add=False)
+    created = models.DateField(auto_now=False)
 
     master_id = models.CharField(max_length=45)
     modified = models.DateTimeField(auto_now=False, auto_now_add=False)

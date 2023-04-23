@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from sqlalchemy import insert
 from sqlalchemy.orm import Session
 import sys
-import datetime
+from datetime import datetime
 
 
 def process_veris_information():
@@ -56,6 +56,9 @@ def process_veris_information():
         ########################################################
 
         try:
+            created_time_str = data["plus"]["created"][0:10pyth]
+            created_date_obj = datetime.strptime(created_time_str, "%Y-%m-%d")
+
             query = (
                 insert(veris)
                 .prefix_with("ignore")
@@ -65,7 +68,7 @@ def process_veris_information():
                     source_id=data.get(("source_id"), "None"),
                     summary=data["summary"],
                     analysis_status=data.get("plus", {}).get("analysis_status", "None"),
-                    created=data["plus"]["created"],
+                    created=created_date_obj,
                     master_id=data["plus"]["master_id"].lower(),
                     modified=data["plus"]["modified"],
                 )
@@ -77,13 +80,13 @@ def process_veris_information():
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(exc_type, exc_obj, fname, exc_tb.tb_lineno, datetime.datetime.now())
+            print(exc_type, exc_obj, fname, exc_tb.tb_lineno, datetime.now())
             query = insert(veris_error_capture).values(
                 execution_type=exc_type,
                 execution_object=exc_obj,
                 file_name=fname,
                 file_line=exc_tb.tb_lineno,
-                date=datetime.datetime.now(),
+                date=datetime.now(),
             )
 
             conn.execute(query)

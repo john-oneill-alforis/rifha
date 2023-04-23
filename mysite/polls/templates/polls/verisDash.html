@@ -29,99 +29,27 @@
         <div class="row g-2 w-100">
             <div class="col justify-content-center p-2">
 
-               <h3>Total Number of Catalogue Items : {{ count }}</h3>
+               <h3>Total Veris Incidents : {{ total_count }}</h3>
               
             </div>
 
-            <div class="col justify-content-center p-2">
-
-                <h3>Total Number of Classified Items : {{ classified }}</h3>
-
-            </div>
+          
         </div>
-
-
+    
         <div class="row">
             <div class="col p-2" style="width: 200px; height: 500px">
 
-                <canvas id="sourceContribution"></canvas>
+                <canvas id="verisyearCount"></canvas>
                 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                 <script>
-                        const ctx_sourceContribution = document.getElementById('sourceContribution').getContext('2d');
-                        const sourceContribution = new Chart(ctx_sourceContribution, {
-                            type: 'bar',
-                            data: {
-                                labels : [{% for item in sources %}"{{ item.source }}",{% endfor %}],
-                                datasets: [{
-                                    label: "Contribution Sources",
-                                    data : [{% for item in sources %}{{ item.total }},{% endfor %}],
-                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                    borderColor: 'rgba(75, 192, 192, 1)',
-                                    borderWidth: 1
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                scales: {
-                                    y: {
-                                        beginAtZero: true
-                                    }
-                                }
-                            }
-                        });
-                </script>
-
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col p-2" style="width: 200px; height: 500px">
-
-                <canvas id="labelCount"></canvas>
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                <script>
-                        const ctx_labelCount = document.getElementById('labelCount').getContext('2d');
+                        const ctx_labelCount = document.getElementById('verisyearCount').getContext('2d');
                         const labelCount = new Chart(ctx_labelCount, {
-                            type: 'bar',
+                            type: 'line',
                             data: {
-                                labels : [{% for item in labels %}"{{ item.label }}",{% endfor %}],
+                                labels : [{% for x in year_counts %}"{{ x.year|date:'Y' }}",{% endfor %}],
                                 datasets: [{
-                                    label: "Classification Count",
-                                    data : [{% for item in labels %}{{ item.num_entries }},{% endfor %}],
-                                    
-                                    borderWidth: 1
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                scales: {
-                                    y: {
-                                        beginAtZero: true
-                                    }
-                                }
-                            }
-                        });
-                </script>
-
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col p-2" style="width: 200px; height: 500px">
-
-                <canvas id="associatedlabelCount"></canvas>
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-                <script>
-                        const ctx_associatedlabelCount = document.getElementById('associatedlabelCount').getContext('2d');
-                        const associatedlabelCount = new Chart(ctx_associatedlabelCount, {
-                            type: 'bar',
-                            data: {
-                                labels : [{% for item in associated %}"{{ item.label }}",{% endfor %}],
-                                datasets: [{
-                                    label: "Associated Classification Count",
-                                    data : [{% for item in associated %}{{ item.num_entries }},{% endfor %}],
+                                    label: "Veris Incidents by Year",
+                                    data : [{% for x in year_counts %}{{ x.total }},{% endfor %}],
                                     
                                     borderWidth: 1
                                 }]
@@ -142,8 +70,6 @@
         </div>
 
         
-       
-    </div>
 
 </body>
 
