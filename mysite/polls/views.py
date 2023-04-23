@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect
 from .models import trainingCorpus
 from .models import textLabels
 from .models import veris_incident_details
+from .models import veris_incident_action_details
 from django.db.models import Count
 from django.db.models.functions import TruncYear
 
@@ -134,9 +135,17 @@ def verisDashboard(request):
         .order_by("year")
     )
 
+    actionCounts = veris_incident_action_details.objects.values("action").annotate(
+        total=Count("action")
+    )
+
     context = {
         "total_count": totalCount,
         "year_counts": yearCounts,
+        "action_counts": actionCounts,
     }
 
     return HttpResponse(template.render(context, request))
+
+
+# Totals by Action Type

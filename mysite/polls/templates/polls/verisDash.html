@@ -67,6 +67,43 @@
                 </script>
 
             </div>
+
+            
+        </div>
+
+        <div class="row">
+
+            <div class="col p-2" style="width: 200px; height: 500px">
+
+                <canvas id="verisactionCount"></canvas>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script>
+                        const ctx_actionCount = document.getElementById('verisactionCount').getContext('2d');
+                        const actionCount = new Chart(ctx_actionCount, {
+                            type: 'bar',
+                            data: {
+                                labels : [{% for x in action_counts %}"{{ x.action }}",{% endfor %}],
+                                datasets: [{
+                                    label: "Veris Incidents by Action",
+                                    data : [{% for x in action_counts %}{{ x.total }},{% endfor %}],
+                                    
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                </script>
+
+            </div>
+            
         </div>
 
         
