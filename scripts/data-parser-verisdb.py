@@ -116,7 +116,7 @@ def process_veris_information():
                 )
 
                 result = conn.execute(query)
-                # method_id = result.lastrowid
+                method_id = result.lastrowid
                 conn.commit()
 
                 # Code block to write the attack methods decsriptions to a table
