@@ -96,9 +96,11 @@ def process_veris_information():
         # Code block to write the incident 'action' data
         ########################################################
 
-        veris_action = db.Table("veris_action", metadata, autoload_with=engine)
+        veris_action = db.Table(
+            "polls_veris_incident_action_details", metadata, autoload_with=engine
+        )
         veris_action_meta = db.Table(
-            "veris_action_meta", metadata, autoload_with=engine
+            "polls_veris_incident_action_details", metadata, autoload_with=engine
         )
 
         ########################################################
