@@ -8,6 +8,7 @@ from .models import trainingCorpus
 from .models import textLabels
 from .models import veris_incident_details
 from .models import veris_incident_action_details
+from .models import errorCapture
 from django.db.models import Count
 from django.db.models.functions import TruncYear
 
@@ -148,4 +149,30 @@ def verisDashboard(request):
     return HttpResponse(template.render(context, request))
 
 
-# Totals by Action Type
+###########################################################################################
+# Debug Information
+###########################################################################################
+
+
+def debugDashboard(request):
+    template = loader.get_template("polls/debugDash.html")
+    totalCount = errorCapture.objects.all().count()
+
+    yearCounts = (
+        errorCapture.objects.annotate(year=TruncYear("created"))
+        .values("year")
+        .annotate(total=Count("incident_id"))
+        .order_by("year")
+    )
+
+    actionCounts = veris_incident_action_details.objects.values("action").annotate(
+        total=Count("action")
+    )
+
+    context = {
+        "total_count": totalCount,
+        "year_counts": yearCounts,
+        "action_counts": actionCounts,
+    }
+
+    return HttpResponse(template.render(context, request))
