@@ -29,7 +29,7 @@ def classify():
         database="thesis_vert",
     )
 
-    query = """SELECT text,textLabel_id, label FROM polls_trainingCorpus inner join polls_textlabels ON polls_textlabels.entryId = polls_trainingcorpus.textLabel_id where polls_trainingcorpus.textLabel_id IN (8, 16, 15)"""
+    query = """SELECT text,textLabel_id, label FROM polls_trainingCorpus inner join polls_textlabels ON polls_textlabels.entryId = polls_trainingcorpus.textLabel_id """
 
     df = pd.read_sql(query, mydb)
 
@@ -61,7 +61,7 @@ def classify():
     nb.fit(X_train, y_train)
 
     preds = nb.predict(X_test)
-    print(classification_report(y_test, preds))
+    print(classification_report(y_test, preds, output_dict=True))
 
 
 classify()
