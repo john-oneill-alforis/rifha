@@ -8,4 +8,5 @@ urlpatterns = [
     path("content/<str:msg>", views.contentReview, name="article"),
     path("tcupdate/<str:msg>", views.tcUpdate, name="tcUpdate"),
     path("verisData", views.verisDashboard, name="verisDashboard"),
+    path("debugData", views.debugDashboard, name="debugDashboard"),
 ]

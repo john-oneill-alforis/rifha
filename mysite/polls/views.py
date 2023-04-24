@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db.models import Count, DateTimeField
 from datetime import date, timezone
 import zoneinfo
 from django.template import loader
@@ -11,6 +12,7 @@ from .models import veris_incident_action_details
 from .models import errorCapture
 from django.db.models import Count
 from django.db.models.functions import TruncYear
+from django.db.models.functions import Trunc
 
 
 import mysql.connector
@@ -156,23 +158,13 @@ def verisDashboard(request):
 
 def debugDashboard(request):
     template = loader.get_template("polls/debugDash.html")
-    totalCount = errorCapture.objects.all().count()
 
-    yearCounts = (
-        errorCapture.objects.annotate(year=TruncYear("created"))
-        .values("year")
-        .annotate(total=Count("incident_id"))
-        .order_by("year")
-    )
-
-    actionCounts = veris_incident_action_details.objects.values("action").annotate(
-        total=Count("action")
+    errorCounts = (
+        errorCapture.objects.all().values("date").annotate(total=Count("incident_id"))
     )
 
     context = {
-        "total_count": totalCount,
-        "year_counts": yearCounts,
-        "action_counts": actionCounts,
+        "errorCounts": errorCounts,
     }
 
     return HttpResponse(template.render(context, request))
