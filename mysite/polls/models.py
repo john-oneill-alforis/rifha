@@ -111,7 +111,7 @@ class errorCapture(models.Model):
     execution_object = models.CharField(max_length=250)
     file_name = models.CharField(max_length=250)
     file_line = models.IntegerField(blank=True)
-    date = models.DateField(default=datetime.datetime.now(), blank=True)
+    date = models.DateTimeField(default=datetime.datetime.now(), blank=True)
 
     def __unicode__(self):
         return self.name
@@ -121,6 +121,7 @@ class web_scraper_log(models.Model):
     entry_Id = models.BigAutoField(primary_key=True)
     source = models.CharField(max_length=45)
     article_count = models.IntegerField()
+    date = models.DateTimeField(default=datetime.datetime.now(), blank=True)
 
     def __unicode__(self):
         return self.name

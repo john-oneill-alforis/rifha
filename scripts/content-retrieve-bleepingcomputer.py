@@ -10,6 +10,7 @@ import hashlib
 from sqlalchemy import insert
 from sqlalchemy.orm import Session
 import sys
+import os
 import sqlalchemy as db
 
 
@@ -112,10 +113,17 @@ def get_rss():
 
         print(len(item_count))
 
+        query = insert(web_scraper_log).values(
+            source=os.path.basename(sys.argv[0]), article_count=len(item_count)
+        )
+
+        conn.execute(query)
+        conn.commit()
+
     except:
+        # print(exc_type, exc_obj, fname, exc_tb.tb_lineno, datetime.now())
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, exc_obj, fname, exc_tb.tb_lineno, datetime.now())
         query = insert(veris_error_capture).values(
             execution_type=exc_type,
             execution_object=exc_obj,
