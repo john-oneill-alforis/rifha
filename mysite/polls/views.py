@@ -164,51 +164,31 @@ def debugDashboard(request):
     )
 
     actionCounts_BC = (
-        trainingCorpus.objects.all()
-        .filter(
-            dateAdded__lte=datetime.today(),
-            dateAdded__gt=datetime.today() - timedelta(days=30),
-            source="Bleeping Computer",
-        )
-        .values("source", "dateAdded")
-        .annotate(total=Count("source"))
-        .order_by("dateAdded")
+        web_scraper_log.objects.all()
+        .filter(source="bleepingcomputer")
+        .values("source", "article_count", "date")
+        .order_by("date")
     )
 
     actionCounts_DR = (
-        trainingCorpus.objects.all()
-        .filter(
-            dateAdded__lte=datetime.today(),
-            dateAdded__gt=datetime.today() - timedelta(days=30),
-            source="Dark Reading",
-        )
-        .values("source", "dateAdded")
-        .annotate(total=Count("source"))
-        .order_by("dateAdded")
+        web_scraper_log.objects.all()
+        .filter(source="darkreading")
+        .values("source", "article_count", "date")
+        .order_by("date")
     )
 
     actionCounts_ISN = (
-        trainingCorpus.objects.all()
-        .filter(
-            dateAdded__lte=datetime.today(),
-            dateAdded__gt=datetime.today() - timedelta(days=30),
-            source="Information Security News",
-        )
-        .values("source", "dateAdded")
-        .annotate(total=Count("source"))
-        .order_by("dateAdded")
+        web_scraper_log.objects.all()
+        .filter(source="informationsecuritynews")
+        .values("source", "article_count", "date")
+        .order_by("date")
     )
 
     actionCounts_THN = (
-        trainingCorpus.objects.all()
-        .filter(
-            dateAdded__lte=datetime.today(),
-            dateAdded__gt=datetime.today() - timedelta(days=30),
-            source="The Hacker News",
-        )
-        .values("source", "dateAdded")
-        .annotate(total=Count("source"))
-        .order_by("dateAdded")
+        web_scraper_log.objects.all()
+        .filter(source="thehackernews")
+        .values("source", "article_count", "date")
+        .order_by("date")
     )
 
     context = {

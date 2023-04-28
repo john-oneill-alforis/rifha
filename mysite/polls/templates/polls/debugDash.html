@@ -90,28 +90,28 @@
                         const actionCount = new Chart(ctx_actionCount, {
                             type: 'line',
                             data: {
-                                labels : [{% for x in actionCounts_BC %} "{{ x.dateAdded | date:'d-m'  }}" ,{% endfor %}],
+                                labels : [{% for x in actionCounts_BC %} "{{x.date|date:'d-m'  }}" ,{% endfor %}],
                                 datasets: [{
                                     label: "Bleeping Computer",
-                                    data : [{% for x in actionCounts_BC %}{{ x.total }},{% endfor %}],
+                                    data : [{% for x in actionCounts_BC %}{{ x.article_count }},{% endfor %}],
                                     
                                 
                                 },
                                 {
                                     label: "Dark Reading",
-                                    data : [{% for x in actionCounts_DR %}{{ x.total }},{% endfor %}],
+                                    data : [{% for x in actionCounts_DR %}{{ x.article_count }},{% endfor %}],
                                     
                             
                                 },
                                 {
                                     label: "Information Security News",
-                                    data : [{% for x in actionCounts_ISN %}{{ x.total }},{% endfor %}],
+                                    data : [{% for x in actionCounts_ISN %}{{ x.article_count }},{% endfor %}],
                                     
                             
                                 },
                                 {
                                     label: "The Hacker News",
-                                    data : [{% for x in actionCounts_THN %}{{ x.total }},{% endfor %}],
+                                    data : [{% for x in actionCounts_THN %}{{ x.article_count }},{% endfor %}],
                                     
                             
                                 },
@@ -135,8 +135,6 @@
 
         </div> 
 
-        {{actionCounts_THN}}
-        {{actionCounts_ISN}}
 </body>
 
 </html>
