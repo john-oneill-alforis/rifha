@@ -114,7 +114,9 @@ def get_rss():
         print(len(item_count))
 
         query = insert(web_scraper_log).values(
-            source=os.path.basename(sys.argv[0]), article_count=len(item_count)
+            source=os.path.basename(sys.argv[0])[17:-3],
+            article_count=len(item_count),
+            date=datetime.now(),
         )
 
         conn.execute(query)
@@ -129,7 +131,7 @@ def get_rss():
             execution_object=exc_obj,
             file_name=fname,
             file_line=exc_tb.tb_lineno,
-            # date=datetime.now(),
+            date=datetime.now(),
         )
 
         conn.execute(query)

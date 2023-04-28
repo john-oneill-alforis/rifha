@@ -10,6 +10,7 @@ from .models import textLabels
 from .models import veris_incident_details
 from .models import veris_incident_action_details
 from .models import errorCapture
+from .models import web_scraper_log
 from django.db.models import Count
 from django.db.models.functions import TruncYear
 from django.db.models.functions import Trunc
@@ -161,6 +162,12 @@ def debugDashboard(request):
 
     errorCounts = (
         errorCapture.objects.all().values("date").annotate(total=Count("incident_id"))
+    )
+
+    actionCounts = (
+        web_scraper_log.objects.all()
+        .values("date")
+        .annotate(total=Count("incident_id"))
     )
 
     context = {
