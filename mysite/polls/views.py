@@ -216,7 +216,7 @@ def debugDashboard(request):
         "actionCounts_BC": actionCounts_BC,
         "actionCounts_DR": actionCounts_DR,
         "actionCounts_ISN": actionCounts_ISN,
-        "actionCounts_BC": actionCounts_THN,
+        "actionCounts_THN": actionCounts_THN,
     }
 
     return HttpResponse(template.render(context, request))
