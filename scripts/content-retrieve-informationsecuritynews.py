@@ -15,6 +15,7 @@ import sqlalchemy as db
 
 
 def get_rss():
+    load_dotenv()
     engine = db.create_engine(
         "mysql+mysqldb://"
         + (os.getenv("db_user"))
@@ -32,7 +33,6 @@ def get_rss():
     veris_error_capture = metadata.tables["polls_errorcapture"]
 
     try:
-        load_dotenv()
         now = datetime.now().replace(microsecond=0).isoformat()
 
         # Database Connection to Pull Existing Meta Values
