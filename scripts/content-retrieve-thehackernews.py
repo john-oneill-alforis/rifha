@@ -104,7 +104,7 @@ def get_rss():
 
             mycursor = mydb.cursor()
             mycursor.execute(sql, val)
-
+            item_count.append(mycursor.lastrowid)
             mydb.commit()
 
         print(len(item_count))
@@ -117,7 +117,6 @@ def get_rss():
 
         conn.execute(query)
         conn.commit()
-        item_count.append(mycursor.lastrowid)
 
     except:
         # print(exc_type, exc_obj, fname, exc_tb.tb_lineno, datetime.now())
