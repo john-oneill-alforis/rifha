@@ -16,7 +16,7 @@ import sqlalchemy as db
 
 def get_rss():
     engine = db.create_engine(
-        "mysql+mysqldb://"
+        "mysql://"
         + (os.getenv("db_user"))
         + ":"
         + (os.getenv("db_password"))
