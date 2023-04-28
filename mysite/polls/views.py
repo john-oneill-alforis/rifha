@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.db.models import Count, DateTimeField
-from datetime import date, timezone
-import zoneinfo
+from datetime import date, timezone, datetime, timedelta
 from django.template import loader
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -164,14 +163,60 @@ def debugDashboard(request):
         errorCapture.objects.all().values("date").annotate(total=Count("incident_id"))
     )
 
-    actionCounts = (
-        web_scraper_log.objects.all()
-        .values("date")
-        .annotate(total=Count("incident_id"))
+    actionCounts_BC = (
+        trainingCorpus.objects.all()
+        .filter(
+            dateAdded__lte=datetime.today(),
+            dateAdded__gt=datetime.today() - timedelta(days=30),
+            source="Bleeping Computer",
+        )
+        .values("source", "dateAdded")
+        .annotate(total=Count("source"))
+        .order_by("dateAdded")
+    )
+
+    actionCounts_DR = (
+        trainingCorpus.objects.all()
+        .filter(
+            dateAdded__lte=datetime.today(),
+            dateAdded__gt=datetime.today() - timedelta(days=30),
+            source="Dark Reading",
+        )
+        .values("source", "dateAdded")
+        .annotate(total=Count("source"))
+        .order_by("dateAdded")
+    )
+
+    actionCounts_ISN = (
+        trainingCorpus.objects.all()
+        .filter(
+            dateAdded__lte=datetime.today(),
+            dateAdded__gt=datetime.today() - timedelta(days=30),
+            source="Information Security News",
+        )
+        .values("source", "dateAdded")
+        .annotate(total=Count("source"))
+        .order_by("dateAdded")
+    )
+
+    actionCounts_THN = (
+        trainingCorpus.objects.all()
+        .filter(
+            dateAdded__lte=datetime.today(),
+            dateAdded__gt=datetime.today() - timedelta(days=30),
+            source="The Hacker News",
+        )
+        .values("source", "dateAdded")
+        .annotate(total=Count("source"))
+        .order_by("dateAdded")
     )
 
     context = {
         "errorCounts": errorCounts,
+        "actionCounts_BC": actionCounts_BC,
+        "actionCounts_DR": actionCounts_DR,
+        "actionCounts_ISN": actionCounts_ISN,
+        "actionCounts_BC": actionCounts_THN,
     }
 
     return HttpResponse(template.render(context, request))

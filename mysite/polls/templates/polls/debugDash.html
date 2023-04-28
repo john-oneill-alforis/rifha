@@ -69,8 +69,65 @@
 
             </div>
 
-        </div>     
+        </div> 
 
+        <div class="row g-2 w-100">
+            <div class="col justify-content-center p-2">
+
+               <h3>Articles Logged</h3>
+              
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col p-2" style="width: 200px; height: 500px">
+
+                <canvas id="actionTotalCount"></canvas>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script>
+                        const ctx_actionCount = document.getElementById('actionTotalCount').getContext('2d');
+                        const actionCount = new Chart(ctx_actionCount, {
+                            type: 'line',
+                            data: {
+                                labels : [{% for x in actionCounts_BC %} "{{ x.dateAdded | date:'d-m'  }}" ,{% endfor %}],
+                                datasets: [{
+                                    label: "Bleeping Computer",
+                                    data : [{% for x in actionCounts_BC %}{{ x.total }},{% endfor %}],
+                                    
+                                
+                                },
+                                {
+                                    label: "Dark Reading",
+                                    data : [{% for x in actionCounts_DR %}{{ x.total }},{% endfor %}],
+                                    
+                            
+                                },
+                                {
+                                    label: "Information Security News",
+                                    data : [{% for x in actionCounts_ISN %}{{ x.total }},{% endfor %}],
+                                    
+                            
+                                },
+                             ]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                  legend: {
+                                    position: 'top',
+                                  },
+                                  title: {
+                                    display: true,
+                                  }
+                                }
+                              },
+                            });
+                </script>
+
+            </div>
+
+        </div> 
 </body>
 
 </html>
