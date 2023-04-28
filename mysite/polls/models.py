@@ -105,23 +105,25 @@ class veris_incident_action_details(models.Model):
 ######################################################################
 
 
+# Error Captures
 class errorCapture(models.Model):
     incident_id = models.BigAutoField(primary_key=True)
     execution_type = models.TextField(blank=True)
-    execution_object = models.CharField(max_length=250)
+    execution_object = models.CharField(max_length=1000)
     file_name = models.CharField(max_length=250)
     file_line = models.IntegerField(blank=True)
-    date = models.DateTimeField(default=datetime.datetime.now(), blank=True)
+    date = models.DateTimeField(blank=True)
 
     def __unicode__(self):
         return self.name
 
 
+# Work Capture
 class web_scraper_log(models.Model):
     entry_Id = models.BigAutoField(primary_key=True)
     source = models.CharField(max_length=45)
     article_count = models.IntegerField()
-    date = models.DateTimeField(default=datetime.datetime.now(), blank=True)
+    date = models.DateTimeField(blank=True)
 
     def __unicode__(self):
         return self.name

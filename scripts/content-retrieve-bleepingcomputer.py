@@ -129,7 +129,7 @@ def get_rss():
             execution_object=exc_obj,
             file_name=fname,
             file_line=exc_tb.tb_lineno,
-            date=datetime.now(),
+            # date=datetime.now(),
         )
 
         conn.execute(query)
