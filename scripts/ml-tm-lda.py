@@ -1,24 +1,14 @@
 import mysql.connector
 import os
 from dotenv import load_dotenv
-import joblib
 import re
 import string
 import numpy as np
 import pandas as pd
-from sklearn.datasets import fetch_20newsgroups
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics import (
-    accuracy_score,
-    cohen_kappa_score,
-    f1_score,
-    classification_report,
-)
-from sklearn.model_selection import StratifiedKFold, train_test_split
-from sklearn.naive_bayes import MultinomialNB
-
-# Import the wordcloud library
-from wordcloud import WordCloud
+import gensim
+from gensim import corpora
+from gensim.models.ldamodel import LdaModel
+from gensim.utils import simple_preprocess
 
 
 # This focus only on the Threat Actor Profile Category in order to try and get an understanding of threats
@@ -35,29 +25,30 @@ def classify():
         database="thesis_vert",
     )
 
-    query = """SELECT text, textLabel_id from polls_trainingcorpus where textLabel_id = 16"""
+    query = """SELECT * FROM polls_trainingcorpus JOIN polls_textlabels ON polls_trainingcorpus.textLabel_id = polls_textlabels.entryId WHERE polls_trainingcorpus.textLabel_id IN (SELECT textLabel_id FROM polls_trainingcorpus GROUP BY textLabel_id HAVING COUNT(*) > 100)  AND textLabel_id <> 1;"""
 
     df = pd.read_sql(query, mydb)
 
-    def process_text(text):
-        text = str(text).lower()
-        text = re.sub(f"[{re.escape(string.punctuation)}]", " ", text)
-        text = " ".join(text.split())
-        return text
+    # Define the number of topics for LDA
+    num_topics = 10
 
-    df["clean_text"] = df.text.map(process_text)
-    print(df.head())
+    # Preprocess the text column
+    data = df["text"].map(simple_preprocess)
 
-    # Join the different processed titles together.
-    long_string = ",".join(list(df["clean_text"].values))  # Create a WordCloud object
-    wordcloud = WordCloud(
-        background_color="white",
-        max_words=5000,
-        contour_width=3,
-        contour_color="steelblue",
-    )  # Generate a word cloud
-    wordcloud.generate(long_string)  # Visualize the word cloud
-    wordcloud.to_file("plots/N.png")
+    # Create a dictionary from the preprocessed text
+    dictionary = corpora.Dictionary(data)
+
+    # Create a corpus from the dictionary and preprocessed text
+    corpus = [dictionary.doc2bow(doc) for doc in data]
+
+    # Train the LDA model
+    lda_model = LdaModel(
+        corpus=corpus, id2word=dictionary, num_topics=num_topics, random_state=42
+    )
+
+    # Get the accuracy prediction
+    accuracy = lda_model.log_perplexity(corpus)
+    print(f"Accuracy: {accuracy}")
 
 
 classify()

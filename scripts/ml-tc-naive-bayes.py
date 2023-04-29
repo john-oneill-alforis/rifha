@@ -29,7 +29,9 @@ def classify():
         database="thesis_vert",
     )
 
-    query = """SELECT text,textLabel_id, label FROM polls_trainingCorpus inner join polls_textlabels ON polls_textlabels.entryId = polls_trainingcorpus.textLabel_id """
+    # query = """SELECT text,textLabel_id, label FROM polls_trainingCorpus inner join polls_textlabels ON polls_textlabels.entryId = polls_trainingcorpus.textLabel_id"""
+
+    query = """SELECT * FROM polls_trainingcorpus JOIN polls_textlabels ON polls_trainingcorpus.textLabel_id = polls_textlabels.entryId WHERE polls_trainingcorpus.textLabel_id IN (SELECT textLabel_id FROM polls_trainingcorpus GROUP BY textLabel_id HAVING COUNT(*) > 100)  AND textLabel_id <> 1;"""
 
     df = pd.read_sql(query, mydb)
 
@@ -51,17 +53,17 @@ def classify():
         stop_words="english",
     )
 
-    X_train = vec.fit_transform(df_train.clean_text)
-    X_test = vec.transform(df_test.clean_text)
+    x_train = vec.fit_transform(df_train.clean_text)
+    x_test = vec.transform(df_test.clean_text)
 
     y_train = df_train.label
     y_test = df_test.label
 
     nb = MultinomialNB()
-    nb.fit(X_train, y_train)
+    nb.fit(x_train, y_train)
 
-    preds = nb.predict(X_test)
-    print(classification_report(y_test, preds, output_dict=True))
+    preds = nb.predict(x_test)
+    print(classification_report(y_test, preds))
 
 
 classify()

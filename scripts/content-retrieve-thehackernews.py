@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import requests
 import hashlib
 from sqlalchemy import insert
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 import sys
 import os
 import sqlalchemy as db
@@ -31,6 +31,11 @@ def get_rss():
 
     veris_error_capture = db.Table("polls_errorcapture", metadata, autoload_with=engine)
     veris_error_capture = metadata.tables["polls_errorcapture"]
+
+    polls_trainingcorpus = db.Table(
+        "polls_trainingcorpus", metadata, autoload_with=engine
+    )
+    polls_trainingcorpus = metadata.tables["polls_trainingcorpus"]
 
     try:
         now = datetime.now().replace(microsecond=0).isoformat()
@@ -104,14 +109,23 @@ def get_rss():
 
             mycursor = mydb.cursor()
             mycursor.execute(sql, val)
-            item_count.append(mycursor.lastrowid)
             mydb.commit()
 
-        print(len(item_count))
+        Session = sessionmaker(bind=engine)
+        session = Session()
+
+        today = datetime.today().strftime("%Y-%m-%d")
+        count = (
+            session.query(polls_trainingcorpus)
+            .filter_by(dateAdded=today, source="The Hacker News")
+            .count()
+        )
+
+        print(count)
 
         query = insert(web_scraper_log).values(
             source=os.path.basename(sys.argv[0])[17:-3],
-            article_count=len(item_count),
+            article_count=count,
             date=datetime.now(),
         )
 
