@@ -11,8 +11,7 @@ from .models import veris_incident_action_details
 from .models import errorCapture
 from .models import web_scraper_log
 from django.db.models import Count
-from django.db.models.functions import TruncYear
-from django.db.models.functions import Trunc
+from django.db.models.functions import Trunc, TruncYear
 
 
 import mysql.connector
