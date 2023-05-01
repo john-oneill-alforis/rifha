@@ -14,9 +14,6 @@ from django.db.models import Count
 from django.db.models.functions import Trunc, TruncYear
 
 
-import mysql.connector
-import os
-
 # data_dict = {}
 
 
