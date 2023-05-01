@@ -7,6 +7,5 @@ from .models import staffRole
 
 # Register your models here.
 
-
 admin.site.register(staff)
 admin.site.register(staffRole)
