@@ -43,6 +43,8 @@ class assetsTypes(models.Model):
     assetTypeName = models.CharField(max_length=100)
     assetDTypeDescription = models.CharField(max_length=254)
 
+    class Meta
+
     def __unicode__(self):
         return self.name
 
@@ -55,6 +57,7 @@ class processes(models.Model):
     processDescription = models.CharField(max_length=254)
     processAssets = models.CharField(max_length=254)
     processOwner = models.CharField(max_length=254)
+    
 
     def __unicode__(self):
         return self.name
