@@ -7,19 +7,27 @@ import datetime
 
 
 class staff(models.Model):
-    staffId = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4)
+    staffId = models.CharField(
+        primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
+    )
     firstName = models.CharField(max_length=100)
     lastName = models.CharField(max_length=100)
     email = models.EmailField(max_length=254)
-    contactNUmber = models.CharField(max_length=100)
-    jobTitle = models.ForeignKey("staffRole", on_delete=models.CASCADE, default=1)
+    contactNumber = models.CharField(max_length=100)
+    jobTitle = models.ForeignKey(
+        "staffRole",
+        on_delete=models.CASCADE,
+        default="040f8643-2c82-46b3-9cd4-6e095b74b9f9",
+    )
 
     def __unicode__(self):
         return self.name
 
 
 class staffRole(models.Model):
-    roleId = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4)
+    roleId = models.CharField(
+        primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
+    )
     roleTitle = models.CharField(max_length=100)
     description = models.CharField(max_length=254)
 
@@ -28,7 +36,9 @@ class staffRole(models.Model):
 
 
 class assets(models.Model):
-    assetId = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4)
+    assetId = models.CharField(
+        primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
+    )
     assetName = models.CharField(max_length=100)
     assetDescription = models.CharField(max_length=254)
     assetType = models.OneToOneField("assetsTypes", on_delete=models.CASCADE, default=1)
@@ -39,25 +49,24 @@ class assets(models.Model):
 
 
 class assetsTypes(models.Model):
-    assetId = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4)
+    assetId = models.CharField(
+        primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
+    )
     assetTypeName = models.CharField(max_length=100)
     assetDTypeDescription = models.CharField(max_length=254)
-
-    class Meta
 
     def __unicode__(self):
         return self.name
 
 
 class processes(models.Model):
-    processId = models.UUIDField(
-        primary_key=True, auto_created=True, default=uuid.uuid4
+    processId = models.CharField(
+        primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
     )
     processName = models.CharField(max_length=100)
     processDescription = models.CharField(max_length=254)
     processAssets = models.CharField(max_length=254)
     processOwner = models.CharField(max_length=254)
-    
 
     def __unicode__(self):
         return self.name
