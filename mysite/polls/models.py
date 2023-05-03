@@ -48,6 +48,9 @@ class trainingCorpus(models.Model):
     def __unicode__(self):
         return self.link
 
+    def __str__(self):
+        return self.link, self.source
+
 
 class veris_incident_details(models.Model):
     incident_id = models.CharField(max_length=45, primary_key=True)
