@@ -36,6 +36,7 @@
 
         </div>
 
+        <!---->
 
         <div class="row">
             <div class="col p-2" style="width: 200px; height: 500px">
@@ -47,7 +48,7 @@
                         const labelCount = new Chart(ctx_errorCount, {
                             type: 'bar',
                             data: {
-                                labels : [{% for x in errorCounts %}"{{ x.date|date:'d-m' }}",{% endfor %}],
+                                labels : [{% for x in errorCounts %}"{{ x.created |date:'d-m'}}",{% endfor %}],
                                 datasets: [{
                                     label: "Errors Logged",
                                     data : [{% for x in errorCounts %}{{ x.total }},{% endfor %}],

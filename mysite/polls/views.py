@@ -11,7 +11,7 @@ from .models import veris_incident_action_details
 from .models import errorCapture
 from .models import web_scraper_log
 from django.db.models import Count
-from django.db.models.functions import TruncDate, TruncYear, Cast
+from django.db.models.functions import TruncDate, TruncYear, Cast, TruncDay
 
 
 # data_dict = {}
@@ -156,7 +156,10 @@ def debugDashboard(request):
     template = loader.get_template("polls/debugDash.html")
 
     errorCounts = (
-        errorCapture.objects.all().values("date").annotate(total=Count("incident_id"))
+        errorCapture.objects.annotate(created=TruncDay("date"))
+        .values("created")
+        .annotate(total=Count("incident_id"))
+        .values("created", "total")
     )
 
     actionCounts_BC = (
