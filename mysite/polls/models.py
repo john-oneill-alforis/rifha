@@ -141,4 +141,4 @@ class web_scraper_log(models.Model):
         return self.date
 
     def __str__(self):
-        return self.date
+        return str(self.date)
