@@ -49,7 +49,7 @@ class trainingCorpus(models.Model):
         return self.link
 
     def __str__(self):
-        return self.link, self.source
+        return self.link
 
 
 class veris_incident_details(models.Model):
@@ -127,7 +127,7 @@ class errorCapture(models.Model):
     date = models.DateField(blank=True)
 
     def __unicode__(self):
-        return self.name
+        return self.execution_object
 
 
 # Work Capture
@@ -138,7 +138,7 @@ class web_scraper_log(models.Model):
     date = models.DateField(blank=True)
 
     def __unicode__(self):
-        return self.source, self.date
+        return self.source
 
     def __str__(self):
-        return self.source, self.date
+        return self.source
