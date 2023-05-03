@@ -141,7 +141,7 @@ def get_rss():
         today = datetime.today().strftime("%Y-%m-%d")
         count = (
             session.query(polls_trainingcorpus)
-            .filter_by(dateAdded=today, source="Bleeping Computer")
+            .filter_by(dateAdded=today, source="Dark Reading")
             .count()
         )
         print(count)
