@@ -164,28 +164,28 @@ def debugDashboard(request):
 
     actionCounts_BC = (
         web_scraper_log.objects.all()
-        .filter(source="bleepingcomputer")
+        .filter(source="Bleeping Computer")
         .values("source", "article_count", "date")
         .order_by("date")
     )
 
     actionCounts_DR = (
         web_scraper_log.objects.all()
-        .filter(source="darkreading")
+        .filter(source="Dark Reading")
         .values("source", "article_count", "date")
         .order_by("date")
     )
 
     actionCounts_ISN = (
         web_scraper_log.objects.all()
-        .filter(source="informationsecuritynews")
+        .filter(source="Information Security News")
         .values("source", "article_count", "date")
         .order_by("date")
     )
 
     actionCounts_THN = (
         web_scraper_log.objects.all()
-        .filter(source="thehackernews")
+        .filter(source="The Hacker News")
         .values("source", "article_count", "date")
         .order_by("date")
     )

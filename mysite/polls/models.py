@@ -46,7 +46,7 @@ class trainingCorpus(models.Model):
     )
 
     def __unicode__(self):
-        return self.name
+        return self.link
 
 
 class veris_incident_details(models.Model):
@@ -62,7 +62,7 @@ class veris_incident_details(models.Model):
     modified = models.DateTimeField(auto_now=False, auto_now_add=False)
 
     def __unicode__(self):
-        return self.name
+        return self.incident_id
 
 
 ######################################################################
