@@ -190,8 +190,11 @@ def debugDashboard(request):
         .order_by("date")
     )
 
+    dates = web_scraper_log.objects.values("date").distinct().order_by("date")
+
     context = {
         "errorCounts": errorCounts,
+        "logged_dates": dates,
         "actionCounts_BC": actionCounts_BC,
         "actionCounts_DR": actionCounts_DR,
         "actionCounts_ISN": actionCounts_ISN,
