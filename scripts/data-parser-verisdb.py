@@ -44,7 +44,6 @@ def process_veris_information():
 
     # Grab the data from the validated reports
 
-    incident_id = ""
     for p in veris_validated_data.rglob("*.json"):
         # Load the data from the json file
         json_file = veris_validated_data / p.name
@@ -103,10 +102,6 @@ def process_veris_information():
             "polls_veris_incident_action_details", metadata, autoload_with=engine
         )
 
-        ########################################################
-        # Code block to write the incident action data to the DB
-        ########################################################
-
         try:
             for attack_method in data["action"].keys():
                 # print(x)
@@ -120,24 +115,24 @@ def process_veris_information():
                 conn.commit()
 
                 # Code block to write the attack methods decsriptions to a table
-                # for k, v in data["action"][attack_method].items():
-                #    if type(v) == list:
-                #        for meta in v:
-                #            # print(method_id, k, meta)
-                #            query = insert(veris_action_meta).values(
-                #                veris_test_action_ref=method_id,
-                #                key=k,
-                #                data=meta,
-                #            )
-                #    else:
-                #        query = insert(veris_action_meta).values(
-                #            veris_test_action_ref=method_id,
-                #            key=k,
-                #            data=v,
-                #        )
+                for k, v in data["action"][attack_method].items():
+                    if type(v) == list:
+                        for meta in v:
+                            # print(method_id, k, meta)
+                            query = insert(veris_action_meta).values(
+                                veris_test_action_ref=method_id,
+                                key=k,
+                                data=meta,
+                            )
+                    else:
+                        query = insert(veris_action_meta).values(
+                            veris_test_action_ref=method_id,
+                            key=k,
+                            data=v,
+                        )
 
-                #    result = conn.execute(query)
-                #    conn.commit()
+                    result = conn.execute(query)
+                    conn.commit()
 
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()

@@ -100,6 +100,15 @@ class veris_incident_action_details(models.Model):
         return self.name
 
 
+class veris_action_details(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    incident_id = models.CharField(max_length=45)
+    action = models.CharField(max_length=45)
+
+    def __unicode__(self):
+        return self.name
+
+
 ######################################################################
 # Action Logging for Scripts
 ######################################################################
