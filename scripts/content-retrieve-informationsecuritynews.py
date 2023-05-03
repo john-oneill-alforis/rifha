@@ -112,6 +112,22 @@ def get_rss():
 
             mydb.commit()
 
+    except:
+        # print(exc_type, exc_obj, fname, exc_tb.tb_lineno, datetime.now())
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        query = insert(veris_error_capture).values(
+            execution_type=exc_type,
+            execution_object=exc_obj,
+            file_name=fname,
+            file_line=exc_tb.tb_lineno,
+            date=datetime.now(),
+        )
+
+        conn.execute(query)
+        conn.commit()
+
+    try:
         Session = sessionmaker(bind=engine)
         session = Session()
 
@@ -121,17 +137,17 @@ def get_rss():
             .filter_by(dateAdded=today, source="Information Security News")
             .count()
         )
-
         print(count)
 
         query = insert(web_scraper_log).values(
             source=source,
             article_count=count,
-            date=datetime.now(),
+            date=datetime.today().strftime("%Y-%m-%d"),
         )
 
         conn.execute(query)
         conn.commit()
+
     except:
         # print(exc_type, exc_obj, fname, exc_tb.tb_lineno, datetime.now())
         exc_type, exc_obj, exc_tb = sys.exc_info()
