@@ -136,3 +136,6 @@ class web_scraper_log(models.Model):
 
     def __unicode__(self):
         return self.source, self.date
+
+    def __str__(self):
+        return self.source, self.date
