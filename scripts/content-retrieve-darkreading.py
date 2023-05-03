@@ -132,7 +132,7 @@ def get_rss():
         print(count)
 
         query = insert(web_scraper_log).values(
-            source=os.path.basename(sys.argv[0])[17:-3],
+            source=source,
             article_count=count,
             date=datetime.now(),
         )
