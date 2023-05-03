@@ -129,6 +129,9 @@ class errorCapture(models.Model):
     def __unicode__(self):
         return self.execution_object
 
+    def __str__(self):
+        return self.execution_object + "-" + self.file_name + "-" + str(self.date)
+
 
 # Work Capture
 class web_scraper_log(models.Model):
