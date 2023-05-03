@@ -135,4 +135,4 @@ class web_scraper_log(models.Model):
     date = models.DateField(blank=True)
 
     def __unicode__(self):
-        return self.name
+        return self.source, self.date
