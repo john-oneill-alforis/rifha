@@ -113,6 +113,9 @@ def process_veris_information():
         polls_veris_action_malware_vector = db.Table(
             "polls_veris_action_malware_vector", metadata, autoload_with=engine
         )
+        polls_veris_action_malware_results = db.Table(
+            "polls_veris_action_malware_results", metadata, autoload_with=engine
+        )
 
         try:
             for attack_method in data["action"].keys():
@@ -148,9 +151,27 @@ def process_veris_information():
                         result = conn.execute(query)
                         conn.commit()
 
-                    """if "vector" in data["action"]["malware"]:
+                    if "vector" in data["action"]["malware"]:
                         for x in data["action"]["malware"]["vector"]:
-                            #print(x + " " + incident_uuid + " - vector")"""
+                            print(x + " " + incident_uuid + " - vector")
+                            query = insert(polls_veris_action_malware_vector).values(
+                                vector=x,
+                                vam_Id_id=vam_id,
+                            )
+
+                        result = conn.execute(query)
+                        conn.commit()
+
+                    if "result" in data["action"]["malware"]:
+                        for x in data["action"]["malware"]["result"]:
+                            print(x + " " + incident_uuid + " - variety")
+                            query = insert(polls_veris_action_malware_results).values(
+                                result=x,
+                                vam_Id_id=vam_id,
+                            )
+
+                        result = conn.execute(query)
+                        conn.commit()
 
                 else:
                     pass
@@ -159,6 +180,125 @@ def process_veris_information():
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, exc_obj, fname, exc_tb.tb_lineno, datetime.now())
+            query = insert(veris_error_capture).values(
+                execution_type=exc_type,
+                execution_object=exc_obj,
+                file_name=fname,
+                file_line=exc_tb.tb_lineno,
+                date=datetime.now(),
+            )
+
+            conn.execute(query)
+            conn.commit()
+
+        ###########################################################
+        # Code block to write the incident actor data
+        ###########################################################
+
+        veris_actor_details = db.Table(
+            "polls_veris_actor_details", metadata, autoload_with=engine
+        )
+        veris_action_actor_motive = db.Table(
+            "polls_veris_action_malware_notes", metadata, autoload_with=engine
+        )
+        veris_action_actor_variety = db.Table(
+            "polls_veris_action_malware_variety", metadata, autoload_with=engine
+        )
+        veris_action_actor_origin = db.Table(
+            "polls_veris_action_malware_vector", metadata, autoload_with=engine
+        )
+
+        try:
+            for actor_info in data["actor"].keys():
+                if actor_info == "internal":
+                    print("internal")
+                    actor_type = "internal"
+
+                    if "region" in data["actor"]["internal"]:
+                        region = data["actor"]["internal"]["region"]
+                    else:
+                        region = "None"
+
+                    if "industry" in data["actor"]["internal"]:
+                        industry = data["actor"]["internal"]["industry"]
+                    else:
+                        industry = "None"
+
+                    query = insert(veris_actor_details).values(
+                        incident_id=incident_uuid,
+                        actor_type=actor_type,
+                    )
+
+                    result = conn.execute(query)
+                    vat_id = result.inserted_primary_key[0]
+                    conn.commit()
+
+                elif actor_info == "external":
+                    print("external")
+                    if "region" in data["actor"]["external"]:
+                        region = data["actor"]["external"]["region"]
+                    else:
+                        region = "None"
+
+                    if "industry" in data["actor"]["external"]:
+                        industry = data["actor"]["external"]["industry"]
+                    else:
+                        industry = "None"
+
+                    if "notes" in data["actor"]["external"]:
+                        notes = data["actor"]["external"]["notes"]
+                    else:
+                        notes = "None"
+
+                    query = insert(veris_actor_details).values(
+                        actor_type=actor_type,
+                        region=region,
+                        industry=industry,
+                    )
+
+                    result = conn.execute(query)
+                    vat_id = result.inserted_primary_key[0]
+                    conn.commit()
+
+                else:
+                    actor_info == "partner"
+                    print("partner")
+                    if "region" in data["actor"]["partner"]:
+                        region = data["actor"]["partner"]["region"]
+                    else:
+                        region = "None"
+
+                    if "industry" in data["actor"]["partner"]:
+                        industry = data["actor"]["partner"]["industry"]
+                    else:
+                        industry = "None"
+
+                    if "notes" in data["actor"]["partner"]:
+                        notes = data["actor"]["partner"]["notes"]
+                    else:
+                        notes = "None"
+
+                    query = insert(veris_actor_details).values(
+                        actor_type=actor_type,
+                        region=region,
+                        industry=industry,
+                    )
+
+                    result = conn.execute(query)
+                    vat_id = result.inserted_primary_key[0]
+                    conn.commit()
+
+        except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(
+                incident_uuid,
+                exc_type,
+                exc_obj,
+                fname,
+                exc_tb.tb_lineno,
+                datetime.now(),
+            )
             query = insert(veris_error_capture).values(
                 execution_type=exc_type,
                 execution_object=exc_obj,

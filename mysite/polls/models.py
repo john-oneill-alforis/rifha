@@ -151,6 +151,71 @@ class veris_action_malware_notes(models.Model):
     notes = models.CharField(max_length=1000)
 
 
+class veris_action_malware_results(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vam_Id = models.ForeignKey(
+        veris_action_malware,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    result = models.CharField(max_length=200)
+
+
+######################################################################
+# Veris Incident Actor Information Tables
+######################################################################
+
+
+class veris_actor_details(models.Model):
+    vat_Id = models.BigAutoField(primary_key=True)
+    incident_id = models.CharField(max_length=45)
+    actor_type = models.CharField(max_length=45)
+    region = models.CharField(max_length=45)
+    industry = models.CharField(max_length=45)
+
+    def __unicode__(self):
+        return self.name
+
+
+class veris_action_actor_motive(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vat_Id = models.ForeignKey(
+        veris_actor_details,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    motive = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return self.name
+
+
+class veris_action_actor_variety(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vat_Id = models.ForeignKey(
+        veris_actor_details,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    variety = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return self.name
+
+
+class veris_action_actor_origin(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vat_Id = models.ForeignKey(
+        veris_actor_details,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    origin = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return self.name
+
+
 ######################################################################
 # Action Logging for Scripts
 ######################################################################
