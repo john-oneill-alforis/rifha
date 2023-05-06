@@ -112,6 +112,45 @@ class veris_action_details(models.Model):
         return self.name
 
 
+class veris_action_malware(models.Model):
+    vam_Id = models.BigAutoField(primary_key=True)
+    incident_id = models.CharField(max_length=45)
+    cve = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
+    notes = models.CharField(max_length=1000, null=True)
+
+
+class veris_action_malware_variety(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vam_Id = models.ForeignKey(
+        veris_action_malware,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    variety = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
+
+
+class veris_action_malware_vector(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vam_Id = models.ForeignKey(
+        veris_action_malware,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    vector = models.CharField(max_length=200)
+
+
+class veris_action_malware_notes(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vam_Id = models.ForeignKey(
+        veris_action_malware,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    notes = models.CharField(max_length=1000)
+
+
 ######################################################################
 # Action Logging for Scripts
 ######################################################################

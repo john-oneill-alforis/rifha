@@ -4,7 +4,7 @@ import sqlalchemy as db
 import os
 from dotenv import load_dotenv
 from sqlalchemy import insert
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 import sys
 from datetime import datetime
 
@@ -22,6 +22,8 @@ def process_veris_information():
     )
     conn = engine.connect()
     metadata = db.MetaData()
+
+    Session = sessionmaker(bind=engine)
 
     ############################################################
     # Load the Database Tables we will need for the insertion
@@ -44,11 +46,15 @@ def process_veris_information():
 
     # Grab the data from the validated reports
 
+    malware_couter = []
+
     for p in veris_validated_data.rglob("*.json"):
         # Load the data from the json file
         json_file = veris_validated_data / p.name
 
         data = json.loads(json_file.read_bytes())
+
+        incident_uuid = data["incident_id"].lower()
 
         ########################################################
         # Code block to write the initial incident data
@@ -62,7 +68,7 @@ def process_veris_information():
                 insert(veris)
                 .prefix_with("ignore")
                 .values(
-                    incident_id=data["incident_id"].lower(),
+                    incident_id=incident_uuid,
                     security_incident=data["security_incident"],
                     source_id=data.get(("source_id"), "None"),
                     summary=data["summary"],
@@ -91,48 +97,63 @@ def process_veris_information():
             conn.execute(query)
             conn.commit()
 
-        ########################################################
-        # Code block to write the incident 'action' data
-        ########################################################
+        ###########################################################
+        # Code block to write the incident action - 'malware' data
+        ###########################################################
 
-        veris_action = db.Table(
-            "polls_veris_incident_action_details", metadata, autoload_with=engine
+        polls_veris_action_malware = db.Table(
+            "polls_veris_action_malware", metadata, autoload_with=engine
         )
-        veris_action_meta = db.Table(
-            "polls_veris_incident_action_details", metadata, autoload_with=engine
+        polls_veris_action_malware_notes = db.Table(
+            "polls_veris_action_malware_notes", metadata, autoload_with=engine
+        )
+        polls_veris_action_malware_variety = db.Table(
+            "polls_veris_action_malware_variety", metadata, autoload_with=engine
+        )
+        polls_veris_action_malware_vector = db.Table(
+            "polls_veris_action_malware_vector", metadata, autoload_with=engine
         )
 
         try:
             for attack_method in data["action"].keys():
-                # print(x)
-                query = insert(veris_action).values(
-                    incident_id=data["incident_id"].lower(),
-                    action=attack_method,
-                )
+                if attack_method == "malware":
+                    malware_couter.append(incident_uuid)
 
-                result = conn.execute(query)
-                method_id = result.lastrowid
-                conn.commit()
+                    malware_name = data["action"]["malware"].get(
+                        "name", "No Malware Name"
+                    )
+                    cve = data["action"]["malware"].get("cve", "No CVE Data")
+                    notes = data["action"]["malware"].get("notes", "No Notes Data")
 
-                # Code block to write the attack methods decsriptions to a table
-                for k, v in data["action"][attack_method].items():
-                    if type(v) == list:
-                        for meta in v:
-                            # print(method_id, k, meta)
-                            query = insert(veris_action_meta).values(
-                                veris_test_action_ref=method_id,
-                                key=k,
-                                data=meta,
-                            )
-                    else:
-                        query = insert(veris_action_meta).values(
-                            veris_test_action_ref=method_id,
-                            key=k,
-                            data=v,
-                        )
+                    query = insert(polls_veris_action_malware).values(
+                        incident_id=incident_uuid,
+                        name=malware_name,
+                        cve=cve,
+                        notes=notes,
+                    )
 
                     result = conn.execute(query)
+                    vam_id = result.inserted_primary_key[0]
                     conn.commit()
+
+                    if "variety" in data["action"]["malware"]:
+                        for x in data["action"]["malware"]["variety"]:
+                            print(x + " " + incident_uuid + " - variety")
+                            query = insert(polls_veris_action_malware_variety).values(
+                                variety=x,
+                                name=malware_name,
+                                vam_Id_id=vam_id,
+                            )
+
+                        result = conn.execute(query)
+                        conn.commit()
+
+                    """if "vector" in data["action"]["malware"]:
+                        for x in data["action"]["malware"]["vector"]:
+                            #print(x + " " + incident_uuid + " - vector")"""
+
+                else:
+                    pass
 
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
