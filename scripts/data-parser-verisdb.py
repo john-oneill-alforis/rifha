@@ -210,9 +210,7 @@ def process_veris_information():
             polls_veris_action_hacking = db.Table(
                 "polls_veris_action_hacking", metadata, autoload_with=engine
             )
-            polls_veris_action_hacking_notes = db.Table(
-                "polls_veris_action_hacking_notes", metadata, autoload_with=engine
-            )
+
             polls_veris_action_hacking_variety = db.Table(
                 "polls_veris_action_hacking_variety", metadata, autoload_with=engine
             )
@@ -225,61 +223,54 @@ def process_veris_information():
 
             try:
                 for attack_method in data["action"].keys():
-                    if attack_method == "malware":
-                        malware_couter.append(incident_uuid)
+                    if attack_method == "hacking":
+                        cve = data["action"]["hacking"].get("cve", "No CVE Data")
+                        notes = data["action"]["hacking"].get("notes", "No Notes Data")
 
-                        malware_name = data["action"]["malware"].get(
-                            "name", "No Malware Name"
-                        )
-                        cve = data["action"]["malware"].get("cve", "No CVE Data")
-                        notes = data["action"]["malware"].get("notes", "No Notes Data")
-
-                        query = insert(polls_veris_action_malware).values(
+                        query = insert(polls_veris_action_hacking).values(
                             incident_id=incident_uuid,
-                            name=malware_name,
                             cve=cve,
                             notes=notes,
                         )
 
                         result = conn.execute(query)
-                        vam_id = result.inserted_primary_key[0]
+                        vah_id = result.inserted_primary_key[0]
                         conn.commit()
 
-                        if "variety" in data["action"]["malware"]:
-                            for x in data["action"]["malware"]["variety"]:
+                        if "variety" in data["action"]["hacking"]:
+                            for x in data["action"]["hacking"]["variety"]:
                                 # print(x + " " + incident_uuid + " - variety")
                                 query = insert(
-                                    polls_veris_action_malware_variety
+                                    polls_veris_action_hacking_variety
                                 ).values(
                                     variety=x,
-                                    name=malware_name,
-                                    vam_Id_id=vam_id,
+                                    vah_Id_id=vah_id,
                                 )
 
                             result = conn.execute(query)
                             conn.commit()
 
-                        if "vector" in data["action"]["malware"]:
-                            for x in data["action"]["malware"]["vector"]:
+                        if "vector" in data["action"]["hacking"]:
+                            for x in data["action"]["hacking"]["vector"]:
                                 # print(x + " " + incident_uuid + " - vector")
                                 query = insert(
-                                    polls_veris_action_malware_vector
+                                    polls_veris_action_hacking_vector
                                 ).values(
                                     vector=x,
-                                    vam_Id_id=vam_id,
+                                    vah_Id_id=vah_id,
                                 )
 
                             result = conn.execute(query)
                             conn.commit()
 
-                        if "result" in data["action"]["malware"]:
-                            for x in data["action"]["malware"]["result"]:
+                        if "result" in data["action"]["hacking"]:
+                            for x in data["action"]["hacking"]["result"]:
                                 # print(x + " " + incident_uuid + " - variety")
                                 query = insert(
-                                    polls_veris_action_malware_results
+                                    polls_veris_action_hacking_results
                                 ).values(
-                                    result=x,
-                                    vam_Id_id=vam_id,
+                                    results=x,
+                                    vah_Id_id=vah_id,
                                 )
 
                             result = conn.execute(query)
@@ -289,12 +280,110 @@ def process_veris_information():
                         pass
 
             except Exception as e:
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                print(exc_type, exc_obj, fname, exc_tb.tb_lineno, datetime.now())
+                query = insert(veris_error_capture).values(
+                    execution_type=exc_type,
+                    execution_object=exc_obj,
+                    file_name=fname,
+                    file_line=exc_tb.tb_lineno,
+                    date=datetime.now(),
+                )
 
-
+                conn.execute(query)
+                conn.commit()
 
             ###########################################################
             # Code block to write the incident action - 'social' data
             ###########################################################
+
+            polls_veris_action_hacking = db.Table(
+                "polls_veris_action_hacking", metadata, autoload_with=engine
+            )
+
+            polls_veris_action_hacking_variety = db.Table(
+                "polls_veris_action_hacking_variety", metadata, autoload_with=engine
+            )
+            polls_veris_action_hacking_vector = db.Table(
+                "polls_veris_action_hacking_vector", metadata, autoload_with=engine
+            )
+            polls_veris_action_hacking_results = db.Table(
+                "polls_veris_action_hacking_results", metadata, autoload_with=engine
+            )
+
+            try:
+                for attack_method in data["action"].keys():
+                    if attack_method == "hacking":
+                        cve = data["action"]["hacking"].get("cve", "No CVE Data")
+                        notes = data["action"]["hacking"].get("notes", "No Notes Data")
+
+                        query = insert(polls_veris_action_hacking).values(
+                            incident_id=incident_uuid,
+                            cve=cve,
+                            notes=notes,
+                        )
+
+                        result = conn.execute(query)
+                        vah_id = result.inserted_primary_key[0]
+                        conn.commit()
+
+                        if "variety" in data["action"]["hacking"]:
+                            for x in data["action"]["hacking"]["variety"]:
+                                # print(x + " " + incident_uuid + " - variety")
+                                query = insert(
+                                    polls_veris_action_hacking_variety
+                                ).values(
+                                    variety=x,
+                                    vah_Id_id=vah_id,
+                                )
+
+                            result = conn.execute(query)
+                            conn.commit()
+
+                        if "vector" in data["action"]["hacking"]:
+                            for x in data["action"]["hacking"]["vector"]:
+                                # print(x + " " + incident_uuid + " - vector")
+                                query = insert(
+                                    polls_veris_action_hacking_vector
+                                ).values(
+                                    vector=x,
+                                    vah_Id_id=vah_id,
+                                )
+
+                            result = conn.execute(query)
+                            conn.commit()
+
+                        if "result" in data["action"]["hacking"]:
+                            for x in data["action"]["hacking"]["result"]:
+                                # print(x + " " + incident_uuid + " - variety")
+                                query = insert(
+                                    polls_veris_action_hacking_results
+                                ).values(
+                                    results=x,
+                                    vah_Id_id=vah_id,
+                                )
+
+                            result = conn.execute(query)
+                            conn.commit()
+
+                    else:
+                        pass
+
+            except Exception as e:
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                print(exc_type, exc_obj, fname, exc_tb.tb_lineno, datetime.now())
+                query = insert(veris_error_capture).values(
+                    execution_type=exc_type,
+                    execution_object=exc_obj,
+                    file_name=fname,
+                    file_line=exc_tb.tb_lineno,
+                    date=datetime.now(),
+                )
+
+                conn.execute(query)
+                conn.commit()
 
             ###########################################################
             # Code block to write the incident action - 'misue' data

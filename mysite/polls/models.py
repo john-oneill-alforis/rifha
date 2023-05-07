@@ -167,7 +167,7 @@ class veris_action_hacking(models.Model):
 class veris_action_hacking_variety(models.Model):
     entry_Id = models.BigAutoField(primary_key=True)
     vah_Id = models.ForeignKey(
-        veris_action_malware,
+        veris_action_hacking,
         on_delete=models.CASCADE,
         default=1,
     )
@@ -177,7 +177,7 @@ class veris_action_hacking_variety(models.Model):
 class veris_action_hacking_vector(models.Model):
     entry_Id = models.BigAutoField(primary_key=True)
     vah_Id = models.ForeignKey(
-        veris_action_malware,
+        veris_action_hacking,
         on_delete=models.CASCADE,
         default=1,
     )
@@ -187,7 +187,49 @@ class veris_action_hacking_vector(models.Model):
 class veris_action_hacking_results(models.Model):
     entry_Id = models.BigAutoField(primary_key=True)
     vah_Id = models.ForeignKey(
-        veris_action_malware,
+        veris_action_hacking,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    results = models.CharField(max_length=1000)
+
+
+######################################################################
+# Veris Incident Action Information Tables - Social
+######################################################################
+
+
+class veris_action_social(models.Model):
+    vas_Id = models.BigAutoField(primary_key=True)
+    incident_id = models.CharField(max_length=45)
+    cve = models.CharField(max_length=200)
+    notes = models.CharField(max_length=1000, null=True)
+
+
+class veris_action_hacking_variety(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vas_Id = models.ForeignKey(
+        veris_action_social,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    variety = models.CharField(max_length=200)
+
+
+class veris_action_hacking_vector(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vas_Id = models.ForeignKey(
+        veris_action_social,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    vector = models.CharField(max_length=200)
+
+
+class veris_action_hacking_results(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vas_Id = models.ForeignKey(
+        veris_action_social,
         on_delete=models.CASCADE,
         default=1,
     )
