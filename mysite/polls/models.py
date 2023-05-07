@@ -90,20 +90,11 @@ class veris_incident_details(models.Model):
 
 
 ######################################################################
-# Veris Incident Action Information Tables
+# Veris Incident Action Information Tables - Malware
 ######################################################################
 
 
 class veris_incident_action_details(models.Model):
-    entry_Id = models.BigAutoField(primary_key=True)
-    incident_id = models.CharField(max_length=45)
-    action = models.CharField(max_length=45)
-
-    def __unicode__(self):
-        return self.name
-
-
-class veris_action_details(models.Model):
     entry_Id = models.BigAutoField(primary_key=True)
     incident_id = models.CharField(max_length=45)
     action = models.CharField(max_length=45)
@@ -159,6 +150,48 @@ class veris_action_malware_results(models.Model):
         default=1,
     )
     result = models.CharField(max_length=200)
+
+
+######################################################################
+# Veris Incident Action Information Tables - Hacking
+######################################################################
+
+
+class veris_action_hacking(models.Model):
+    vah_Id = models.BigAutoField(primary_key=True)
+    incident_id = models.CharField(max_length=45)
+    cve = models.CharField(max_length=200)
+    notes = models.CharField(max_length=1000, null=True)
+
+
+class veris_action_hacking_variety(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vah_Id = models.ForeignKey(
+        veris_action_malware,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    variety = models.CharField(max_length=200)
+
+
+class veris_action_hacking_vector(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vah_Id = models.ForeignKey(
+        veris_action_malware,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    vector = models.CharField(max_length=200)
+
+
+class veris_action_hacking_results(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vah_Id = models.ForeignKey(
+        veris_action_malware,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    results = models.CharField(max_length=1000)
 
 
 ######################################################################
