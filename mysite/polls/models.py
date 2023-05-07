@@ -202,11 +202,10 @@ class veris_action_hacking_results(models.Model):
 class veris_action_social(models.Model):
     vas_Id = models.BigAutoField(primary_key=True)
     incident_id = models.CharField(max_length=45)
-    cve = models.CharField(max_length=200)
     notes = models.CharField(max_length=1000, null=True)
 
 
-class veris_action_hacking_variety(models.Model):
+class veris_action_social_variety(models.Model):
     entry_Id = models.BigAutoField(primary_key=True)
     vas_Id = models.ForeignKey(
         veris_action_social,
@@ -216,7 +215,7 @@ class veris_action_hacking_variety(models.Model):
     variety = models.CharField(max_length=200)
 
 
-class veris_action_hacking_vector(models.Model):
+class veris_action_social_vector(models.Model):
     entry_Id = models.BigAutoField(primary_key=True)
     vas_Id = models.ForeignKey(
         veris_action_social,
@@ -226,7 +225,7 @@ class veris_action_hacking_vector(models.Model):
     vector = models.CharField(max_length=200)
 
 
-class veris_action_hacking_results(models.Model):
+class veris_action_social_results(models.Model):
     entry_Id = models.BigAutoField(primary_key=True)
     vas_Id = models.ForeignKey(
         veris_action_social,
@@ -236,12 +235,186 @@ class veris_action_hacking_results(models.Model):
     results = models.CharField(max_length=1000)
 
 
+class veris_action_social_target(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vas_Id = models.ForeignKey(
+        veris_action_social,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    target = models.CharField(max_length=1000)
+
+
+######################################################################
+# Veris Incident Action Information Tables - Misuse
+######################################################################
+
+
+class veris_action_misuse(models.Model):
+    vamis_Id = models.BigAutoField(primary_key=True)
+    incident_id = models.CharField(max_length=45)
+    notes = models.CharField(max_length=1000, null=True)
+
+
+class veris_action_misuse_variety(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vamis_Id = models.ForeignKey(
+        veris_action_misuse,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    variety = models.CharField(max_length=200)
+
+
+class veris_action_misuse_vector(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vamis_Id = models.ForeignKey(
+        veris_action_misuse,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    vector = models.CharField(max_length=200)
+
+
+class veris_action_misuse_results(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vamis_Id = models.ForeignKey(
+        veris_action_misuse,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    results = models.CharField(max_length=1000)
+
+
+class veris_action_misuse_target(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vamis_Id = models.ForeignKey(
+        veris_action_misuse,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    target = models.CharField(max_length=1000)
+
+
+######################################################################
+# Veris Incident Action Information Tables - Physical
+######################################################################
+
+
+class veris_action_physical(models.Model):
+    vap_Id = models.BigAutoField(primary_key=True)
+    incident_id = models.CharField(max_length=45)
+    notes = models.CharField(max_length=3000, null=True)
+
+
+class veris_action_physical_variety(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vap_Id = models.ForeignKey(
+        veris_action_physical,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    variety = models.CharField(max_length=200)
+
+
+class veris_action_physical_vector(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vap_Id = models.ForeignKey(
+        veris_action_physical,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    vector = models.CharField(max_length=200)
+
+
+class veris_action_physical_location(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vap_Id = models.ForeignKey(
+        veris_action_physical,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    location = models.CharField(max_length=1000)
+
+
+class veris_action_physical_result(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vap_Id = models.ForeignKey(
+        veris_action_physical,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    result = models.CharField(max_length=1000)
+
+
+######################################################################
+# Veris Incident Action Information Tables - Error
+######################################################################
+
+
+class veris_action_error(models.Model):
+    vae_Id = models.BigAutoField(primary_key=True)
+    incident_id = models.CharField(max_length=45)
+    notes = models.CharField(max_length=1000, null=True)
+
+
+class veris_action_error_variety(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vae_Id = models.ForeignKey(
+        veris_action_error,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    variety = models.CharField(max_length=200)
+
+
+class veris_action_error_vector(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vae_Id = models.ForeignKey(
+        veris_action_error,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    vector = models.CharField(max_length=200)
+
+
+class veris_action_error_result(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vae_Id = models.ForeignKey(
+        veris_action_error,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    result = models.CharField(max_length=200)
+
+
+######################################################################
+# Veris Incident Action Information Tables - Environmental
+######################################################################
+
+
+class veris_action_environmental(models.Model):
+    vaenv_Id = models.BigAutoField(primary_key=True)
+    incident_id = models.CharField(max_length=45)
+    notes = models.CharField(max_length=1000, null=True)
+
+
+class veris_action_environmental_variety(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vaenv_Id = models.ForeignKey(
+        veris_action_environmental,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    variety = models.CharField(max_length=200)
+
+
 ######################################################################
 # Veris Incident Actor Information Tables
 ######################################################################
 
 
-class veris_action_actor_details(models.Model):
+class veris_actor(models.Model):
     vat_Id = models.BigAutoField(primary_key=True)
     incident_id = models.CharField(max_length=45)
     actor_type = models.CharField(max_length=45)
@@ -250,10 +423,10 @@ class veris_action_actor_details(models.Model):
         return self.name
 
 
-class veris_action_actor_motive(models.Model):
+class veris_actor_motive(models.Model):
     entry_Id = models.BigAutoField(primary_key=True)
     vat_Id = models.ForeignKey(
-        veris_action_actor_details,
+        veris_actor,
         on_delete=models.CASCADE,
         default=1,
     )
@@ -263,10 +436,10 @@ class veris_action_actor_motive(models.Model):
         return self.name
 
 
-class veris_action_actor_variety(models.Model):
+class veris_actor_variety(models.Model):
     entry_Id = models.BigAutoField(primary_key=True)
     vat_Id = models.ForeignKey(
-        veris_action_actor_details,
+        veris_actor,
         on_delete=models.CASCADE,
         default=1,
     )
@@ -276,14 +449,106 @@ class veris_action_actor_variety(models.Model):
         return self.name
 
 
-class veris_action_actor_origin(models.Model):
+class veris_actor_origin(models.Model):
     entry_Id = models.BigAutoField(primary_key=True)
     vat_Id = models.ForeignKey(
-        veris_action_actor_details,
+        veris_actor,
         on_delete=models.CASCADE,
         default=1,
     )
     origin = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return self.name
+
+
+######################################################################
+# Veris Incident Asset Information Tables
+######################################################################
+
+
+class veris_asset(models.Model):
+    vass_Id = models.BigAutoField(primary_key=True)
+    incident_id = models.CharField(max_length=45)
+    notes = models.CharField(max_length=45)
+
+    def __unicode__(self):
+        return self.name
+
+
+class veris_asset_variety(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vass_Id = models.ForeignKey(
+        veris_asset,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    variety = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return self.name
+
+
+class veris_asset_ownership(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vass_Id = models.ForeignKey(
+        veris_asset,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    ownership = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return self.name
+
+
+class veris_asset_management(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vass_Id = models.ForeignKey(
+        veris_asset,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    management = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return self.name
+
+
+class veris_asset_hosting(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vass_Id = models.ForeignKey(
+        veris_asset,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    hosting = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return self.name
+
+
+class veris_asset_accessibility(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vass_Id = models.ForeignKey(
+        veris_asset,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    accessibility = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return self.name
+
+
+class veris_asset_cloud(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vass_Id = models.ForeignKey(
+        veris_asset,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    cloud = models.CharField(max_length=200)
 
     def __unicode__(self):
         return self.name
