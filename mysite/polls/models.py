@@ -83,7 +83,7 @@ class veris_incident_details(models.Model):
     created = models.DateField(auto_now=False)
 
     master_id = models.CharField(max_length=45)
-    modified = models.DateTimeField(auto_now=False, auto_now_add=False)
+    modified = models.DateField(auto_now=False, auto_now_add=False)
 
     def __unicode__(self):
         return self.name
@@ -166,12 +166,10 @@ class veris_action_malware_results(models.Model):
 ######################################################################
 
 
-class veris_actor_details(models.Model):
+class veris_action_actor_details(models.Model):
     vat_Id = models.BigAutoField(primary_key=True)
     incident_id = models.CharField(max_length=45)
     actor_type = models.CharField(max_length=45)
-    region = models.CharField(max_length=45)
-    industry = models.CharField(max_length=45)
 
     def __unicode__(self):
         return self.name
@@ -180,7 +178,7 @@ class veris_actor_details(models.Model):
 class veris_action_actor_motive(models.Model):
     entry_Id = models.BigAutoField(primary_key=True)
     vat_Id = models.ForeignKey(
-        veris_actor_details,
+        veris_action_actor_details,
         on_delete=models.CASCADE,
         default=1,
     )
@@ -193,7 +191,7 @@ class veris_action_actor_motive(models.Model):
 class veris_action_actor_variety(models.Model):
     entry_Id = models.BigAutoField(primary_key=True)
     vat_Id = models.ForeignKey(
-        veris_actor_details,
+        veris_action_actor_details,
         on_delete=models.CASCADE,
         default=1,
     )
@@ -206,7 +204,7 @@ class veris_action_actor_variety(models.Model):
 class veris_action_actor_origin(models.Model):
     entry_Id = models.BigAutoField(primary_key=True)
     vat_Id = models.ForeignKey(
-        veris_actor_details,
+        veris_action_actor_details,
         on_delete=models.CASCADE,
         default=1,
     )
