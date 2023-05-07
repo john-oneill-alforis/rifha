@@ -204,6 +204,115 @@ def process_veris_information():
                 conn.commit()
 
             ###########################################################
+            # Code block to write the incident action - 'hacking' data
+            ###########################################################
+
+            polls_veris_action_hacking = db.Table(
+                "polls_veris_action_hacking", metadata, autoload_with=engine
+            )
+            polls_veris_action_hacking_notes = db.Table(
+                "polls_veris_action_hacking_notes", metadata, autoload_with=engine
+            )
+            polls_veris_action_hacking_variety = db.Table(
+                "polls_veris_action_hacking_variety", metadata, autoload_with=engine
+            )
+            polls_veris_action_hacking_vector = db.Table(
+                "polls_veris_action_hacking_vector", metadata, autoload_with=engine
+            )
+            polls_veris_action_hacking_results = db.Table(
+                "polls_veris_action_hacking_results", metadata, autoload_with=engine
+            )
+
+            try:
+                for attack_method in data["action"].keys():
+                    if attack_method == "malware":
+                        malware_couter.append(incident_uuid)
+
+                        malware_name = data["action"]["malware"].get(
+                            "name", "No Malware Name"
+                        )
+                        cve = data["action"]["malware"].get("cve", "No CVE Data")
+                        notes = data["action"]["malware"].get("notes", "No Notes Data")
+
+                        query = insert(polls_veris_action_malware).values(
+                            incident_id=incident_uuid,
+                            name=malware_name,
+                            cve=cve,
+                            notes=notes,
+                        )
+
+                        result = conn.execute(query)
+                        vam_id = result.inserted_primary_key[0]
+                        conn.commit()
+
+                        if "variety" in data["action"]["malware"]:
+                            for x in data["action"]["malware"]["variety"]:
+                                # print(x + " " + incident_uuid + " - variety")
+                                query = insert(
+                                    polls_veris_action_malware_variety
+                                ).values(
+                                    variety=x,
+                                    name=malware_name,
+                                    vam_Id_id=vam_id,
+                                )
+
+                            result = conn.execute(query)
+                            conn.commit()
+
+                        if "vector" in data["action"]["malware"]:
+                            for x in data["action"]["malware"]["vector"]:
+                                # print(x + " " + incident_uuid + " - vector")
+                                query = insert(
+                                    polls_veris_action_malware_vector
+                                ).values(
+                                    vector=x,
+                                    vam_Id_id=vam_id,
+                                )
+
+                            result = conn.execute(query)
+                            conn.commit()
+
+                        if "result" in data["action"]["malware"]:
+                            for x in data["action"]["malware"]["result"]:
+                                # print(x + " " + incident_uuid + " - variety")
+                                query = insert(
+                                    polls_veris_action_malware_results
+                                ).values(
+                                    result=x,
+                                    vam_Id_id=vam_id,
+                                )
+
+                            result = conn.execute(query)
+                            conn.commit()
+
+                    else:
+                        pass
+
+            except Exception as e:
+
+
+
+            ###########################################################
+            # Code block to write the incident action - 'social' data
+            ###########################################################
+
+            ###########################################################
+            # Code block to write the incident action - 'misue' data
+            ###########################################################
+
+            ###########################################################
+            # Code block to write the incident action - 'Physical' data
+            ###########################################################
+
+            ###########################################################
+            # Code block to write the incident action - 'Error' data
+            ###########################################################
+
+            ################################################################
+            # Code block to write the incident action - 'Environmental' data
+            ################################################################
+
+            ###########################################################
             # Code block to write the incident actor data
             ###########################################################
 
