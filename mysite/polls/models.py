@@ -555,6 +555,56 @@ class veris_asset_cloud(models.Model):
 
 
 ######################################################################
+# Veris Incident Impact Information Tables
+######################################################################
+
+
+class veris_impact(models.Model):
+    vim_Id = models.BigAutoField(primary_key=True)
+    incident_id = models.CharField(max_length=45)
+    notes = models.CharField(max_length=1000)
+    iso_currency_code = models.CharField(max_length=5)
+    overall_amount = models.IntegerField()
+    overall_min_amount = models.IntegerField()
+    overall_max_amount = models.IntegerField()
+    overall_rating = models.CharField(max_length=45)
+    notes = models.CharField(max_length=1000)
+
+    def __unicode__(self):
+        return self.name
+
+
+class veris_impact_overall_rating(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vim_Id = models.ForeignKey(
+        veris_asset,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    overall_rating = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return self.name
+
+
+class veris_impact_loss(models.Model):
+    entry_Id = models.BigAutoField(primary_key=True)
+    vim_Id = models.ForeignKey(
+        veris_asset,
+        on_delete=models.CASCADE,
+        default=1,
+    )
+    rating = models.CharField(max_length=50)
+    variety = models.CharField(max_length=50)
+    overall_amount = models.IntegerField()
+    min_amount = models.IntegerField()
+    max_amount = models.IntegerField()
+
+    def __unicode__(self):
+        return self.name
+
+
+######################################################################
 # Action Logging for Scripts
 ######################################################################
 

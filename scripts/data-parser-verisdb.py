@@ -1020,10 +1020,124 @@ def process_veris_information():
                             result = conn.execute(query)
                             conn.commit()
 
+                    elif entry == "cloud":
+                        for x in data["asset"]["cloud"]:
+                            query = insert(veris_asset_cloud).values(
+                                cloud=x, vass_Id_id=vass_id
+                            )
+
+                            result = conn.execute(query)
+                            conn.commit()
+
+                        else:
+                            pass
+
+            except Exception as e:
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                print(
+                    incident_uuid,
+                    exc_type,
+                    exc_obj,
+                    fname,
+                    exc_tb.tb_lineno,
+                    datetime.now(),
+                )
+                query = insert(veris_error_capture).values(
+                    execution_type=exc_type,
+                    execution_object=exc_obj,
+                    file_name=fname,
+                    file_line=exc_tb.tb_lineno,
+                    date=datetime.now(),
+                )
+
+                conn.execute(query)
+                conn.commit()
+
+            ###########################################################
+            # Code block to write the incident impact data
+            ###########################################################
+
+            veris_impact = db.Table(
+                "polls_veris_impact", metadata, autoload_with=engine
+            )
+
+            veris_impact_cloud = db.Table(
+                "polls_veris_impact_cloud", metadata, autoload_with=engine
+            )
+            veris_impact_hosting = db.Table(
+                "polls_veris_impact_hosting", metadata, autoload_with=engine
+            )
+            veris_impact_management = db.Table(
+                "polls_veris_impact_management", metadata, autoload_with=engine
+            )
+            veris_impact_ownership = db.Table(
+                "polls_veris_impact_ownership", metadata, autoload_with=engine
+            )
+            veris_impact_variety = db.Table(
+                "polls_veris_impact_variety", metadata, autoload_with=engine
+            )
+
+            try:
+                query = insert(veris_impact).values(
+                    incident_id=incident_uuid,
+                    notes=data["impact"].get("notes", "None"),
+                    iso_currency_code=data["impact"].get("iso_currency_code", "None"),
+                    overall_amount=data["impact"].get("overall_amount", 0),
+                    overall_min_amount=data["impact"].get("overall_min_amount", 0),
+                    overall_max_amount=data["impact"].get("notes", 0),
+                )
+                result = conn.execute(query)
+                vim_Id = result.inserted_primary_key[0]
+                conn.commit()
+                # print(vass_id)
+
+                for entry in data["impact"].keys():
+                    if entry == "loss":
+                        for x in data["impact"]["loss"]:
+                            query = insert(veris_impact_variety).values(
+                                
+                                amount=x.get("amount", 0),
+                                min_amount=x.get("min_amount", 0),
+                                max_mount=x.get("max_amount", 0)
+                                rating=x.get("rating", "None"),
+                                variety=x.get("variety", "None"),
+                            )
+
+                            result = conn.execute(query)
+                            conn.commit()
+
+                    elif entry == "ownership":
+                        for x in data["impact"]["ownership"]:
+                            query = insert(veris_impact_ownership).values(
+                                ownership=x, vass_Id_id=vass_id
+                            )
+
+                            result = conn.execute(query)
+                            conn.commit()
+
+                    elif entry == "management":
+                        for x in data["impact"]["management"]:
+                            query = insert(veris_impact_management).values(
+                                management=x, vass_Id_id=vass_id
+                            )
+
+                            result = conn.execute(query)
+                            conn.commit()
+
                     elif entry == "hosting":
-                        for x in data["asset"]["hosting"]:
-                            query = insert(veris_asset_hosting).values(
+                        for x in data["impact"]["hosting"]:
+                            query = insert(veris_impact_hosting).values(
                                 hosting=x, vass_Id_id=vass_id
+                            )
+
+                            result = conn.execute(query)
+                            conn.commit()
+
+                    elif entry == "cloud":
+                        for x in data["impact"]["cloud"]:
+                            query = insert(veris_impact_cloud).values(
+                                cloud=x, vass_Id_id=vass_id
                             )
 
                             result = conn.execute(query)
