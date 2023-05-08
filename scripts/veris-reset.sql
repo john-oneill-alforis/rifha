@@ -3,14 +3,12 @@ SET foreign_key_checks = 0;
 
 	truncate polls_veris_incident_details;
 	truncate polls_veris_action_malware;
-	truncate polls_veris_action_malware_notes;
+	
+    truncate polls_veris_action_malware_notes;
 	truncate polls_veris_action_malware_results;
 	truncate polls_veris_action_malware_variety;
 	truncate polls_veris_action_malware_vector;
-	truncate polls_veris_action_actor_details;
-	truncate polls_veris_action_actor_motive;
-	truncate polls_veris_action_actor_origin;
-	truncate polls_veris_action_actor_variety;
+	
     
     
     truncate polls_veris_action_hacking;
@@ -45,6 +43,24 @@ SET foreign_key_checks = 0;
     
     truncate polls_veris_action_environmental;
     truncate polls_veris_action_environmental_variety;
+    
+    
+    truncate polls_veris_actor;
+    truncate polls_veris_actor_motive;
+    truncate polls_veris_actor_origin;
+    truncate polls_veris_actor_variety;  
+    
+    
+    
+    truncate polls_veris_asset;
+    truncate polls_veris_asset_accessibility;
+    truncate polls_veris_asset_cloud;
+    truncate polls_veris_asset_hosting; 
+	truncate polls_veris_asset_management;
+	truncate polls_veris_asset_ownership;
+    truncate polls_veris_asset_variety;
+    
+    
 
 									
                                     

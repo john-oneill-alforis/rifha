@@ -763,17 +763,16 @@ def process_veris_information():
             # Code block to write the incident actor data
             ###########################################################
 
-            veris_action_actor_details = db.Table(
-                "polls_veris_action_actor_details", metadata, autoload_with=engine
+            veris_actor = db.Table("polls_veris_actor", metadata, autoload_with=engine)
+
+            veris_actor_motive = db.Table(
+                "polls_veris_actor_motive", metadata, autoload_with=engine
             )
-            veris_action_actor_motive = db.Table(
-                "polls_veris_action_actor_motive", metadata, autoload_with=engine
+            veris_actor_variety = db.Table(
+                "polls_veris_actor_variety", metadata, autoload_with=engine
             )
-            veris_action_actor_variety = db.Table(
-                "polls_veris_action_actor_variety", metadata, autoload_with=engine
-            )
-            veris_action_actor_origin = db.Table(
-                "polls_veris_action_actor_origin", metadata, autoload_with=engine
+            veris_actor_origin = db.Table(
+                "polls_veris_actor_origin", metadata, autoload_with=engine
             )
 
             try:
@@ -782,7 +781,7 @@ def process_veris_information():
                         # print("internal")
                         actor_type = "internal"
 
-                        query = insert(veris_action_actor_details).values(
+                        query = insert(veris_actor).values(
                             incident_id=incident_uuid,
                             actor_type=actor_info,
                         )
@@ -795,7 +794,7 @@ def process_veris_information():
                         if "variety" in data["actor"]["internal"]:
                             for x in data["actor"]["internal"]["variety"]:
                                 # print(x + " " + incident_uuid + " - variety")
-                                query = insert(veris_action_actor_variety).values(
+                                query = insert(veris_actor_variety).values(
                                     variety=x,
                                     vat_Id_id=vat_id,
                                 )
@@ -806,8 +805,19 @@ def process_veris_information():
                         if "country" in data["actor"]["internal"]:
                             for x in data["actor"]["internal"]["country"]:
                                 # print(x + " " + incident_uuid + " - variety")
-                                query = insert(veris_action_actor_origin).values(
+                                query = insert(veris_actor_origin).values(
                                     origin=x,
+                                    vat_Id_id=vat_id,
+                                )
+
+                            result = conn.execute(query)
+                            conn.commit()
+
+                        if "motive" in data["actor"]["internal"]:
+                            for x in data["actor"]["internal"]["motive"]:
+                                # print(x + " " + incident_uuid + " - variety")
+                                query = insert(veris_actor_motive).values(
+                                    motive=x,
                                     vat_Id_id=vat_id,
                                 )
 
@@ -821,7 +831,7 @@ def process_veris_information():
                         industry = data["actor"]["external"].get("industry", "None")
                         notes = data["actor"]["external"].get("notes", "None")
 
-                        query = insert(veris_action_actor_details).values(
+                        query = insert(veris_actor).values(
                             incident_id=incident_uuid,
                             actor_type=actor_info,
                         )
@@ -834,7 +844,7 @@ def process_veris_information():
                         if "variety" in data["actor"]["external"]:
                             for x in data["actor"]["external"]["variety"]:
                                 # print(x + " " + incident_uuid + " - variety")
-                                query = insert(veris_action_actor_variety).values(
+                                query = insert(veris_actor_variety).values(
                                     variety=x,
                                     vat_Id_id=vat_id,
                                 )
@@ -845,8 +855,19 @@ def process_veris_information():
                         if "country" in data["actor"]["external"]:
                             for x in data["actor"]["external"]["country"]:
                                 # print(x + " " + incident_uuid + " - variety")
-                                query = insert(veris_action_actor_origin).values(
+                                query = insert(veris_actor_origin).values(
                                     origin=x,
+                                    vat_Id_id=vat_id,
+                                )
+
+                            result = conn.execute(query)
+                            conn.commit()
+
+                        if "motive" in data["actor"]["external"]:
+                            for x in data["actor"]["external"]["motive"]:
+                                # print(x + " " + incident_uuid + " - variety")
+                                query = insert(veris_actor_motive).values(
+                                    motive=x,
                                     vat_Id_id=vat_id,
                                 )
 
@@ -856,7 +877,7 @@ def process_veris_information():
                     elif actor_info == "partner":
                         # print("partner")
 
-                        query = insert(veris_action_actor_details).values(
+                        query = insert(veris_actor).values(
                             incident_id=incident_uuid,
                             actor_type=actor_info,
                         )
@@ -869,7 +890,7 @@ def process_veris_information():
                         if "variety" in data["actor"]["partner"]:
                             for x in data["actor"]["partner"]["variety"]:
                                 # print(x + " " + incident_uuid + " - variety")
-                                query = insert(veris_action_actor_variety).values(
+                                query = insert(veris_actor_variety).values(
                                     variety=x,
                                     vat_Id_id=vat_id,
                                 )
@@ -880,7 +901,7 @@ def process_veris_information():
                         if "country" in data["actor"]["partner"]:
                             for x in data["actor"]["partner"]["country"]:
                                 # print(x + " " + incident_uuid + " - variety")
-                                query = insert(veris_action_actor_origin).values(
+                                query = insert(veris_actor_origin).values(
                                     origin=x,
                                     vat_Id_id=vat_id,
                                 )
@@ -888,17 +909,19 @@ def process_veris_information():
                             result = conn.execute(query)
                             conn.commit()
 
-                        else:
-                            actor_info == "partner"
-
-                            query = insert(veris_action_actor_details).values(
-                                incident_id=incident_uuid,
-                                actor_type="None",
-                            )
+                        if "motive" in data["actor"]["partner"]:
+                            for x in data["actor"]["partner"]["motive"]:
+                                # print(x + " " + incident_uuid + " - variety")
+                                query = insert(veris_actor_motive).values(
+                                    motive=x,
+                                    vat_Id_id=vat_id,
+                                )
 
                             result = conn.execute(query)
                             conn.commit()
-                            print(vat_id)
+
+                        else:
+                            pass
 
             except Exception as e:
                 exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -925,6 +948,111 @@ def process_veris_information():
             ###########################################################
             # Code block to write the incident asset data
             ###########################################################
+
+            veris_asset = db.Table("polls_veris_asset", metadata, autoload_with=engine)
+
+            veris_asset_accessibility = db.Table(
+                "polls_veris_asset_accessibility", metadata, autoload_with=engine
+            )
+            veris_asset_cloud = db.Table(
+                "polls_veris_asset_cloud", metadata, autoload_with=engine
+            )
+            veris_asset_hosting = db.Table(
+                "polls_veris_asset_hosting", metadata, autoload_with=engine
+            )
+            veris_asset_management = db.Table(
+                "polls_veris_asset_management", metadata, autoload_with=engine
+            )
+            veris_asset_ownership = db.Table(
+                "polls_veris_asset_ownership", metadata, autoload_with=engine
+            )
+            veris_asset_variety = db.Table(
+                "polls_veris_asset_variety", metadata, autoload_with=engine
+            )
+
+            try:
+                notes = data["asset"].get("notes", "None")
+
+                query = insert(veris_asset).values(
+                    incident_id=incident_uuid,
+                    notes=notes,
+                )
+
+                result = conn.execute(query)
+                vass_id = result.inserted_primary_key[0]
+                conn.commit()
+                # print(vass_id)
+
+                for entry in data["asset"].keys():
+                    if entry == "assets":
+                        for x in data["asset"]["assets"]:
+                            query = insert(veris_asset_variety).values(
+                                variety=x["variety"], vass_Id_id=vass_id
+                            )
+
+                            result = conn.execute(query)
+                            conn.commit()
+
+                    elif entry == "ownership":
+                        for x in data["asset"]["ownership"]:
+                            query = insert(veris_asset_ownership).values(
+                                ownership=x, vass_Id_id=vass_id
+                            )
+
+                            result = conn.execute(query)
+                            conn.commit()
+
+                    elif entry == "management":
+                        for x in data["asset"]["management"]:
+                            query = insert(veris_asset_management).values(
+                                management=x, vass_Id_id=vass_id
+                            )
+
+                            result = conn.execute(query)
+                            conn.commit()
+
+                    elif entry == "hosting":
+                        for x in data["asset"]["hosting"]:
+                            query = insert(veris_asset_hosting).values(
+                                hosting=x, vass_Id_id=vass_id
+                            )
+
+                            result = conn.execute(query)
+                            conn.commit()
+
+                    elif entry == "hosting":
+                        for x in data["asset"]["hosting"]:
+                            query = insert(veris_asset_hosting).values(
+                                hosting=x, vass_Id_id=vass_id
+                            )
+
+                            result = conn.execute(query)
+                            conn.commit()
+
+                        else:
+                            pass
+
+            except Exception as e:
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                print(
+                    incident_uuid,
+                    exc_type,
+                    exc_obj,
+                    fname,
+                    exc_tb.tb_lineno,
+                    datetime.now(),
+                )
+                query = insert(veris_error_capture).values(
+                    execution_type=exc_type,
+                    execution_object=exc_obj,
+                    file_name=fname,
+                    file_line=exc_tb.tb_lineno,
+                    date=datetime.now(),
+                )
+
+                conn.execute(query)
+                conn.commit()
 
 
 process_veris_information()

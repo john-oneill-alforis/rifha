@@ -470,7 +470,7 @@ class veris_actor_origin(models.Model):
 class veris_asset(models.Model):
     vass_Id = models.BigAutoField(primary_key=True)
     incident_id = models.CharField(max_length=45)
-    notes = models.CharField(max_length=45)
+    notes = models.CharField(max_length=1000)
 
     def __unicode__(self):
         return self.name
