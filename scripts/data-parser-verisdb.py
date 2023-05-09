@@ -101,8 +101,6 @@ def process_veris_information():
             conn.commit()
 
         def parse_incident_details(incident_identifier, json_data):
-            # print(incident_identifier, json_data)
-
             ###########################################################
             # Code block to write the incident action - 'malware' data
             ###########################################################
@@ -210,7 +208,6 @@ def process_veris_information():
             polls_veris_action_hacking = db.Table(
                 "polls_veris_action_hacking", metadata, autoload_with=engine
             )
-
             polls_veris_action_hacking_variety = db.Table(
                 "polls_veris_action_hacking_variety", metadata, autoload_with=engine
             )
@@ -301,7 +298,6 @@ def process_veris_information():
             polls_veris_action_social = db.Table(
                 "polls_veris_action_social", metadata, autoload_with=engine
             )
-
             polls_veris_action_social_variety = db.Table(
                 "polls_veris_action_social_variety", metadata, autoload_with=engine
             )
@@ -402,7 +398,6 @@ def process_veris_information():
             polls_veris_action_misuse = db.Table(
                 "polls_veris_action_misuse", metadata, autoload_with=engine
             )
-
             polls_veris_action_misuse_variety = db.Table(
                 "polls_veris_action_misuse_variety", metadata, autoload_with=engine
             )
@@ -503,7 +498,6 @@ def process_veris_information():
             polls_veris_action_physical = db.Table(
                 "polls_veris_action_physical", metadata, autoload_with=engine
             )
-
             polls_veris_action_physical_variety = db.Table(
                 "polls_veris_action_physical_variety", metadata, autoload_with=engine
             )
@@ -608,14 +602,12 @@ def process_veris_information():
             polls_veris_action_error = db.Table(
                 "polls_veris_action_error", metadata, autoload_with=engine
             )
-
             polls_veris_action_error_variety = db.Table(
                 "polls_veris_action_error_variety", metadata, autoload_with=engine
             )
             polls_veris_action_error_vector = db.Table(
                 "polls_veris_action_error_vector", metadata, autoload_with=engine
             )
-
             polls_veris_action_error_result = db.Table(
                 "polls_veris_action_error_result", metadata, autoload_with=engine
             )
@@ -705,7 +697,6 @@ def process_veris_information():
             polls_veris_action_environmental = db.Table(
                 "polls_veris_action_environmental", metadata, autoload_with=engine
             )
-
             polls_veris_action_environmental_variety = db.Table(
                 "polls_veris_action_environmental_variety",
                 metadata,
@@ -764,7 +755,6 @@ def process_veris_information():
             ###########################################################
 
             veris_actor = db.Table("polls_veris_actor", metadata, autoload_with=engine)
-
             veris_actor_motive = db.Table(
                 "polls_veris_actor_motive", metadata, autoload_with=engine
             )
@@ -1061,64 +1051,71 @@ def process_veris_information():
             veris_impact = db.Table(
                 "polls_veris_impact", metadata, autoload_with=engine
             )
-
             veris_impact_loss = db.Table(
                 "polls_veris_impact_loss", metadata, autoload_with=engine
             )
 
-            try:
-                query = insert(veris_impact).values(
-                    incident_id=incident_uuid,
-                    notes=data["impact"].get("notes", "None"),
-                    iso_currency_code=data["impact"].get("iso_currency_code", "None"),
-                    overall_amount=data["impact"].get("overall_amount", 0),
-                    overall_min_amount=data["impact"].get("overall_min_amount", 0),
-                    overall_max_amount=data["impact"].get("overall_max_amount", 0),
-                    overall_rating=data["impact"].get("overall_rating", 0),
-                )
-                result = conn.execute(query)
-                vim_Id = result.inserted_primary_key[0]
-                conn.commit()
-                # print(vass_id)
+            for entry in data.keys():
+                if entry == "impact":
+                    try:
+                        query = insert(veris_impact).values(
+                            incident_id=incident_uuid,
+                            notes=data["impact"].get("notes", "None"),
+                            iso_currency_code=data["impact"].get(
+                                "iso_currency_code", "None"
+                            ),
+                            overall_amount=data["impact"].get("overall_amount", 0),
+                            overall_min_amount=data["impact"].get(
+                                "overall_min_amount", 0
+                            ),
+                            overall_max_amount=data["impact"].get(
+                                "overall_max_amount", 0
+                            ),
+                            overall_rating=data["impact"].get("overall_rating", 0),
+                        )
+                        result = conn.execute(query)
+                        vim_Id = result.inserted_primary_key[0]
+                        conn.commit()
+                        # print(vass_id)
 
-                for entry in data["impact"].keys():
-                    if entry == "loss":
-                        for x in data["impact"]["loss"]:
-                            query = insert(veris_impact_variety).values(
-                                amount=x.get("amount", 0),
-                                min_amount=x.get("min_amount", 0),
-                                max_mount=x.get("max_amount", 0),
-                                rating=x.get("rating", "None"),
-                                variety=x.get("variety", "None"),
-                            )
+                        for entry in data["impact"].keys():
+                            if entry == "loss":
+                                for dict in data["impact"]["loss"]:
+                                    for key, value in dict.items():
+                                        query = insert(veris_impact_loss).values(
+                                            vim_Id_id=vim_Id,
+                                            # overall_amount=entry.get("overall_amount", 0),
+                                            entry=key,
+                                            value=str(value),
+                                        )
 
-                            result = conn.execute(query)
-                            conn.commit()
+                                        result = conn.execute(query)
+                                        conn.commit()
 
-                    else:
-                        pass
+                            else:
+                                pass
 
-            except Exception as e:
-                exc_type, exc_obj, exc_tb = sys.exc_info()
-                fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-                print(
-                    incident_uuid,
-                    exc_type,
-                    exc_obj,
-                    fname,
-                    exc_tb.tb_lineno,
-                    datetime.now(),
-                )
-                query = insert(veris_error_capture).values(
-                    execution_type=exc_type,
-                    execution_object=exc_obj,
-                    file_name=fname,
-                    file_line=exc_tb.tb_lineno,
-                    date=datetime.now(),
-                )
+                    except Exception as e:
+                        exc_type, exc_obj, exc_tb = sys.exc_info()
+                        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                        print(
+                            incident_uuid,
+                            exc_type,
+                            exc_obj,
+                            fname,
+                            exc_tb.tb_lineno,
+                            datetime.now(),
+                        )
+                        query = insert(veris_error_capture).values(
+                            execution_type=exc_type,
+                            execution_object=exc_obj,
+                            file_name=fname,
+                            file_line=exc_tb.tb_lineno,
+                            date=datetime.now(),
+                        )
 
-                conn.execute(query)
-                conn.commit()
+                        conn.execute(query)
+                        conn.commit()
 
 
 process_veris_information()

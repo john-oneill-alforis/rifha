@@ -60,9 +60,8 @@ SET foreign_key_checks = 0;
 	truncate polls_veris_asset_ownership;
     truncate polls_veris_asset_variety;
     
+    truncate polls_veris_impact;
+    truncate polls_veris_impact_loss;
     
 
-									
-                                    
-                                    
 SET foreign_key_checks = 1; 

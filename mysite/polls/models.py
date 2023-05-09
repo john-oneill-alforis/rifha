@@ -567,21 +567,8 @@ class veris_impact(models.Model):
     overall_amount = models.IntegerField()
     overall_min_amount = models.IntegerField()
     overall_max_amount = models.IntegerField()
-    overall_rating = models.CharField(max_length=45)
+    overall_rating = models.CharField(max_length=45, default="None")
     notes = models.CharField(max_length=1000)
-
-    def __unicode__(self):
-        return self.name
-
-
-class veris_impact_overall_rating(models.Model):
-    entry_Id = models.BigAutoField(primary_key=True)
-    vim_Id = models.ForeignKey(
-        veris_asset,
-        on_delete=models.CASCADE,
-        default=1,
-    )
-    overall_rating = models.CharField(max_length=200)
 
     def __unicode__(self):
         return self.name
@@ -594,11 +581,8 @@ class veris_impact_loss(models.Model):
         on_delete=models.CASCADE,
         default=1,
     )
-    rating = models.CharField(max_length=50)
-    variety = models.CharField(max_length=50)
-    overall_amount = models.IntegerField()
-    min_amount = models.IntegerField()
-    max_amount = models.IntegerField()
+    entry = models.CharField(max_length=50)
+    value = models.CharField(max_length=50)
 
     def __unicode__(self):
         return self.name
