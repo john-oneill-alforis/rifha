@@ -2,8 +2,9 @@ from django.shortcuts import render
 from django.db.models import Count, DateTimeField
 from datetime import date, timezone, datetime, timedelta
 from django.template import loader
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
+from collections import defaultdict
+from math import log
 from .models import trainingCorpus
 from .models import textLabels
 from .models import veris_incident_details
@@ -210,11 +211,32 @@ def debugDashboard(request):
 ###########################################################################################
 
 
-def debugDashboard(request):
+def verisaro(request):
     template = loader.get_template("polls/verisaro.html")
 
-    arodata = (
-        veris_asset_variety.objects.values("variety")
-        .annotate(count_entries=Count("variety"))
-        .order_by("count_entries")
-    )
+    # Retrieve all instances of the veris_asset_variety model
+    data = veris_asset_variety.objects.all()
+
+    # Create a dictionary to store the frequency of each value
+    frequency_dict = defaultdict(int)
+    for instance in data:
+        frequency_dict[instance.variety] += 1
+
+    # Calculate the total number of instances
+    total_count = len(data)
+
+    # Calculate the probability and annualized rate of occurrence of each value
+    results_dict = {}
+    time_period = 1  # Time period in years
+    for key, value in frequency_dict.items():
+        probability = value / total_count
+        annualized_rate = -log(1 - probability) / time_period
+        results_dict[key] = {
+            "probability": round(probability, 2),
+            "annualized_rate": round(annualized_rate, 2),
+        }
+
+    # Pass the dictionary to the template context
+    context = {"results_dict": results_dict}
+
+    return HttpResponse(template.render(context, request))
