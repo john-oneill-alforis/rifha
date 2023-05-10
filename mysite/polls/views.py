@@ -10,6 +10,7 @@ from .models import veris_incident_details
 from .models import veris_incident_action_details
 from .models import errorCapture
 from .models import web_scraper_log
+from .models import veris_asset_variety
 from django.db.models import Count
 from django.db.models.functions import TruncDate, TruncYear, Cast, TruncDay
 
@@ -202,3 +203,18 @@ def debugDashboard(request):
     }
 
     return HttpResponse(template.render(context, request))
+
+
+###########################################################################################
+# Veris Annualized Rate of Occurence Dashboard
+###########################################################################################
+
+
+def debugDashboard(request):
+    template = loader.get_template("polls/verisaro.html")
+
+    arodata = (
+        veris_asset_variety.objects.values("variety")
+        .annotate(count_entries=Count("variety"))
+        .order_by("count_entries")
+    )
