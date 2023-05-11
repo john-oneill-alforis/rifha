@@ -215,8 +215,9 @@ def verisaro(request):
     template = loader.get_template("polls/verisaro.html")
 
     # Retrieve all instances of the veris_asset_variety model
-    data = veris_asset_variety.objects.all()
-
+    data = veris_asset_variety.objects.exclude(variety__icontains="unknown").exclude(
+        variety__icontains="other"
+    )
     # Create a dictionary to store the frequency of each value
     frequency_dict = defaultdict(int)
     for instance in data:
@@ -232,8 +233,8 @@ def verisaro(request):
         probability = value / total_count
         annualized_rate = -log(1 - probability) / time_period
         results_dict[key] = {
-            "probability": round(probability, 2),
-            "annualized_rate": round(annualized_rate, 2),
+            "probability": round(probability, 4),
+            "annualized_rate": round(annualized_rate, 4),
         }
 
     # Pass the dictionary to the template context
