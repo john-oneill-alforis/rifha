@@ -266,7 +266,7 @@ def register(request):
             password = form.cleaned_data.get("password1")
             user = authenticate(username=username, password=password)
             login(request, user)
-            return redirect("polls/")
+            return redirect("dashBoard")
     else:
         form = UserCreationForm()
     return render(request, "templates/polls/register.html", {"form": form})
