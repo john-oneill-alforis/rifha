@@ -139,3 +139,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # STATICFILES_DIRS = [BASE_DIR / "static"]
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ]
+}
+
+# Login & Logout URLs
+LOGIN_URL = "/login/"
+LOGIN_REDIRECT_URL = "/home/"
+LOGOUT_REDIRECT_URL = "/login/"

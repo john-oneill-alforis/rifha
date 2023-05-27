@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 from django.db.models import Count, DateTimeField
 from datetime import date, timezone, datetime, timedelta
 from django.template import loader
@@ -14,11 +14,15 @@ from .models import web_scraper_log
 from .models import veris_asset_variety
 from django.db.models import Count
 from django.db.models.functions import TruncDate, TruncYear, Cast, TruncDay
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
 
 
 # data_dict = {}
 
 
+@login_required
 ###########################################################################################
 # Pull all of the unclassfied data to be shown on the classification screen
 ###########################################################################################
@@ -82,6 +86,7 @@ def tcUpdate(request, msg):
 ###########################################################################################
 
 
+@login_required
 def dashboard(request):
     template = loader.get_template("polls/index.html")
 
@@ -241,3 +246,27 @@ def verisaro(request):
     context = {"results_dict": results_dict}
 
     return HttpResponse(template.render(context, request))
+
+
+####
+# login stuff
+####
+
+
+def home(request):
+    return render(request, "templates/polls/success.html", {})
+
+
+def register(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get("username")
+            password = form.cleaned_data.get("password1")
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return redirect("home")
+    else:
+        form = UserCreationForm()
+    return render(request, "templates/polls/register.html", {"form": form})
