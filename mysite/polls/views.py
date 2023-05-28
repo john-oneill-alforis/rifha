@@ -130,6 +130,7 @@ def dashboard(request):
 ###########################################################################################
 
 
+@login_required
 def verisDashboard(request):
     template = loader.get_template("polls/verisDash.html")
     totalCount = veris_incident_details.objects.all().count()
@@ -159,6 +160,7 @@ def verisDashboard(request):
 ###########################################################################################
 
 
+@login_required
 def debugDashboard(request):
     template = loader.get_template("polls/debugDash.html")
 
@@ -216,6 +218,7 @@ def debugDashboard(request):
 ###########################################################################################
 
 
+@login_required
 def verisaro(request):
     template = loader.get_template("polls/verisaro.html")
 
@@ -248,9 +251,9 @@ def verisaro(request):
     return HttpResponse(template.render(context, request))
 
 
-####
+###########################################################################################
 # login stuff
-####
+###########################################################################################
 
 
 def home(request):
