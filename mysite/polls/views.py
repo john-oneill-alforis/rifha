@@ -252,7 +252,7 @@ def verisaro(request):
 
 
 ###########################################################################################
-# login stuff
+# Login controls
 ###########################################################################################
 
 
@@ -273,3 +273,21 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, "templates/polls/register.html", {"form": form})
+
+
+###########################################################################################
+# Display Errors
+###########################################################################################
+
+
+@login_required
+def errorLog(request):
+    template = loader.get_template("polls/errors.html")
+
+    erroLog = errorCapture.objects.all
+
+    context = {
+        "errorCounts": erroLog,
+    }
+
+    return HttpResponse(template.render(context, request))
