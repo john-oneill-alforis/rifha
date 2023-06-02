@@ -27,6 +27,7 @@
                 <li class="nav-item p-1"><a href="/verisaro" class="nav-link active" aria-current="page">Veris ARO</a></li>
                 <li class="nav-item p-1"><a href="{% url 'logout' %}" class="nav-link active" aria-current="page">Logout</a></li>
                 <li class="nav-item p-1"><a href="/errors" class="nav-link active" aria-current="page">Error Log</a></li>  
+                <li class="nav-item p-1"><a href="/interviewResponses" class="nav-link active" aria-current="page">Interview Response</a></li>  
 
             </ul>
         </header>
@@ -34,8 +35,8 @@
 
         <div class="row g-2">
             <div class="col-3 d-flex justify-content-left p-2">Execution Type</div>
-            <div class="col-2 d-flex justify-content-left p-2">Execution Object</div>
-            <div class="col-2 d-flex justify-content-left p-2">File Name</div>
+            <div class="col-3 d-flex justify-content-left p-2">Execution Object</div>
+            <div class="col-3 d-flex justify-content-left p-2">File Name</div>
             <div class="col-2 d-flex justify-content-left p-2">Line Number</div>
             <div class="col-2 d-flex justify-content-left p-2">Date</div>
         </div>
@@ -43,11 +44,11 @@
         {%for x in errorCounts%}
 
         <div class="row g-2">
-            <div class="col-2 d-flex justify-content-left p-2">{{x.execution_type}}</div>
-            <div class="col-2 d-flex justify-content-left p-2">{{x.execution_object}}</div>
-            <div class="col-2 d-flex justify-content-left p-2">{{x.file_name}}</div>
-            <div class="col-2 d-flex justify-content-left p-2">{{x.file_line}}</div>
-            <div class="col-2 d-flex justify-content-left p-2">{{x.date}}</div>
+            <div class="col-3 d-flex justify-content-left p-2"><h6>{{x.execution_type}}</h6></div>
+            <div class="col-3 d-flex justify-content-left p-2"><h6>{{x.execution_object}}</h6></div>
+            <div class="col-3 d-flex justify-content-left p-2"><h6>{{x.file_name}}</h6></div>
+            <div class="col-2 d-flex justify-content-left p-2"><h6>{{x.file_line}}</h6></div>
+            <div class="col-2 d-flex justify-content-left p-2"><h6>{{x.date|date:'d-m'}}</h6></div>
         </div>
 
         {% endfor %}

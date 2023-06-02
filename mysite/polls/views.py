@@ -17,6 +17,7 @@ from django.db.models.functions import TruncDate, TruncYear, Cast, TruncDay
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from .forms import interviewForm
 
 
 # data_dict = {}
@@ -291,3 +292,28 @@ def errorLog(request):
     }
 
     return HttpResponse(template.render(context, request))
+
+
+###########################################################################################
+# Adding Interview Data to the Database
+###########################################################################################
+
+
+@login_required
+def get_inteviewResponses(request):
+    # if this is a POST request we need to process the form data
+    if request.method == "POST":
+        # create a form instance and populate it with data from the request:
+        form = interviewForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            return HttpResponseRedirect("/thanks/")
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = interviewForm()
+
+    return render(request, "responses.html", {"form": form})
