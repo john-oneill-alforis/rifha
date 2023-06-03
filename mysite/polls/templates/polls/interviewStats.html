@@ -31,7 +31,16 @@
         </header>
 
 
-        {{errorCounts}}
+            {% for x in entries %}
+
+            <div class="row g-2">
+                <div class="col-4 d-flex justify-content-left p-2">{{x.interviewee_Id}}</div>
+               
+            </div>
+
+            {% endfor %}
+    
+ 
     </div>
 
 </body>

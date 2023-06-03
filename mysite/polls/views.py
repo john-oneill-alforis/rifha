@@ -339,8 +339,14 @@ def get_interviewResponses(request):
 def get_interviewStats(request):
     template = loader.get_template("polls/interviewStats.html")
 
+    responseData = (
+        interviewQuestions.objects.all()
+        .values("interviewee_Id")
+        .order_by("date_created")
+    )
+
     context = {
-        "errorCounts": "Hello World",
+        "entries": responseData,
     }
 
     return HttpResponse(template.render(context, request))
