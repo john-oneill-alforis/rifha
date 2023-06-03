@@ -50,7 +50,7 @@
             <div class="col-3 d-flex justify-content-left p-2"><a href={{x.link}}>{{ x.source }}</a></div>
             <div class="col-2 d-flex justify-content-left p-2">{{ x.publishedDate|date:'Y-m-d'}}</div>
             <div class="col-2 d-flex justify-content-left p-2">{{ x.dateAdded|date:'Y-m-d' }}</div>
-            <div class="col-2 d-flex justify-content-left p-2"><a href=content/{{x.linkHash}}>{{ x.linkHash }}</a></div>
+            <div class="col-2 d-flex justify-content-left p-2"><a href=/content/{{x.linkHash}}>{{ x.linkHash }}</a></div>
         </div>
 
         {% endfor %}

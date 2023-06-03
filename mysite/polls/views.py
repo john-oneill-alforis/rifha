@@ -12,6 +12,7 @@ from .models import veris_incident_action_details
 from .models import errorCapture
 from .models import web_scraper_log
 from .models import veris_asset_variety
+from .models import interviewQuestions
 from django.db.models import Count
 from django.db.models.functions import TruncDate, TruncYear, Cast, TruncDay
 from django.contrib.auth import login, authenticate
@@ -23,10 +24,10 @@ from .forms import interviewForm
 # data_dict = {}
 
 
-@login_required
 ###########################################################################################
 # Pull all of the unclassfied data to be shown on the classification screen
 ###########################################################################################
+@login_required
 def contentList(request):
     corpusData = (
         trainingCorpus.objects.all().filter(textLabel_id=1).order_by("dateAdded")
@@ -41,6 +42,7 @@ def contentList(request):
 ###########################################################################################
 # Pull the article so it can be classified
 ###########################################################################################
+@login_required
 def contentReview(request, msg):
     articleData = (
         trainingCorpus.objects.all()
@@ -68,6 +70,7 @@ def contentReview(request, msg):
 ###########################################################################################
 
 
+@login_required
 def tcUpdate(request, msg):
     articleContent = request.POST["text"]
     textLabel = request.POST["textlabelValues"]
@@ -307,10 +310,23 @@ def get_interviewResponses(request):
         form = interviewForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            return HttpResponseRedirect("interviewStats/")
+            en = interviewQuestions(
+                interviewee_Id=request.POST.get("subject_uuid"),
+                question_1=request.POST.get("question_1"),
+                question_2=request.POST.get("question_2"),
+                question_3=request.POST.get("question_3"),
+                question_4=request.POST.get("question_4"),
+                question_5=request.POST.get("question_5"),
+                question_6=request.POST.get("question_6"),
+                question_7=request.POST.get("question_7"),
+                question_8=request.POST.get("question_8"),
+                question_9=request.POST.get("question_9"),
+                question_10=request.POST.get("question_10"),
+            )
+
+            en.save()
+
+            return HttpResponseRedirect("/interviewStats/")
 
     # if a GET (or any other method) we'll create a blank form
     else:

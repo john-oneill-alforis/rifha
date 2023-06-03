@@ -630,7 +630,7 @@ class web_scraper_log(models.Model):
 
 # Error Captures
 class interviewQuestions(models.Model):
-    interviewee_Id = models.UUIDField(blank=False, auto_created=False)
+    interviewee_Id = models.CharField(blank=False, max_length=100)
     question_1 = models.TextField(blank=False)
     question_2 = models.TextField(blank=False)
     question_3 = models.TextField(blank=False)
