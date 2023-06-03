@@ -341,7 +341,7 @@ def get_interviewStats(request):
 
     responseData = (
         interviewQuestions.objects.all()
-        .values("interviewee_Id")
+        .values("interviewee_Id", "date_created")
         .order_by("date_created")
     )
 
