@@ -300,7 +300,7 @@ def errorLog(request):
 
 
 @login_required
-def get_inteviewResponses(request):
+def get_interviewResponses(request):
     # if this is a POST request we need to process the form data
     if request.method == "POST":
         # create a form instance and populate it with data from the request:
@@ -310,10 +310,21 @@ def get_inteviewResponses(request):
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
-            return HttpResponseRedirect("/thanks/")
+            return HttpResponseRedirect("interviewStats/")
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = interviewForm()
 
-    return render(request, "responses.html", {"form": form})
+    return render(request, "polls/responses.html", {"form": form})
+
+
+@login_required
+def get_interviewStats(request):
+    template = loader.get_template("polls/interviewStats.html")
+
+    context = {
+        "errorCounts": "Hello World",
+    }
+
+    return HttpResponse(template.render(context, request))

@@ -621,3 +621,27 @@ class web_scraper_log(models.Model):
 
     def __str__(self):
         return self.source + "-" + str(self.date)
+
+
+######################################################################
+# Capturing Interview Responses
+######################################################################
+
+
+# Error Captures
+class interviewQuestions(models.Model):
+    interviewee_Id = models.UUIDField(blank=False, auto_created=False)
+    question_1 = models.TextField(blank=False)
+    question_2 = models.TextField(blank=False)
+    question_3 = models.TextField(blank=False)
+    question_4 = models.TextField(blank=False)
+    question_5 = models.TextField(blank=False)
+    question_6 = models.TextField(blank=False)
+    question_7 = models.TextField(blank=False)
+    question_8 = models.TextField(blank=False)
+    question_9 = models.TextField(blank=False)
+    question_10 = models.TextField(blank=False)
+    date_created = models.DateField(blank=False, auto_now=True)
+
+    def __unicode__(self):
+        return self.name

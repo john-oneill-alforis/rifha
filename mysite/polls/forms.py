@@ -2,7 +2,7 @@ from django import forms
 
 
 class interviewForm(forms.Form):
-    subject_uuid = (forms.CharField(label="Subject UUID", max_length=36),)
+    subject_uuid = forms.CharField(label="Subject UUID", max_length=36)
     question_1 = forms.CharField(widget=forms.Textarea)
     question_2 = forms.CharField(widget=forms.Textarea)
     question_3 = forms.CharField(widget=forms.Textarea)

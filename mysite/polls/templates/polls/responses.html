@@ -34,7 +34,7 @@
         <div class="row g-2 w-100">
             <div class="col justify-content-center p-2">
 
-               <h3>Errors Logged</h3>
+               <h3>Questionaire Response</h3>
               
             </div>
 
@@ -44,9 +44,23 @@
 
         <div class="row">
        
-            <form action="/interviewResponses/" method="post">
+            <form action="interviewResponses/" method="post">
+                <div class="form-group">
                 {% csrf_token %}
-                {{ form }}
+               
+                {% for field in form %}
+                    
+                        {{ field.errors }}
+                       
+                        <div class="mb-3">
+                            {{ field.label_tag }}
+                            {{ field }}
+                        </div>
+
+                        
+                    
+                {% endfor %}
+                <div>
                 <input type="submit" value="Submit">
             </form>
 
