@@ -4,6 +4,7 @@ from datetime import date, timezone, datetime, timedelta
 from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from collections import defaultdict
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from math import log
 from .models import trainingCorpus
 from .models import textLabels
@@ -339,14 +340,39 @@ def get_interviewResponses(request):
 def get_interviewStats(request):
     template = loader.get_template("polls/interviewStats.html")
 
+    question1_sentiment = (
+        interviewQuestions.objects.all().values("question_1").order_by("id")
+    )
+
+    question2_sentiment = (
+        interviewQuestions.objects.all().values("question_2").order_by("id")
+    )
+
+    q1_sentiment = []
+    for x in question1_sentiment:
+        analyzer = SentimentIntensityAnalyzer()
+        sentiment_scores = analyzer.polarity_scores(x["question_1"])
+
+        q1_sentiment.append(sentiment_scores)
+
+    q2_sentiment = []
+    for x in question2_sentiment:
+        analyzer = SentimentIntensityAnalyzer()
+        sentiment_scores = analyzer.polarity_scores(x["question_2"])
+
+        q2_sentiment.append(sentiment_scores)
+
     responseData = (
         interviewQuestions.objects.all()
         .values("interviewee_Id", "date_created")
-        .order_by("date_created")
+        .order_by("id")
     )
 
     context = {
         "entries": responseData,
+        "q1_sentiment": q1_sentiment,
+        "q2_sentiment": q2_sentiment,
+        "questions": question1_sentiment,
     }
 
     return HttpResponse(template.render(context, request))
