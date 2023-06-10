@@ -62,7 +62,12 @@ def classify():
             if confidence >= 0.7:
                 # Print the results or perform any other desired actions
                 print(
-                    "Entry {entryId}: Predicted label {prediction} with confidence {confidence}"
+                    "Entry "
+                    + str(entryId)
+                    + ": Predicted label "
+                    + str(prediction)
+                    + " with confidence "
+                    + str(confidence)
                 )
 
                 # time.sleep(1)  # Seconds
