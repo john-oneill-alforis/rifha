@@ -31,7 +31,11 @@ def classify():
 
     # query = """SELECT text,textLabel_id, label FROM polls_trainingCorpus inner join polls_textlabels ON polls_textlabels.entryId = polls_trainingcorpus.textLabel_id"""
 
-    query = """SELECT * FROM polls_trainingcorpus JOIN polls_textlabels ON polls_trainingcorpus.textLabel_id = polls_textlabels.entryId WHERE polls_trainingcorpus.textLabel_id IN (SELECT textLabel_id FROM polls_trainingcorpus GROUP BY textLabel_id HAVING COUNT(*) > 100)  AND textLabel_id <> 1;"""
+    # query = """SELECT * FROM polls_trainingcorpus JOIN polls_textlabels ON polls_trainingcorpus.textLabel_id = polls_textlabels.entryId WHERE polls_trainingcorpus.textLabel_id IN (SELECT textLabel_id FROM polls_trainingcorpus GROUP BY textLabel_id HAVING COUNT(*) > 300)  AND textLabel_id <> 1;"""
+
+    # query = """SELECT * FROM polls_trainingcorpus JOIN polls_textlabels ON polls_trainingcorpus.textLabel_id = polls_textlabels.entryId WHERE polls_trainingcorpus.textLabel_id <> 1;"""
+
+    query = """ SELECT text, label FROM polls_trainingcorpus JOIN polls_textlabels ON polls_trainingcorpus.textLabel_id = polls_textlabels.entryId WHERE polls_trainingcorpus.textLabel_id IN (2,8,11);"""
 
     df = pd.read_sql(query, mydb)
 

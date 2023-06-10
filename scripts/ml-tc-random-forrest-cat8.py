@@ -26,7 +26,8 @@ def classify():
 
     # Fetch data from the database
     cur.execute(
-        """ SELECT text, label FROM polls_trainingcorpus JOIN polls_textlabels ON polls_trainingcorpus.textLabel_id = polls_textlabels.entryId WHERE polls_trainingcorpus.textLabel_id IN (SELECT textLabel_id FROM polls_trainingcorpus GROUP BY textLabel_id HAVING COUNT(*) > 50)  AND textLabel_id <> 1;"""
+        # """ SELECT text, label FROM polls_trainingcorpus JOIN polls_textlabels ON polls_trainingcorpus.textLabel_id = polls_textlabels.entryId WHERE polls_trainingcorpus.textLabel_id IN (SELECT textLabel_id FROM polls_trainingcorpus GROUP BY textLabel_id HAVING COUNT(*) > 240)  AND textLabel_id <> 1;"""
+        """ SELECT text, label FROM polls_trainingcorpus JOIN polls_textlabels ON polls_trainingcorpus.textLabel_id = polls_textlabels.entryId WHERE polls_trainingcorpus.textLabel_id = 8;"""
     )
     rows = cur.fetchall()
 
@@ -56,7 +57,7 @@ def classify():
 
     print(report)
 
-    joblib.dump(rf_model, "random_forest_model.pkl")
+    joblib.dump(rf_model, "random_forest_model_cat8.pkl")
 
     # Close the database connection
     cur.close()

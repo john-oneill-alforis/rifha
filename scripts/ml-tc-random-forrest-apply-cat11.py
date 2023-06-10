@@ -24,30 +24,8 @@ def classify():
     # Cursor to execute SQL queries
     cur = mydb.cursor()
 
-    # Fetch data from the database
-    cur.execute(
-        "SELECT text, textlabel_id FROM polls_trainingcorpus where polls_trainingcorpus.textLabel_id IN (SELECT textLabel_id FROM polls_trainingcorpus GROUP BY textLabel_id HAVING COUNT(*) > 100) and textlabel_id <> 1"
-    )
-    rows = cur.fetchall()
-
-    # Separate text and labels
-    X = [row[0] for row in rows]
-    y = [str(row[1]) for row in rows]  # Convert labels to strings
-
-    # Vectorize the text data using TF-IDF
-    vectorizer = TfidfVectorizer()
-    X_vectorized = vectorizer.fit_transform(X)
-
-    # Train the Random Forest model
-    rf_model = RandomForestClassifier()
-    rf_model.fit(X_vectorized, y)
-
-    # Save the trained model
-    joblib.dump(rf_model, "random_forest_model.pkl")
-    joblib.dump(vectorizer, "vectorizer.pkl")
-
     # Load the trained model and vectorizer
-    rf_model = joblib.load("random_forest_model.pkl")
+    rf_model = joblib.load("random_forest_model_cat11.pkl")
     vectorizer = joblib.load("vectorizer.pkl")
 
     # Fetch new and unclassified text from the database
