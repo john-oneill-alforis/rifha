@@ -1,10 +1,6 @@
 import mysql.connector
 import os
 from dotenv import load_dotenv
-import numpy as np
-import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 import joblib
@@ -26,8 +22,8 @@ def classify():
     cur = mydb.cursor()
 
     # Load the trained random forest model
-    model = joblib.load("random_forest_model_cat2.pkl")
-    vectorizer = joblib.load("vectorizer_cat2.pkl")
+    model = joblib.load("random_forest_model.pkl")
+    vectorizer = joblib.load("vectorizer.pkl")
 
     # Retrieve the unclassified text entries from the database
     cur.execute("SELECT entryId, text FROM polls_trainingcorpus WHERE textLabel_id = 1")
@@ -66,10 +62,10 @@ def classify():
             if confidence >= 0.7:
                 # Print the results or perform any other desired actions
                 print(
-                    f"Entry {entryId}: Predicted label {prediction} with confidence {confidence}"
+                    "Entry {entryId}: Predicted label {prediction} with confidence {confidence}"
                 )
 
-                time.sleep(1)  # Seconds
+                # time.sleep(1)  # Seconds
 
 
 classify()

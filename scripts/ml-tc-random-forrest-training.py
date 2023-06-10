@@ -56,8 +56,8 @@ def classify():
 
     print(report)
 
-    joblib.dump(rf_model, "random_forest_model_cat2.pkl")
-    joblib.dump(vectorizer, "vectorizer_cat2.pkl")
+    joblib.dump(rf_model, "random_forest_model.pkl")
+    joblib.dump(vectorizer, "vectorizer.pkl")
 
     # Close the database connection
     cur.close()
