@@ -645,3 +645,35 @@ class interviewQuestions(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class interviewee(models.Model):
+    interviewee_id = models.IntegerField(primary_key=True)
+    interviewee_reference = models.UUIDField(blank=False)
+    interviewee_role = models.CharField(blank=False, max_length=250)
+    interviewee_fte = models.IntegerField(blank=False)
+    interviewee_org_type = models.CharField(blank=False, max_length=250)
+
+    def __unicode__(self):
+        return self.name
+
+
+class researchQuestion(models.Model):
+    question_id = models.IntegerField(primary_key=True)
+    question_text = models.TextField()
+
+    def __unicode__(self):
+        return self.name
+
+
+class intervieweeResponse(models.Model):
+    answer_id = models.IntegerField(primary_key=True)
+    interviewee_id = models.ForeignKey(interviewee, on_delete=models.CASCADE)
+    question_id = models.ForeignKey(researchQuestion, on_delete=models.CASCADE)
+    answer_text = models.TextField()
+    positivity_score = models.FloatField()
+    neutrality_score = models.FloatField()
+    negativity_score = models.FloatField()
+
+    def __unicode__(self):
+        return self.name

@@ -25,7 +25,7 @@
                 <li class="nav-item p-1"><a href="/verisaro" class="nav-link active" aria-current="page">Veris ARO</a></li> 
                 <li class="nav-item p-1"><a href="{% url 'logout' %}" class="nav-link active" aria-current="page">Logout</a></li> 
                 <li class="nav-item p-1"><a href="/errors" class="nav-link active" aria-current="page">Error Log</a></li>  
-                <li class="nav-item p-1"><a href="/interviewResponses" class="nav-link active" aria-current="page">Interview Response</a></li>  
+                <li class="nav-item p-1"><a href="/createInterviewee" class="nav-link active" aria-current="page">Interview Response</a></li>  
                 </li>
             </ul>
         </header>
@@ -43,11 +43,11 @@
 
         <div class="row">
        
-            <form action="/interviewResponses/" method="post">
+            <form action="/createInterviewee/" method="post">
                 <div class="form-group">
                 {% csrf_token %}
                
-                {% for field in form %}
+                {% for field in intervieweeForm %}
                     
                         {{ field.errors }}
                        
@@ -63,7 +63,7 @@
                 <input type="submit" value="Submit">
             </form>
 
-
+          
         </div> 
 
        
