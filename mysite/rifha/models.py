@@ -14,11 +14,8 @@ class staff(models.Model):
     lastName = models.CharField(max_length=100)
     email = models.EmailField(max_length=254)
     contactNumber = models.CharField(max_length=100)
-    jobTitle = models.ForeignKey(
-        "staffRole",
-        on_delete=models.CASCADE,
-        default="040f8643-2c82-46b3-9cd4-6e095b74b9f9",
-    )
+    jobTitle = models.CharField(max_length=100)
+    active = models.IntegerField(default=1)
 
     def __unicode__(self):
         return self.name
@@ -53,7 +50,7 @@ class assetsTypes(models.Model):
         primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
     )
     assetTypeName = models.CharField(max_length=100)
-    assetDTypeDescription = models.CharField(max_length=254)
+    assetTypeDescription = models.CharField(max_length=254)
 
     def __unicode__(self):
         return self.name
