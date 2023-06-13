@@ -5,6 +5,7 @@ from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from collections import defaultdict
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from math import log
 from .models import trainingCorpus
 from .models import textLabels
@@ -15,6 +16,8 @@ from .models import web_scraper_log
 from .models import veris_asset_variety
 from .models import interviewQuestions
 from .models import interviewee
+from .models import researchQuestion
+from .models import intervieweeResponse
 from django.db.models import Count
 from django.db.models.functions import TruncDate, TruncYear, Cast, TruncDay
 from django.contrib.auth import login, authenticate
@@ -22,7 +25,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from .forms import createInterviewee
 from .forms import createResearchQuestion
-
+from .forms import createResearchResponse
 
 # data_dict = {}
 
@@ -374,6 +377,80 @@ def get_createInterviewee(request):
 
     return render(
         request,
-        "polls/responses.html",
+        "polls/createInterviewee.html",
+        context=context,
+    )
+
+
+@login_required
+def get_interviewQuestion(request):
+    # if this is a POST request we need to process the form data
+    if request.method == "POST":
+        form = createResearchQuestion(request.POST)
+        if form.is_valid():
+            en = researchQuestion(
+                question_text=form.cleaned_data["question_text"],
+            )
+
+            en.save()
+
+            return HttpResponseRedirect("/interviewStats/")
+
+        # if a GET (or any other method) we'll create a blank form
+    else:
+        questionForm = createResearchQuestion()
+        context = {"questionForm": questionForm}
+
+    return render(
+        request,
+        "polls/createInterviewQuestion.html",
+        context=context,
+    )
+
+
+@login_required
+def get_interviewResponses(request):
+    context = {}
+    # if this is a POST request we need to process the form data
+    if request.method == "POST":
+        form = createResearchResponse(request.POST)
+        if form.is_valid():
+            interviewee_id = form.cleaned_data["interviewee"]
+            # Initialize the Vader sentiment analyzer
+            analyzer = SentimentIntensityAnalyzer()
+
+            for key, value in form.cleaned_data.items():
+                if key.startswith("question_"):
+                    # Extract the number and text from the field name
+                    question_number = key.split("_")[1]
+                    question_text = value
+
+                    # Perform sentiment analysis on the question text
+                    sentiment_scores = analyzer.polarity_scores(question_text)
+                    positivity_score = sentiment_scores["pos"]
+                    neutrality_score = sentiment_scores["neu"]
+                    negativity_score = sentiment_scores["neg"]
+                    compound_score = sentiment_scores["compound"]
+
+                    # Save the number and text to the database
+                    en = intervieweeResponse(
+                        answer_text=question_text,
+                        positivity_score=positivity_score,
+                        neutrality_score=neutrality_score,
+                        negativity_score=negativity_score,
+                        interviewee_id_id=interviewee_id,
+                        question_id_id=question_number,
+                    )
+
+                    en.save()
+
+            return HttpResponseRedirect("/interviewStats/")
+    else:
+        responseForm = createResearchResponse()
+        context = {"responseForm": responseForm}
+
+    return render(
+        request,
+        "polls/createInterviewResponse.html",
         context=context,
     )

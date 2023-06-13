@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Error Data</title>
+
+    
+
+</head>
+
+<body>
+        <div class="container">
+        <div class="col-3 d-flex justify-content-left p-2">
+            <h3>Error Data</h3>
+        </div>
+        <header class="d-flex flex-wrap justify-content-left py-3 mb-4 border-bottom">
+            <ul class="nav nav-pills">
+                <li class="nav-item p-1"><a href="/" class="nav-link active" aria-current="page">Home</a></li>
+                <li class="nav-item p-1"><a href="/trainingcorpus" class="nav-link active" aria-current="page">Training Corpus</a></li> 
+                <li class="nav-item p-1"><a href="/verisData" class="nav-link active" aria-current="page">Veris Data</a></li>
+                <li class="nav-item p-1"><a href="/debugData" class="nav-link active" aria-current="page">Debug Data</a></li> 
+                <li class="nav-item p-1"><a href="/verisaro" class="nav-link active" aria-current="page">Veris ARO</a></li> 
+                <li class="nav-item p-1"><a href="{% url 'logout' %}" class="nav-link active" aria-current="page">Logout</a></li> 
+                <li class="nav-item p-1"><a href="/errors" class="nav-link active" aria-current="page">Error Log</a></li>  
+                <li class="nav-item p-1"><a href="/createInterviewee" class="nav-link active" aria-current="page">Create Interviewee</a></li>  
+                <li class="nav-item p-1"><a href="/createInterviewQuestion" class="nav-link active" aria-current="page">Create InterView Question</a></li>  
+                <li class="nav-item p-1"><a href="/createInterviewResponses" class="nav-link active" aria-current="page">Record Interview Responses</a></li>  
+                </li>
+            </ul>
+        </header>
+
+        <div class="row g-2 w-100">
+            <div class="col justify-content-center p-2">
+
+               <h3>Questionaire Response</h3>
+              
+            </div>
+
+        </div>
+
+        <!---->
+
+        <div class="row">
+       
+            <form action="/createInterviewResponses/" method="post">
+                <div class="form-group">
+                {% load crispy_forms_tags %}
+                {% csrf_token %}
+
+                <div class="row g-2">
+                    <div class="col d-flex justify-content-center p-2 ">
+                        {{responseForm.interviewee|as_crispy_field }}
+                    </div>
+                   
+                </div>
+
+                <div class="row g-2">
+                    
+                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_1|as_crispy_field }}
+                    </div>
+
+                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_2|as_crispy_field }}
+                    </div>
+
+                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_3|as_crispy_field }}
+                    </div>
+
+                </div>
+
+                <div class="row g-2">
+                    
+                    
+                   
+                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_4|as_crispy_field }}
+                    </div>
+
+                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_5|as_crispy_field }}
+                    </div>
+
+                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_6|as_crispy_field }}
+                    </div>
+
+                </div>
+
+                <div class="row g-2">
+                    
+                  
+
+                </div>
+
+                <div class="row g-2">
+                    
+                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_7|as_crispy_field }}
+                    </div>
+
+                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_8|as_crispy_field }}
+                    </div>
+
+                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_9|as_crispy_field }}
+                    </div>
+
+                </div>
+
+                <div class="row g-2">
+                    
+                    
+
+                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_10|as_crispy_field }}
+                    </div>
+
+                </div>
+               
+                
+
+
+
+               
+                <input type="submit" value="Submit">
+            </form>
+
+          
+        </div> 
+
+        <div
+
+       
+
+</body>
+
+</html>
+
+
+
+

@@ -11,7 +11,7 @@
 
 <body>
 
-    <div class="container">
+    <div class="container-fluid">
         <header class="d-flex flex-wrap justify-content-left py-3 mb-4 border-bottom">
             <ul class="nav nav-pills">
                 <li class="nav-item p-1"><a href="/" class="nav-link active" aria-current="page">Home</a></li>
@@ -21,9 +21,38 @@
                 <li class="nav-item p-1"><a href="/verisaro" class="nav-link active" aria-current="page">Veris ARO</a></li>
                 <li class="nav-item p-1"><a href="{% url 'logout' %}" class="nav-link active" aria-current="page">Logout</a></li> 
                 <li class="nav-item p-1"><a href="/errors" class="nav-link active" aria-current="page">Error Log</a></li>  
-                <li class="nav-item p-1"><a href="/createInterviewee" class="nav-link active" aria-current="page">Interview Response</a></li>  
+                <li class="nav-item p-1"><a href="/createInterviewee" class="nav-link active" aria-current="page">Create Interviewee</a></li>  
+                <li class="nav-item p-1"><a href="/createInterviewQuestion" class="nav-link active" aria-current="page">Create InterView Question</a></li>  
+                <li class="nav-item p-1"><a href="/createInterviewResponses" class="nav-link active" aria-current="page">Record Interview Responses</a></li>  
             </ul>
         </header>
+
+
+        <div class="dropdown show">
+            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Dropdown link
+            </a>
+          
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+              <a class="dropdown-item" href="/createInterviewee">Action</a>
+              <a class="dropdown-item" href="/createInterviewQuestion">Another action</a>
+              <a class="dropdown-item" href="/createInterviewResponses">Something else here</a>
+            </div>
+          </div>
+
+
+
+
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Interview Data
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="/createInterviewee">Create Interviewee</a>
+              <a class="dropdown-item" href="/createInterviewQuestion">create Interview Questions</a>
+              <a class="dropdown-item" href="/createInterviewResponses">Add Interview Responses</a>
+            </div>
+          </div>
 
 
         {% for x in articleContent %}

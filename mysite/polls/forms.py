@@ -1,4 +1,5 @@
 from django import forms
+from .models import interviewee
 
 
 class interviewForm(forms.Form):
@@ -29,6 +30,25 @@ class createInterviewee(forms.Form):
 
 
 class createResearchQuestion(forms.Form):
-    interviewee_reference = forms.CharField(
-        label="Interview Questions", widget=forms.Textarea
+    question_text = forms.CharField(label="Question Text", widget=forms.Textarea)
+
+
+class createResearchResponse(forms.Form):
+    interviewee = forms.ChoiceField(
+        choices=[
+            (obj.interviewee_id, obj.interviewee_reference)
+            for obj in interviewee.objects.all()
+        ],
+        label="Select Interviewee",
     )
+
+    question_1 = forms.CharField(widget=forms.Textarea)
+    question_2 = forms.CharField(widget=forms.Textarea)
+    question_3 = forms.CharField(widget=forms.Textarea)
+    question_4 = forms.CharField(widget=forms.Textarea)
+    question_5 = forms.CharField(widget=forms.Textarea)
+    question_6 = forms.CharField(widget=forms.Textarea)
+    question_7 = forms.CharField(widget=forms.Textarea)
+    question_8 = forms.CharField(widget=forms.Textarea)
+    question_9 = forms.CharField(widget=forms.Textarea)
+    question_10 = forms.CharField(widget=forms.Textarea)

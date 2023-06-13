@@ -16,4 +16,14 @@ urlpatterns = [
     path("errors/", views.errorLog, name="errors"),
     path("interviewStats/", views.get_interviewStats, name="interviewStats"),
     path("createInterviewee/", views.get_createInterviewee, name="createInterviewee"),
+    path(
+        "createInterviewQuestion/",
+        views.get_interviewQuestion,
+        name="createInterviewee",
+    ),
+    path(
+        "createInterviewResponses/",
+        views.get_interviewResponses,
+        name="createInterviewResponses",
+    ),
 ]
