@@ -60,9 +60,14 @@ class assetTypesEditForm(forms.ModelForm):
         }
 
 
-class addAssetForm(forms.ModelForm):
+class assetEditForm(forms.Form):
+    assetName = forms.CharField(widget=forms.TextInput, label="Asset Type Label")
+    assetDescription = forms.CharField(
+        widget=forms.Textarea, label="Asset Type Description"
+    )
+
     assetType = forms.ModelChoiceField(
-        queryset=assetsTypes.objects.all(),
+        queryset=assetsTypes.objects.values_list("assetTypeName"),
         label="Asset Type",
     )
 
@@ -71,6 +76,13 @@ class addAssetForm(forms.ModelForm):
         label="Asset Classification",
     )
 
+    assetOwner = forms.ModelChoiceField(
+        queryset=staff.objects.all(),
+        label="Asset Owner",
+    )
+
+
+class addAssetForm(forms.ModelForm):
     class Meta:
         model = assets
         fields = "__all__"

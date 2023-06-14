@@ -20,19 +20,38 @@
     </button>
   </div>
 
-  {{assets.assetName}}
+  <div class="table-responsive">
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th scope="col">Asset Name</th>
+          <th scope="col">Asset Description</th>
+          <th scope="col">Asset Type</th>
+          <th scope="col">Asset Classification</th>
+          <th scope="col">Asset Owner</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        {% for asset in assets %}
 
+      
 
-  <!--assetId
-  assetName
-  assetDescription
-  assetType
-  assetClassification
-  assetOwner-->
+        <tr>
+          <td scope="col"><a href="/rifha/assettEdit/{{asset.assetId}}/">{{ asset.assetName }}<a></td>
+          <td scope="col">{{ asset.assetDescription }}</td>
+          <td scope="col">{{ asset.assetType.assetTypeName }}</td>
+          <td scope="col">{{ asset.assetClassification.classificationLabel }}</td>
+          <td scope="col">{{ asset.assetOwner.fullName }}</td>
+        </tr>
+
+        {% endfor %}
+
+      </tbody>
+    </table>
+  </div>
   
 </main>
-
-
 
 
 {% endblock %}

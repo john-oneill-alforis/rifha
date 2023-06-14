@@ -34,19 +34,19 @@ class staffRole(models.Model):
 
 
 class assets(models.Model):
-    assetId = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False, auto_created=True
+    assetId = models.CharField(
+        primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
     )
     assetName = models.CharField(max_length=100)
-    assetDescription = models.CharField(max_length=254)
+    assetDescription = models.TextField(max_length=1000)
     assetType = models.ForeignKey("assetsTypes", on_delete=models.CASCADE, default=1)
     assetClassification = models.ForeignKey(
         "assetsClassifications", on_delete=models.CASCADE, default=1
     )
     assetOwner = models.ForeignKey("staff", on_delete=models.CASCADE, default=1)
 
-    def __str__(self):
-        return self.assetName
+    def __unicode__(self):
+        return self.name
 
 
 class assetsTypes(models.Model):

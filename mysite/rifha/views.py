@@ -19,6 +19,7 @@ from .forms import (
     classificationEditForm,
     assettTypeAddForm,
     addAssetForm,
+    assetEditForm,
 )
 from django.shortcuts import get_object_or_404
 
@@ -38,12 +39,13 @@ def dashboard(request):
 
 @login_required
 def assettHome(request):
-    query = assets.objects.select_related(
-        "assetType", "assetClassification", "assetOwner"
-    )
-    all_records = query.all()
+    all_assets = assets.objects.select_related(
+        "assetType",
+        "assetClassification",
+        "assetOwner",
+    ).all()
     context = {
-        "assets": all_records,
+        "assets": all_assets,
     }
     template = loader.get_template("assetsDashboard.html")
     return HttpResponse(template.render(context, request))
@@ -55,9 +57,17 @@ def assettAdd(request):
     if request.method == "POST":
         form = addAssetForm(request.POST)
         if form.is_valid():
-            form.save()
+            # en = staff(
+            #    assetName=form.cleaned_data["assetName"],
+            #    assetDescription=form.cleaned_data["assetDescription"],
+            #    assetType=form.cleaned_data["assetType"],
+            #    assetClassification=form.cleaned_data["assetClassification"],
+            #    assetOwner=form.cleaned_data["assetOwner"],
+            # )
 
-        return HttpResponseRedirect("/rifha/assets/")
+            # en.save()
+
+            return HttpResponseRedirect("https://www.google.com")
     else:
         createAssett = addAssetForm()
         context = {"assettAdd": createAssett}
@@ -70,19 +80,19 @@ def assettAdd(request):
 
 
 def assettEdit(request, msg):
-    assetTypeData = assetsTypes.objects.get(assetTypeId=msg)
+    assetData = assets.objects.get(assetId=msg)
 
     if request.method == "POST":
-        form = assetTypesEditForm(request.POST, instance=assetsTypes)
+        form = assetEditForm(request.POST, instance=assets)
         if form.is_valid():
             form.save()
             # Handle successful form submission, e.g., redirect to a success page
-            return HttpResponseRedirect("/rifha/assettTypeEdit/" + msg)
+            return HttpResponseRedirect("/rifha/assettEdit/" + msg)
     else:
-        form = assetTypesEditForm(instance=assetTypeData)
+        form = assetEditForm(instance=assetData)
 
-    context = {"form": form, "staffId": msg}
-    return render(request, "assettTypeEdit.html", context)
+    context = {"form": form, "assetId": msg}
+    return render(request, "assetsEdit.html", context)
 
 
 @login_required
