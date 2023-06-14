@@ -62,11 +62,13 @@ class assetTypesEditForm(forms.ModelForm):
 
 class addAssetForm(forms.ModelForm):
     assetType = forms.ModelChoiceField(
-        queryset=assetsTypes.objects.all(), label="Asset Type"
+        queryset=assetsTypes.objects.all(),
+        label="Asset Type",
     )
 
-    assetClassificaion = forms.ModelChoiceField(
-        queryset=assetsClassifications.objects.all(), label="Asset Classification"
+    assetClassification = forms.ModelChoiceField(
+        queryset=assetsClassifications.objects.all(),
+        label="Asset Classification",
     )
 
     class Meta:
@@ -76,13 +78,18 @@ class addAssetForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["assetType"].widget = forms.Select(
-            choices=assetsTypes.objects.values_list("assetTypeId", "assetTypeName")
+            choices=[("", "---------")]
+            + list(assetsTypes.objects.values_list("assetTypeId", "assetTypeName"))
         )
         self.fields["assetClassification"].widget = forms.Select(
-            choices=assetsClassifications.objects.values_list(
-                "classification_Id", "classificationLabel"
+            choices=[("", "---------")]
+            + list(
+                assetsClassifications.objects.values_list(
+                    "classification_Id", "classificationLabel"
+                )
             )
         )
         self.fields["assetOwner"].widget = forms.Select(
-            choices=staff.objects.values_list("staffId", "jobTitle")
+            choices=[("", "---------")]
+            + list(staff.objects.values_list("staffId", "fullName"))
         )

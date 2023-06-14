@@ -7,7 +7,7 @@ from django.template import loader
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.db.models import Count
-from .models import staff, assetsClassifications, assetsTypes
+from .models import staff, assetsClassifications, assetsTypes, assets
 
 from django.db.models.functions import Trunc, TruncYear
 from django.contrib.auth.decorators import login_required
@@ -38,9 +38,12 @@ def dashboard(request):
 
 @login_required
 def assettHome(request):
-    date_today = date.today().strftime("%Y-%m-%d")
+    query = assets.objects.select_related(
+        "assetType", "assetClassification", "assetOwner"
+    )
+    all_records = query.all()
     context = {
-        "date": "Hello World!",
+        "assets": all_records,
     }
     template = loader.get_template("assetsDashboard.html")
     return HttpResponse(template.render(context, request))
@@ -52,10 +55,9 @@ def assettAdd(request):
     if request.method == "POST":
         form = addAssetForm(request.POST)
         if form.is_valid():
-            # Save the number and text to the database
             form.save()
 
-            return HttpResponseRedirect("/rifha/assets/")
+        return HttpResponseRedirect("/rifha/assets/")
     else:
         createAssett = addAssetForm()
         context = {"assettAdd": createAssett}

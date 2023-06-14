@@ -11,25 +11,21 @@
     <h1 class="h2">Assets</h1>
   </div>
 
+  <form action="/rifha/assettAdd/" method="post">
   {% csrf_token %}
 
     
   {% load crispy_forms_tags %}
 
+   
 
-
-  {{assettAdd.assetName|as_crispy_field}}
-
-  {{assettAdd.assetDescription|as_crispy_field}}
-
-  {{assettAdd.assetType|as_crispy_field}}
-
-  {{assettAdd.assetClassification|as_crispy_field}}
-
-  {{assettAdd.assetOwner|as_crispy_field}}
-
+      {{assettAdd}}
   
-
+ 
+  
+  <div class="col d-flex justify-content-right p-2"><input type="submit" value="Update"
+    class="btn btn-outline-secondary">
+</div>
 
 
   
