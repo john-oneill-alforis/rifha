@@ -1,5 +1,6 @@
 from django import forms
 from .models import staff
+from .models import assetsClassifications
 
 
 class peopleAddForm(forms.Form):
@@ -21,4 +22,23 @@ class peopleEditForm(forms.ModelForm):
             "email": forms.EmailInput(),
             "jobTitle": forms.TextInput(),
             "contactNumber": forms.TextInput(),
+        }
+
+
+class classificationAddForm(forms.Form):
+    classificationLabel = forms.CharField(
+        widget=forms.TextInput, label="Classification Label"
+    )
+    classificationDescription = forms.CharField(
+        widget=forms.Textarea, label="Classification Description"
+    )
+
+
+class classificationEditForm(forms.ModelForm):
+    class Meta:
+        model = assetsClassifications
+        fields = ["classificationLabel", "classificationDescription"]
+        widgets = {
+            "classificationLabel": forms.TextInput(),
+            "classificationDescription": forms.Textarea,
         }
