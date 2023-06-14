@@ -12,6 +12,7 @@ class staff(models.Model):
     )
     firstName = models.CharField(max_length=100)
     lastName = models.CharField(max_length=100)
+    fullName = models.CharField(max_length=100)
     email = models.EmailField(max_length=254)
     contactNumber = models.CharField(max_length=100)
     jobTitle = models.CharField(max_length=100)
@@ -33,20 +34,21 @@ class staffRole(models.Model):
 
 
 class assets(models.Model):
-    assetId = models.CharField(
-        primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
-    )
+    assetId = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     assetName = models.CharField(max_length=100)
     assetDescription = models.CharField(max_length=254)
     assetType = models.OneToOneField("assetsTypes", on_delete=models.CASCADE, default=1)
+    assetClassification = models.OneToOneField(
+        "assetsClassifications", on_delete=models.CASCADE, default=1
+    )
     assetOwner = models.ForeignKey("staff", on_delete=models.CASCADE, default=1)
 
-    def __unicode__(self):
-        return self.name
+    def __str__(self):
+        return self.assetName
 
 
 class assetsTypes(models.Model):
-    assetId = models.CharField(
+    assetTypeId = models.CharField(
         primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
     )
     assetTypeName = models.CharField(max_length=100)

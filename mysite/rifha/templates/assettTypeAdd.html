@@ -16,20 +16,16 @@
   
   
 
-  <form action="/rifha/addClassification/" method="post">
+  <form action="/rifha/assettTypeAdd/" method="post">
+    
     {% csrf_token %}
-
     {% load crispy_forms_tags %}
-
-    
-
-    {{createClassification.classificationLabel|as_crispy_field}}
-    {{createClassification.classificationDescription|as_crispy_field}}
-    
         
+      {{createassettType.assetTypeLabel|as_crispy_field}}
 
+      {{createassettType.assettTypeDescription|as_crispy_field}}
 
-    <div class="col d-flex justify-content-right py-3"><input type="submit" value="Update"
+    <div class="col d-flex justify-content-right py-3"><input type="submit" value="Submit"
         class="btn btn-outline-secondary">
 </div>
     

@@ -7,14 +7,19 @@ from django.template import loader
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.db.models import Count
-from .models import staff
-from .models import assetsClassifications
+from .models import staff, assetsClassifications, assetsTypes
+
 from django.db.models.functions import Trunc, TruncYear
 from django.contrib.auth.decorators import login_required
-from .forms import peopleAddForm
-from .forms import peopleEditForm
-from .forms import classificationAddForm
-from .forms import classificationEditForm
+from .forms import (
+    peopleAddForm,
+    assetTypesEditForm,
+    peopleEditForm,
+    classificationAddForm,
+    classificationEditForm,
+    assettTypeAddForm,
+    addAssetForm,
+)
 from django.shortcuts import get_object_or_404
 
 # Create your views here.
@@ -32,13 +37,50 @@ def dashboard(request):
 
 
 @login_required
-def assetsHome(request):
+def assettHome(request):
     date_today = date.today().strftime("%Y-%m-%d")
     context = {
         "date": "Hello World!",
     }
     template = loader.get_template("assetsDashboard.html")
     return HttpResponse(template.render(context, request))
+
+
+def assettAdd(request):
+    context = {}
+    # if this is a POST request we need to process the form data
+    if request.method == "POST":
+        form = addAssetForm(request.POST)
+        if form.is_valid():
+            # Save the number and text to the database
+            form.save()
+
+            return HttpResponseRedirect("/rifha/assets/")
+    else:
+        createAssett = addAssetForm()
+        context = {"assettAdd": createAssett}
+
+    return render(
+        request,
+        "assetsAdd.html",
+        context=context,
+    )
+
+
+def assettEdit(request, msg):
+    assetTypeData = assetsTypes.objects.get(assetTypeId=msg)
+
+    if request.method == "POST":
+        form = assetTypesEditForm(request.POST, instance=assetsTypes)
+        if form.is_valid():
+            form.save()
+            # Handle successful form submission, e.g., redirect to a success page
+            return HttpResponseRedirect("/rifha/assettTypeEdit/" + msg)
+    else:
+        form = assetTypesEditForm(instance=assetTypeData)
+
+    context = {"form": form, "staffId": msg}
+    return render(request, "assettTypeEdit.html", context)
 
 
 @login_required
@@ -103,9 +145,9 @@ def peopleAdd(request):
 @login_required
 def admin(request):
     team = assetsClassifications.objects.all().order_by("-rank")
-    context = {
-        "classifications": team,
-    }
+    asset_type = assetsTypes.objects.all().order_by("assetTypeName")
+
+    context = {"classifications": team, "assettTypes": asset_type}
     template = loader.get_template("adminDashboard.html")
     return HttpResponse(template.render(context, request))
 
@@ -155,3 +197,45 @@ def classificationEdit(request, msg):
 
     context = {"form": form, "classification_Id": msg}
     return render(request, "classificationEdit.html", context)
+
+
+def assettTypeAdd(request):
+    context = {}
+    # if this is a POST request we need to process the form data
+    if request.method == "POST":
+        form = assettTypeAddForm(request.POST)
+        if form.is_valid():
+            # Save the number and text to the database
+            en = assetsTypes(
+                assetTypeName=form.cleaned_data["assetTypeLabel"],
+                assetTypeDescription=form.cleaned_data["assettTypeDescription"],
+            )
+
+            en.save()
+
+            return HttpResponseRedirect("/rifha/admin/")
+    else:
+        createAssettType = assettTypeAddForm()
+        context = {"createassettType": createAssettType}
+
+    return render(
+        request,
+        "assettTypeAdd.html",
+        context=context,
+    )
+
+
+def assettTypeEdit(request, msg):
+    assetTypeData = assetsTypes.objects.get(assetTypeId=msg)
+
+    if request.method == "POST":
+        form = assetTypesEditForm(request.POST, instance=assetTypeData)
+        if form.is_valid():
+            form.save()
+            # Handle successful form submission, e.g., redirect to a success page
+            return HttpResponseRedirect("/rifha/assettTypeEdit/" + msg)
+    else:
+        form = assetTypesEditForm(instance=assetTypeData)
+
+    context = {"form": form, "assetTypeId": msg}
+    return render(request, "assettTypeEdit.html", context)
