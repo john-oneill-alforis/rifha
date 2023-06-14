@@ -17,17 +17,19 @@
     
   {% load crispy_forms_tags %}
 
-   
+    
 
-      {{assettAdd.assetName}}
+      {{form.assetId|as_crispy_field}}  
+    
+      {{form.assetName|as_crispy_field}}
 
-      {{assettAdd.assetDescription}}
+      {{form.assetDescription|as_crispy_field}}
 
-      {{assettAdd.assetType}}
+      {{form.assetType|as_crispy_field}}
 
-      {{assettAdd.assetClassification}}
+      {{form.assetClassification|as_crispy_field}}
 
-      {{assettAdd.assetOwner}}
+      {{form.assetOwner|as_crispy_field}}
 
   
  

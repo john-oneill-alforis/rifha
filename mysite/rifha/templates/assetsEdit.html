@@ -12,15 +12,15 @@
   </div>
 
 
-  <form action="/rifha/assettEdit/{{assetId}}/" method="post">
+  <form method="post" action="/rifha/assettEdit/{{assetId}}/">
 
 
           {% csrf_token %}
 
           {% load crispy_forms_tags %}
 
-  
 
+          {{form.assetId|as_crispy_field}}
 
           {{form.assetName|as_crispy_field}}
 
@@ -31,7 +31,6 @@
           {{form.assetClassification|as_crispy_field}}
 
           {{form.assetOwner|as_crispy_field}}
-
 
 
   <div class="col d-flex justify-content-right p-2"><input type="submit" value="Update"

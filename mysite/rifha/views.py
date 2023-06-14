@@ -57,39 +57,27 @@ def assettAdd(request):
     if request.method == "POST":
         form = addAssetForm(request.POST)
         if form.is_valid():
-            # en = staff(
-            #    assetName=form.cleaned_data["assetName"],
-            #    assetDescription=form.cleaned_data["assetDescription"],
-            #    assetType=form.cleaned_data["assetType"],
-            #    assetClassification=form.cleaned_data["assetClassification"],
-            #    assetOwner=form.cleaned_data["assetOwner"],
-            # )
-
-            # en.save()
-
-            return HttpResponseRedirect("https://www.google.com")
+            form.save()
+            # Handle successful form submission, e.g., redirect to a success page
+            return HttpResponseRedirect("/rifha/assets/")
     else:
-        createAssett = addAssetForm()
-        context = {"assettAdd": createAssett}
+        form = addAssetForm()
 
-    return render(
-        request,
-        "assetsAdd.html",
-        context=context,
-    )
+    context = {"form": form}
+    return render(request, "assetsAdd.html", context)
 
 
 def assettEdit(request, msg):
     assetData = assets.objects.get(assetId=msg)
 
     if request.method == "POST":
-        form = assetEditForm(request.POST, instance=assets)
+        form = addAssetForm(request.POST, instance=assetData)
         if form.is_valid():
             form.save()
-            # Handle successful form submission, e.g., redirect to a success page
-            return HttpResponseRedirect("/rifha/assettEdit/" + msg)
+
+        return HttpResponseRedirect("/rifha/assettEdit/" + msg)
     else:
-        form = assetEditForm(instance=assetData)
+        form = addAssetForm(instance=assetData)
 
     context = {"form": form, "assetId": msg}
     return render(request, "assetsEdit.html", context)
