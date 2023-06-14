@@ -60,7 +60,7 @@ class assetTypesEditForm(forms.ModelForm):
         }
 
 
-class assetEditForm(forms.Form):
+class assetEditForm(forms.ModelForm):
     assetName = forms.CharField(widget=forms.TextInput, label="Asset Type Label")
     assetDescription = forms.CharField(
         widget=forms.Textarea, label="Asset Type Description"
