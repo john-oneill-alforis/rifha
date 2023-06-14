@@ -9,4 +9,7 @@ urlpatterns = [
     path("people/", views.peopleHome, name="peopleHome"),
     path("peopleEdit/<str:msg>/", views.peopleEdit, name="peopleEdit"),
     path("peopleAdd/", views.peopleAdd, name="peopleAdd"),
+    path("admin/", views.admin, name="admin"),
+    path("addClassification/", views.classificationAdd, name="classificationAdd"),
+    path("classificationEdit/<str:msg>/", views.classificationEdit, name="peopleEdit"),
 ]

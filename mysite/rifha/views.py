@@ -1,3 +1,5 @@
+import uuid
+
 from django.shortcuts import render
 from django.db.models import Count, DateTimeField
 from datetime import date, datetime, timedelta
@@ -6,10 +8,13 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.db.models import Count
 from .models import staff
+from .models import assetsClassifications
 from django.db.models.functions import Trunc, TruncYear
 from django.contrib.auth.decorators import login_required
 from .forms import peopleAddForm
 from .forms import peopleEditForm
+from .forms import classificationAddForm
+from .forms import classificationEditForm
 from django.shortcuts import get_object_or_404
 
 # Create your views here.
@@ -93,3 +98,60 @@ def peopleAdd(request):
         "peopleAdd.html",
         context=context,
     )
+
+
+@login_required
+def admin(request):
+    team = assetsClassifications.objects.all().order_by("-rank")
+    context = {
+        "classifications": team,
+    }
+    template = loader.get_template("adminDashboard.html")
+    return HttpResponse(template.render(context, request))
+
+
+@login_required
+def classificationAdd(request):
+    context = {}
+    # if this is a POST request we need to process the form data
+    if request.method == "POST":
+        form = classificationAddForm(request.POST)
+        if form.is_valid():
+            # Save the number and text to the database
+            en = assetsClassifications(
+                # classification_Id=uuid.uuid4(),
+                classificationLabel=form.cleaned_data["classificationLabel"],
+                classificationDescription=form.cleaned_data[
+                    "classificationDescription"
+                ],
+            )
+
+            en.save()
+
+            return HttpResponseRedirect("/rifha/admin/")
+    else:
+        createClassification = classificationAddForm()
+        context = {"createClassification": createClassification}
+
+    return render(
+        request,
+        "classificationAdd.html",
+        context=context,
+    )
+
+
+@login_required
+def classificationEdit(request, msg):
+    classificatonData = assetsClassifications.objects.get(classification_Id=msg)
+
+    if request.method == "POST":
+        form = classificationEditForm(request.POST, instance=classificatonData)
+        if form.is_valid():
+            form.save()
+            # Handle successful form submission, e.g., redirect to a success page
+            return HttpResponseRedirect("/rifha/classificationEdit/" + msg)
+    else:
+        form = classificationEditForm(instance=classificatonData)
+
+    context = {"form": form, "classification_Id": msg}
+    return render(request, "classificationEdit.html", context)

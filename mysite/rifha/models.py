@@ -56,6 +56,18 @@ class assetsTypes(models.Model):
         return self.name
 
 
+class assetsClassifications(models.Model):
+    classification_Id = models.CharField(
+        primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
+    )
+    classificationLabel = models.CharField(max_length=100)
+    classificationDescription = models.CharField(max_length=1000)
+    rank = models.IntegerField(default=0)
+
+    def __unicode__(self):
+        return self.name
+
+
 class processes(models.Model):
     processId = models.CharField(
         primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36

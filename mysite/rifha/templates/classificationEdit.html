@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+
+
+{% block content %}
+
+
+  
+
+
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Add Classification Label</h1>
+  </div>
+
+  
+  
+
+  <form action="/rifha/classificationEdit/{{classification_Id}}/" method="post">
+    {% csrf_token %}
+
+    {% load crispy_forms_tags %}
+
+    {{form.classificationLabel|as_crispy_field}} 
+    {{form.classificationDescription|as_crispy_field}} 
+
+
+    <div class="col d-flex justify-content-right p-2"><input type="submit" value="Update"
+        class="btn btn-outline-secondary">
+</div>
+    
+</form>      
+
+
+
+
+
+  
+        
+        
+
+
+
+        
+
+
+
+
+      
+
+     
+
+
+
+{% endblock %}
