@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+  
+
+
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <h4>Risk Register</h4>
+  </div>
+
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <a href="/rifha/riskAdd" button type="button" class="btn btn-primary">
+          Create Risk<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/></svg></a>
+      </div>
+
+            
+      <div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th scope="col">Asset Name</th>
+              <th scope="col">Risk Description</th>
+              <th scope="col">Risk Owner</th>
+              <th scope="col">Review Date</th>
+              
+            </tr>
+          </thead>
+          <tbody>
+                
+              
+
+<!-- Assett Types Section-->
+
+
+      {% for entry in risks%}
+
+    
+
+      <tr>
+        <td scope="col"><a href="/rifha/riskEdit/{{entry.riskId}}/">{{ entry.riskAsset.assetName }}<a></td>
+        <td scope="col">{{ entry.riskDescription }}</td>
+        <td scope="col">{{ entry.riskOwner.fullName }}</td>
+        <td scope="col">{{ entry.riskReviewDate }}</td>
+        
+      </tr>
+
+
+      {% endfor %}
+
+    </tbody>
+  </table>
+</div>
+
+                   
+</main>
+
+{% endblock %}

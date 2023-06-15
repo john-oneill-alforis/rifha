@@ -16,4 +16,7 @@ urlpatterns = [
     path("classificationEdit/<str:msg>/", views.classificationEdit, name="peopleEdit"),
     path("assettTypeAdd/", views.assettTypeAdd, name="assettTypeAdd"),
     path("assettTypeEdit/<str:msg>/", views.assettTypeEdit, name="assettTypeEdit"),
+    path("riskReg/", views.riskHome, name="riskReg"),
+    path("riskAdd/", views.riskAdd, name="riskAdd"),
+    path("riskEdit/<str:msg>/", views.riskEdit, name="riskEdit"),
 ]

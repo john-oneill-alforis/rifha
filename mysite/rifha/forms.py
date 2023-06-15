@@ -1,5 +1,6 @@
 from django import forms
-from .models import assetsClassifications, assetsTypes, assets, staff
+from .models import assetsClassifications, assetsTypes, assets, staff, riskReg
+from django.forms import DateInput
 
 
 class peopleAddForm(forms.Form):
@@ -102,6 +103,40 @@ class addAssetForm(forms.ModelForm):
             )
         )
         self.fields["assetOwner"].widget = forms.Select(
+            choices=[("", "---------")]
+            + list(staff.objects.values_list("staffId", "fullName"))
+        )
+
+
+class addRiskForm(forms.ModelForm):
+    class Meta:
+        model = riskReg
+        fields = "__all__"
+
+        widgets = {
+            "riskCreationDate": DateInput(attrs={"type": "date"}),
+            "riskReviewDate": DateInput(attrs={"type": "date"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        """self.fields["assetType"].widget = forms.Select(
+            choices=[("", "---------")]
+            + list(assetsTypes.objects.values_list("assetTypeId", "assetTypeName"))
+        )
+        self.fields["assetClassification"].widget = forms.Select(
+            choices=[("", "---------")]
+            + list(
+                assetsClassifications.objects.values_list(
+                    "classification_Id", "classificationLabel"
+                )
+            )
+        )"""
+        self.fields["riskAsset"].widget = forms.Select(
+            choices=[("", "---------")]
+            + list(assets.objects.values_list("assetId", "assetName"))
+        )
+        self.fields["riskOwner"].widget = forms.Select(
             choices=[("", "---------")]
             + list(staff.objects.values_list("staffId", "fullName"))
         )

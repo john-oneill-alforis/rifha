@@ -7,7 +7,7 @@ from django.template import loader
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.db.models import Count
-from .models import staff, assetsClassifications, assetsTypes, assets
+from .models import staff, assetsClassifications, assetsTypes, assets, riskReg
 
 from django.db.models.functions import Trunc, TruncYear
 from django.contrib.auth.decorators import login_required
@@ -19,7 +19,7 @@ from .forms import (
     classificationEditForm,
     assettTypeAddForm,
     addAssetForm,
-    assetEditForm,
+    addRiskForm,
 )
 from django.shortcuts import get_object_or_404
 
@@ -239,3 +239,41 @@ def assettTypeEdit(request, msg):
 
     context = {"form": form, "assetTypeId": msg}
     return render(request, "assettTypeEdit.html", context)
+
+
+@login_required
+def riskHome(request):
+    all_risks = riskReg.objects.all()
+    context = {
+        "risks": all_risks,
+    }
+    template = loader.get_template("riskDashboard.html")
+    return HttpResponse(template.render(context, request))
+
+
+@login_required
+def riskAdd(request):
+    context = {}
+    # if this is a POST request we need to process the form data
+    if request.method == "POST":
+        form = addRiskForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Handle successful form submission, e.g., redirect to a success page
+            return HttpResponseRedirect("/rifha/riskReg/")
+    else:
+        form = addRiskForm()
+
+    context = {"form": form}
+    return render(request, "riskAdd.html", context)
+
+
+@login_required
+def riskEdit(request, msg):
+    date_today = date.today().strftime("%Y-%m-%d")
+
+    context = {
+        "date": date_today,
+    }
+    template = loader.get_template("riskEdit.html")
+    return HttpResponse(template.render(context, request))
