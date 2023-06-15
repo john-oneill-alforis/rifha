@@ -12,14 +12,32 @@
   </div>
 
 
-  <form method="post" action="/rifha/assettEdit/{{assetId}}/">
+  <form action="/rifha/riskEdit/{{riskId}}/" method="post">
 
 
-          {% csrf_token %}
+        {% csrf_token %}
 
-         
+        {% load crispy_forms_tags%}
 
+        {{form.riskId|as_crispy_field}}
 
+        {{form.riskOwner|as_crispy_field}}
+
+        {{form.riskAsset|as_crispy_field}}
+  
+        {{form.riskDescription|as_crispy_field}}
+  
+        {{form.riskCreationDate|as_crispy_field}}
+  
+        {{form.riskReviewDate|as_crispy_field}}
+  
+        {{form.riskNotes|as_crispy_field}}
+  
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <h1 class="h6">Edit Risk</h6>
+        </div>
+ 
+     
   <div class="col d-flex justify-content-right p-2"><input type="submit" value="Update"
     class="btn btn-outline-secondary">
 </div>

@@ -7,7 +7,22 @@ from django.template import loader
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.db.models import Count
-from .models import staff, assetsClassifications, assetsTypes, assets, riskReg
+from .models import (
+    staff,
+    assetsClassifications,
+    assetsTypes,
+    assets,
+    riskReg,
+    threatCatalogue,
+)
+from polls.models import (
+    veris_action_malware_variety,
+    veris_action_hacking_variety,
+    veris_action_social_variety,
+    veris_action_misuse_variety,
+    veris_action_error_variety,
+    veris_action_environmental_variety,
+)
 
 from django.db.models.functions import Trunc, TruncYear
 from django.contrib.auth.decorators import login_required
@@ -199,6 +214,7 @@ def classificationEdit(request, msg):
     return render(request, "classificationEdit.html", context)
 
 
+@login_required
 def assettTypeAdd(request):
     context = {}
     # if this is a POST request we need to process the form data
@@ -225,6 +241,7 @@ def assettTypeAdd(request):
     )
 
 
+@login_required
 def assettTypeEdit(request, msg):
     assetTypeData = assetsTypes.objects.get(assetTypeId=msg)
 
@@ -270,10 +287,24 @@ def riskAdd(request):
 
 @login_required
 def riskEdit(request, msg):
-    date_today = date.today().strftime("%Y-%m-%d")
+    riskData = riskReg.objects.get(riskId=msg)
 
-    context = {
-        "date": date_today,
-    }
-    template = loader.get_template("riskEdit.html")
-    return HttpResponse(template.render(context, request))
+    if request.method == "POST":
+        form = addRiskForm(request.POST, instance=riskData)
+        if form.is_valid():
+            form.save()
+
+        return HttpResponseRedirect("/rifha/riskEdit/" + msg)
+    else:
+        form = addRiskForm(instance=riskData)
+
+    context = {"form": form, "riskId": msg}
+    return render(request, "riskEdit.html", context)
+
+
+@login_required
+def populateThreatInformation(request):
+    # Delete out the existing dataset to avoid dupes
+    threatCatalogue.objects.all().delete()
+
+    return HttpResponseRedirect("/rifha/admin/")

@@ -114,6 +114,7 @@ class addRiskForm(forms.ModelForm):
         fields = "__all__"
 
         widgets = {
+            "riskId": forms.TextInput(attrs={"readonly": "readonly"}),
             "riskCreationDate": DateInput(attrs={"type": "date"}),
             "riskReviewDate": DateInput(attrs={"type": "date"}),
         }

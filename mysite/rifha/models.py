@@ -99,3 +99,16 @@ class riskReg(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class threatCatalogue(models.Model):
+    threatId = models.CharField(
+        primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
+    )
+
+    threatCategory = models.ForeignKey("staff", on_delete=models.CASCADE, default=1)
+    threatName = models.ForeignKey("assets", on_delete=models.CASCADE, default=1)
+    threatlikelihood = models.FloatField()
+
+    def __unicode__(self):
+        return self.name

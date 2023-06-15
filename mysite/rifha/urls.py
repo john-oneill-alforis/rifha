@@ -19,4 +19,9 @@ urlpatterns = [
     path("riskReg/", views.riskHome, name="riskReg"),
     path("riskAdd/", views.riskAdd, name="riskAdd"),
     path("riskEdit/<str:msg>/", views.riskEdit, name="riskEdit"),
+    path(
+        "populateThreatInformation/",
+        views.populateThreatInformation,
+        name="populateThreatInformation",
+    ),
 ]
