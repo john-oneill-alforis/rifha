@@ -1,7 +1,9 @@
 import uuid
-
+from math import log
 from django.shortcuts import render
-from django.db.models import Count, DateTimeField
+from collections import defaultdict
+
+# from django.db.models import Count, DateTimeField
 from datetime import date, datetime, timedelta
 from django.template import loader
 from django.http import HttpResponse
@@ -307,4 +309,54 @@ def populateThreatInformation(request):
     # Delete out the existing dataset to avoid dupes
     threatCatalogue.objects.all().delete()
 
-    return HttpResponseRedirect("/rifha/admin/")
+    tables = []
+    tableDict = [
+        veris_action_malware_variety,
+        veris_action_hacking_variety,
+        veris_action_social_variety,
+        veris_action_misuse_variety,
+        veris_action_error_variety,
+        veris_action_environmental_variety,
+    ]
+
+    for x in tableDict:
+        # split the string to create the category
+        parts = str(x).split("_")
+        category = "_".join(parts[2:3])
+
+        # Retrieve all instances of the veris_action_X_varieties model
+        data = x.objects.exclude(variety__icontains="unknown").exclude(
+            variety__icontains="other"
+        )
+
+        # Create a dictionary to store the frequency of each value
+        frequency_dict = defaultdict(int)
+        for instance in data:
+            frequency_dict[instance.variety] += 1
+
+        # Calculate the total number of instances
+        total_count = len(data)
+
+        # Calculate the probability and annualized rate of occurrence of each value
+        results_dict = {}
+        time_period = 1  # Time period in years
+        for key, value in frequency_dict.items():
+            probability = value / total_count
+            annualized_rate = -log(1 - probability) / time_period
+            results_dict[key] = {
+                "probability": round(probability, 4),
+                "annualized_rate": round(annualized_rate, 4),
+            }
+
+            en = threatCatalogue(
+                # classification_Id=uuid.uuid4(),
+                threatCategory=category,
+                threatName=key,
+                threatlikelihood=round(probability, 4),
+                threatARO=round(annualized_rate, 4),
+            )
+
+            en.save()
+
+    context = {"results_dict": results_dict, "category": category}
+    return render(request, "adminDashboard.html", context)
