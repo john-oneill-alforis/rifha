@@ -1,5 +1,12 @@
 from django import forms
-from .models import assetsClassifications, assetsTypes, assets, staff, riskReg
+from .models import (
+    assetsClassifications,
+    assetsTypes,
+    assets,
+    staff,
+    riskReg,
+    threatCatalogue,
+)
 from django.forms import DateInput
 
 
@@ -111,12 +118,22 @@ class addAssetForm(forms.ModelForm):
 class addRiskForm(forms.ModelForm):
     class Meta:
         model = riskReg
-        fields = "__all__"
+        fields = [
+            "riskId",
+            "riskAsset",
+            "riskOwner",
+            "riskCreationDate",
+            "riskReviewDate",
+            "riskNotes",
+            "riskDescription",
+        ]
 
         widgets = {
             "riskId": forms.TextInput(attrs={"readonly": "readonly"}),
             "riskCreationDate": DateInput(attrs={"type": "date"}),
             "riskReviewDate": DateInput(attrs={"type": "date"}),
+            "riskNotes": forms.Textarea(attrs={"rows": 3, "cols": 30}),
+            "riskDescription": forms.Textarea(attrs={"rows": 3, "cols": 30}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -141,7 +158,26 @@ class addRiskForm(forms.ModelForm):
             choices=[("", "---------")]
             + list(staff.objects.values_list("staffId", "fullName"))
         )
-        self.fields["riskThreats"].widget = forms.Select(
-            choices=[("", "---------")]
-            + list(staff.objects.values_list("threatId", "threatName"))
-        )
+        # Retrieve all unique threat categories from the threatCatalogue model
+        """threat_categories = threatCatalogue.objects.values_list(
+            "threatCategory", flat=True
+        ).distinct()
+
+        # Create a choices list organized by threat category
+        choices = [("", "---------")]
+        for category in threat_categories:
+            threats = threatCatalogue.objects.filter(threatCategory=category)
+            threat_choices = [
+                (threat.threatId, threat.threatName) for threat in threats
+            ]
+            choices.append((category, threat_choices))
+
+        # Assign the choices to the riskThreats widget
+        self.fields["riskThreats"].widget.choices = choices
+        self.fields["riskThreats"].widget.attrs["size"] = 10
+        self.fields["riskThreats"].required = False"""
+
+        """if self.instance:
+            self.fields["riskThreats"].queryset = threatCatalogue.objects.all()
+            self.fields["riskThreats"].initial = self.instance.riskThreats.all()
+            self.fields["riskThreats"].widget.attrs["size"] = 10"""

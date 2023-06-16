@@ -99,10 +99,8 @@ class riskReg(models.Model):
     """riskThreats = models.CharField(
         default="a5eb6a73-22ca-450b-a6b8-c2273f994ef3", max_length=36
     )"""
-    riskThreats = models.ForeignKey(
+    riskThreats = models.ManyToManyField(
         "threatCatalogue",
-        on_delete=models.CASCADE,
-        default="a5eb6a73-22ca-450b-a6b8-c2273f994ef3",
     )
 
     def __unicode__(self):

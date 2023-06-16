@@ -277,7 +277,16 @@ def riskAdd(request):
     if request.method == "POST":
         form = addRiskForm(request.POST)
         if form.is_valid():
-            form.save()
+            """form.save()"""
+            en = riskReg(
+                riskOwner=form.cleaned_data["riskOwner"],
+                riskAsset=form.cleaned_data["riskAsset"],
+                riskDescription=form.cleaned_data["riskDescription"],
+                riskCreationDate=form.cleaned_data["riskCreationDate"],
+                riskReviewDate=form.cleaned_data["riskReviewDate"],
+                riskNotes=form.cleaned_data["riskNotes"],
+            )
+            en.save()
             # Handle successful form submission, e.g., redirect to a success page
             return HttpResponseRedirect("/rifha/riskReg/")
     else:
