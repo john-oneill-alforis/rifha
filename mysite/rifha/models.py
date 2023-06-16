@@ -106,9 +106,10 @@ class threatCatalogue(models.Model):
         primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
     )
 
-    threatCategory = models.ForeignKey("staff", on_delete=models.CASCADE, default=1)
-    threatName = models.ForeignKey("assets", on_delete=models.CASCADE, default=1)
+    threatName = models.CharField(max_length=200)
+    threatCategory = models.CharField(max_length=200)
     threatlikelihood = models.FloatField()
+    threatARO = models.FloatField()
 
     def __unicode__(self):
         return self.name
