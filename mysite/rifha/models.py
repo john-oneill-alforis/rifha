@@ -96,6 +96,14 @@ class riskReg(models.Model):
     riskCreationDate = models.DateField()
     riskReviewDate = models.DateField()
     riskNotes = models.TextField(max_length=2000, null=True, blank=True)
+    """riskThreats = models.CharField(
+        default="a5eb6a73-22ca-450b-a6b8-c2273f994ef3", max_length=36
+    )"""
+    riskThreats = models.ForeignKey(
+        "threatCatalogue",
+        on_delete=models.CASCADE,
+        default="a5eb6a73-22ca-450b-a6b8-c2273f994ef3",
+    )
 
     def __unicode__(self):
         return self.name

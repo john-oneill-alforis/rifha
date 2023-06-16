@@ -141,3 +141,7 @@ class addRiskForm(forms.ModelForm):
             choices=[("", "---------")]
             + list(staff.objects.values_list("staffId", "fullName"))
         )
+        self.fields["riskThreats"].widget = forms.Select(
+            choices=[("", "---------")]
+            + list(staff.objects.values_list("threatId", "threatName"))
+        )
