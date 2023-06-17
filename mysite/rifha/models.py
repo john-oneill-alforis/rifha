@@ -96,11 +96,20 @@ class riskReg(models.Model):
     riskCreationDate = models.DateField()
     riskReviewDate = models.DateField()
     riskNotes = models.TextField(max_length=2000, null=True, blank=True)
+    riskAnalysisStatus = models.BooleanField(
+        default=False, verbose_name="Analysis Completed"
+    )
+    controlAnalysisStatus = models.BooleanField(
+        default=False, verbose_name="Analysis Completed"
+    )
     """riskThreats = models.CharField(
         default="a5eb6a73-22ca-450b-a6b8-c2273f994ef3", max_length=36
     )"""
     riskThreats = models.ManyToManyField(
         "threatCatalogue",
+    )
+    riskControls = models.ManyToManyField(
+        "controlCatalogue",
     )
 
     def __unicode__(self):
@@ -116,6 +125,19 @@ class threatCatalogue(models.Model):
     threatCategory = models.CharField(max_length=200)
     threatlikelihood = models.FloatField()
     threatARO = models.FloatField()
+
+    def __unicode__(self):
+        return self.name
+
+
+class controlCatalogue(models.Model):
+    controlId = models.CharField(
+        primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
+    )
+
+    controlName = models.CharField(max_length=200)
+    controlCategory = models.CharField(max_length=200)
+    controlDescription = models.TextField(max_length=2000)
 
     def __unicode__(self):
         return self.name

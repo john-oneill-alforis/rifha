@@ -16,6 +16,7 @@ from .models import (
     assets,
     riskReg,
     threatCatalogue,
+    controlCatalogue,
 )
 from polls.models import (
     veris_action_malware_variety,
@@ -68,6 +69,7 @@ def assettHome(request):
     return HttpResponse(template.render(context, request))
 
 
+@login_required
 def assettAdd(request):
     context = {}
     # if this is a POST request we need to process the form data
@@ -84,6 +86,7 @@ def assettAdd(request):
     return render(request, "assetsAdd.html", context)
 
 
+@login_required
 def assettEdit(request, msg):
     assetData = assets.objects.get(assetId=msg)
 
@@ -98,6 +101,33 @@ def assettEdit(request, msg):
 
     context = {"form": form, "assetId": msg}
     return render(request, "assetsEdit.html", context)
+
+
+@login_required
+def controlsHome(request):
+    all_controls = controlCatalogue.objects.order_by("controlCategory")
+    context = {
+        "controls": all_controls,
+    }
+    template = loader.get_template("controlsDashboard.html")
+    return HttpResponse(template.render(context, request))
+
+
+"""@login_required
+def controlsEdit(request, msg):
+    controlData = controlCatalogue.objects.get(controlId=msg)
+
+    if request.method == "POST":
+        form = addControlForm(request.POST, instance=controlData)
+        if form.is_valid():
+            form.save()
+
+        return HttpResponseRedirect("/rifha/controlEdit/" + msg)
+    else:
+        form = addAssetForm(instance=controlData)
+
+    context = {"form": form, "controlId": msg}
+    return render(request, "controlEdit.html", context)"""
 
 
 @login_required
@@ -288,7 +318,9 @@ def riskAdd(request):
             )
             en.save()
             # Handle successful form submission, e.g., redirect to a success page
-            return HttpResponseRedirect("/rifha/riskReg/")
+            return HttpResponseRedirect(
+                "/rifha/riskAnalysisAdd/" + form.cleaned_data["riskId"]
+            )
     else:
         form = addRiskForm()
 
@@ -311,6 +343,18 @@ def riskEdit(request, msg):
 
     context = {"form": form, "riskId": msg}
     return render(request, "riskEdit.html", context)
+
+
+@login_required
+def riskAnalysisAdd(request, msg):
+    context = {"riskId": msg}
+    return render(request, "riskAnalysisAdd.html", context)
+
+
+@login_required
+def riskControlsAdd(request, msg):
+    context = {"riskId": msg}
+    return render(request, "riskControlsAdd.html", context)
 
 
 @login_required
