@@ -38,6 +38,8 @@ from .forms import (
     assettTypeAddForm,
     addAssetForm,
     addRiskForm,
+    addRiskAnalysisForm,
+    addRiskThreatForm,
 )
 from django.shortcuts import get_object_or_404
 
@@ -309,6 +311,7 @@ def riskAdd(request):
         if form.is_valid():
             """form.save()"""
             en = riskReg(
+                riskId=form.cleaned_data["riskId"],
                 riskOwner=form.cleaned_data["riskOwner"],
                 riskAsset=form.cleaned_data["riskAsset"],
                 riskDescription=form.cleaned_data["riskDescription"],
@@ -317,7 +320,7 @@ def riskAdd(request):
                 riskNotes=form.cleaned_data["riskNotes"],
             )
             en.save()
-            # Handle successful form submission, e.g., redirect to a success page
+            # Handle successful form submission by moving to the anlaysis phase
             return HttpResponseRedirect(
                 "/rifha/riskAnalysisAdd/" + form.cleaned_data["riskId"]
             )
@@ -329,9 +332,44 @@ def riskAdd(request):
 
 
 @login_required
+def riskAnalysisAdd(request, msg):
+    riskData = riskReg.objects.get(riskId=msg)
+    context = {}
+
+    form = addRiskAnalysisForm(instance=riskData)
+    threatList = addRiskThreatForm()
+    threatData = threatCatalogue.objects.filter(riskreg__riskId=msg).values(
+        "threatName", "threatlikelihood", "threatARO"
+    )
+
+    context = {
+        "riskId": msg,
+        "form": form,
+        "threat_list": threatList,
+        "threatData": threatData,
+    }
+    return render(request, "riskAnalysisAdd.html", context)
+
+
+@login_required
+def riskthreatAdd(request, msg):
+    risk = riskReg.objects.get(riskId=msg)
+
+    if request.method == "POST":
+        # Get the list of threat IDs from the form data
+        threat_ids = request.POST.getlist("riskThreats")
+
+        # Add selected threats to the risk
+        for threat_id in threat_ids:
+            threat = threatCatalogue.objects.get(threatId=threat_id)
+            risk.riskThreats.add(threat)
+
+    return HttpResponseRedirect("/rifha/riskAnalysisAdd/" + msg)
+
+
+@login_required
 def riskEdit(request, msg):
     riskData = riskReg.objects.get(riskId=msg)
-
     if request.method == "POST":
         form = addRiskForm(request.POST, instance=riskData)
         if form.is_valid():
@@ -346,15 +384,8 @@ def riskEdit(request, msg):
 
 
 @login_required
-def riskAnalysisAdd(request, msg):
-    context = {"riskId": msg}
-    return render(request, "riskAnalysisAdd.html", context)
-
-
-@login_required
 def riskControlsAdd(request, msg):
-    context = {"riskId": msg}
-    return render(request, "riskControlsAdd.html", context)
+    pass
 
 
 @login_required

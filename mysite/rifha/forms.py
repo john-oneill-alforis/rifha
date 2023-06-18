@@ -181,3 +181,63 @@ class addRiskForm(forms.ModelForm):
             self.fields["riskThreats"].queryset = threatCatalogue.objects.all()
             self.fields["riskThreats"].initial = self.instance.riskThreats.all()
             self.fields["riskThreats"].widget.attrs["size"] = 10"""
+
+
+class addRiskAnalysisForm(forms.ModelForm):
+    class Meta:
+        model = riskReg
+        fields = [
+            "riskId",
+            "riskAsset",
+            "riskOwner",
+            "riskCreationDate",
+            "riskReviewDate",
+            "riskNotes",
+            "riskDescription",
+            "riskAnalysisStatus",
+            "riskThreats",
+        ]
+
+        widgets = {
+            "riskId": forms.TextInput(attrs={"readonly": "readonly"}),
+            "riskCreationDate": DateInput(attrs={"disabled": "disabled"}),
+            "riskReviewDate": DateInput(attrs={"disabled": "disabled"}),
+            "riskNotes": forms.Textarea(attrs={"rows": 3, "cols": 30}),
+            "riskDescription": forms.Textarea(
+                attrs={"rows": 3, "cols": 30, "disabled": "disabled"}
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["riskAsset"].widget = forms.Select(
+            attrs={"disabled": "disabled"},
+            choices=[("", "---------")]
+            + list(assets.objects.values_list("assetId", "assetName")),
+        )
+        self.fields["riskOwner"].widget = forms.Select(
+            attrs={"disabled": "disabled"},
+            choices=[("", "---------")]
+            + list(staff.objects.values_list("staffId", "fullName")),
+        )
+        self.fields["riskThreats"].widget = forms.Select(
+            choices=[("", "---------")]
+            + list(threatCatalogue.objects.values_list("threatId", "threatName")),
+        )
+
+
+class addRiskThreatForm(forms.ModelForm):
+    class Meta:
+        model = riskReg
+        fields = [
+            "riskThreats",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["riskThreats"].widget = forms.Select(
+            choices=[("", "---------")]
+            + list(threatCatalogue.objects.values_list("threatId", "threatName")),
+        )
