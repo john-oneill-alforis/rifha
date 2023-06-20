@@ -11,21 +11,111 @@
     <h1 class="h2">Add Risk Controls</h1>
   </div>
 
-  
+  <h4> Risk Details </h4>
 
-      <a href"/rifha/riskControlsAdd/{{riskId}}">Click Here to add controls</a>
+  {% load crispy_forms_tags %}
+
+      {{riskId}}
+
+      {{form.riskAsset | as_crispy_field}}
+
+    {{form.riskOwner | as_crispy_field}}
+
+    {{form.riskCreationDate | as_crispy_field}}
+
+    {{form.riskReviewDate | as_crispy_field}}
+
+    {{form.riskDescription | as_crispy_field}}
+
+    <h4> Threat Analysis </h4>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-sm">
+        <thead>
+          <tr>
+            <th scope="col">Threat Name</th>
+            <th scope="col">Threat Likelihood</th>
+            <th scope="col">Threat ARO</th>
+            
+          </tr>
+        </thead>
+        <tbody>
+          
+          {% for threat in threatData %}
+    
+        
+    
+          <tr>
+            <td scope="col">{{threat.threatName}}</td>
+            <td scope="col">{{threat.threatlikelihood}}</td>
+            <td scope="col">{{threat.threatARO}}</td>
+          </tr>
+    
+          {% endfor %}
+    
+        </tbody>
+      </table>
+    </div>
 
 
+    <div>
+      <h4> Risk Controls </h4>
+        <form action="/rifha/riskControlsAdd/{{riskId}}/" method="post">
+
+          {% csrf_token %}
+
+              {{controlList.riskControls | as_crispy_field }}
+
+                <div class="col d-flex justify-content-right p-2"><input type="submit" value="Add Control"
+                  class="btn btn-outline-secondary">
+                </div>
+
+        </form>   
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-sm">
+        <thead>
+          <tr>
+            <th scope="col">Control Name</th>
+            <th scope="col">Control Category</th>
+            <th scope="col">Control Description</th>
+            
+          </tr>
+        </thead>
+        <tbody>
+          
+          {% for control in controlData %}
+
+
+
+          <tr>
+            <td scope="col">{{control.controlName}}</td>
+            <td scope="col">{{control.controlCategory}}</td>
+            <td scope="col">{{control.controlDescription}}</td>
+          </tr>
+
+          {% endfor %}
+
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+
+      <form action="/rifha/riskReport/{{riskId}}/" method="post">
+
+        {% csrf_token %}
       
-  
+        <div>
+          <div class="col-md-2"><input type="submit" value="Complete Controls Analysis"
+            class="btn btn-outline-secondary">
+          </div>
+        </div>
+      
+      </form> 
 
-  
- 
-  
-  <div class="col d-flex justify-content-right p-2"><input type="submit" value="Submit"
-    class="btn btn-outline-secondary">
-</div>
-
+    </div>
 
   
 </main>

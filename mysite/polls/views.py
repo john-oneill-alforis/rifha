@@ -7,6 +7,7 @@ from collections import defaultdict
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from math import log
+from django.db.models import Avg, F
 from .models import trainingCorpus
 from .models import textLabels
 from .models import veris_incident_details
@@ -18,6 +19,7 @@ from .models import interviewQuestions
 from .models import interviewee
 from .models import researchQuestion
 from .models import intervieweeResponse
+
 from django.db.models import Count
 from django.db.models.functions import TruncDate, TruncYear, Cast, TruncDay
 from django.contrib.auth import login, authenticate
@@ -312,12 +314,40 @@ def errorLog(request):
 def get_interviewStats(request):
     template = loader.get_template("polls/interviewStats.html")
 
-    question1_sentiment = (
+    """question1_sentiment = (
         interviewQuestions.objects.all().values("question_1").order_by("id")
     )
 
     question2_sentiment = (
         interviewQuestions.objects.all().values("question_2").order_by("id")
+    )
+
+    question3_sentiment = (
+        interviewQuestions.objects.all().values("question_3").order_by("id")
+    )
+
+    question4_sentiment = (
+        interviewQuestions.objects.all().values("question_4").order_by("id")
+    )
+
+    question5_sentiment = (
+        interviewQuestions.objects.all().values("question_5").order_by("id")
+    )
+
+    question6_sentiment = (
+        interviewQuestions.objects.all().values("question_6").order_by("id")
+    )
+
+    question7_sentiment = (
+        interviewQuestions.objects.all().values("question_7").order_by("id")
+    )
+
+    question8_sentiment = (
+        interviewQuestions.objects.all().values("question_8").order_by("id")
+    )
+
+    question9_sentiment = (
+        interviewQuestions.objects.all().values("question_9").order_by("id")
     )
 
     q1_sentiment = []
@@ -334,6 +364,55 @@ def get_interviewStats(request):
 
         q2_sentiment.append(sentiment_scores)
 
+    q3_sentiment = []
+    for x in question3_sentiment:
+        analyzer = SentimentIntensityAnalyzer()
+        sentiment_scores = analyzer.polarity_scores(x["question_3"])
+
+        q3_sentiment.append(sentiment_scores)
+
+    q4_sentiment = []
+    for x in question4_sentiment:
+        analyzer = SentimentIntensityAnalyzer()
+        sentiment_scores = analyzer.polarity_scores(x["question_4"])
+
+        q4_sentiment.append(sentiment_scores)
+
+    q5_sentiment = []
+    for x in question5_sentiment:
+        analyzer = SentimentIntensityAnalyzer()
+        sentiment_scores = analyzer.polarity_scores(x["question_5"])
+
+        q5_sentiment.append(sentiment_scores)
+
+    q6_sentiment = []
+    for x in question6_sentiment:
+        analyzer = SentimentIntensityAnalyzer()
+        sentiment_scores = analyzer.polarity_scores(x["question_6"])
+
+        q6_sentiment.append(sentiment_scores)
+
+    q7_sentiment = []
+    for x in question7_sentiment:
+        analyzer = SentimentIntensityAnalyzer()
+        sentiment_scores = analyzer.polarity_scores(x["question_7"])
+
+        q7_sentiment.append(sentiment_scores)
+
+    q8_sentiment = []
+    for x in question8_sentiment:
+        analyzer = SentimentIntensityAnalyzer()
+        sentiment_scores = analyzer.polarity_scores(x["question_8"])
+
+        q8_sentiment.append(sentiment_scores)
+
+    q9_sentiment = []
+    for x in question9_sentiment:
+        analyzer = SentimentIntensityAnalyzer()
+        sentiment_scores = analyzer.polarity_scores(x["question_9"])
+
+        q9_sentiment.append(sentiment_scores)
+
     responseData = (
         interviewQuestions.objects.all()
         .values("interviewee_Id", "date_created")
@@ -344,9 +423,29 @@ def get_interviewStats(request):
         "entries": responseData,
         "q1_sentiment": q1_sentiment,
         "q2_sentiment": q2_sentiment,
+        "q3_sentiment": q3_sentiment,
+        "q4_sentiment": q4_sentiment,
+        "q5_sentiment": q5_sentiment,
+        "q6_sentiment": q6_sentiment,
+        "q7_sentiment": q7_sentiment,
+        "q8_sentiment": q8_sentiment,
+        "q9_sentiment": q9_sentiment,
         "questions": question1_sentiment,
     }
 
+    return HttpResponse(template.render(context, request))"""
+
+    response_data = intervieweeResponse.objects.values("question_id_id").annotate(
+        answer_text=F("answer_text"),
+        positivity_score=Avg("positivity_score"),
+        neutrality_score=Avg("neutrality_score"),
+        negativity_score=Avg("negativity_score"),
+        compound_score=Avg("compound_score"),
+    )
+
+    context = {"data": response_data}
+
+    template = loader.get_template("polls/interviewStats.html")
     return HttpResponse(template.render(context, request))
 
 
@@ -440,6 +539,7 @@ def get_interviewResponses(request):
                         negativity_score=negativity_score,
                         interviewee_id_id=interviewee_id,
                         question_id_id=question_number,
+                        compound_score=compound_score,
                     )
 
                     en.save()

@@ -14,17 +14,18 @@
 
 
   
-  <form action="/rifha/riskAnalysisAdd/{{riskId}}/" method="post">
   
-
+  
+    
 
     {% load crispy_forms_tags %}
 
     <div class="row">
     <h4> Risk Details </h4>
 
+     
 
-    Threat Analysis Status: {{form.riskAnalysisStatus | as_crispy_field}}
+     
 
     {{form.riskAsset | as_crispy_field}}
 
@@ -36,7 +37,7 @@
 
     {{form.riskDescription | as_crispy_field}}
 
-  </form> 
+  
     </div>
 
     <div class="row">
@@ -96,10 +97,18 @@
 </div>
 
   
+<form action="/rifha/riskControlsAdd/{{riskId}}/" method="post">
 
-<div class="col d-flex justify-content-right p-2"><input type="submit" value="Submit"
-  class="btn btn-outline-secondary">
-</div>
+  {% csrf_token %}
+
+  <div>
+    <div class="col-md-2"><input type="submit" value="Complete Threat Analysis"
+      class="btn btn-outline-secondary">
+    </div>
+  </div>
+
+</form> 
+
 </main>
 
 

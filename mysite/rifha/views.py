@@ -40,6 +40,7 @@ from .forms import (
     addRiskForm,
     addRiskAnalysisForm,
     addRiskThreatForm,
+    addRiskControlForm,
 )
 from django.shortcuts import get_object_or_404
 
@@ -368,6 +369,52 @@ def riskthreatAdd(request, msg):
 
 
 @login_required
+def riskControlsAdd(request, msg):
+    riskData = riskReg.objects.get(riskId=msg)
+
+    if request.method == "POST":
+        riskData.riskAnalysisStatus = 1
+        riskData.save()
+
+    if request.method == "POST":
+        # Get the list of threat IDs from the form data
+        control_ids = request.POST.getlist("riskControls")
+
+        # Add selected threats to the risk
+        for control_id in control_ids:
+            control = controlCatalogue.objects.get(controlId=control_id)
+            riskData.riskControls.add(control)
+
+        # return HttpResponseRedirect("/rifha/riskControlsAdd/" + msg)
+
+    riskData = addRiskAnalysisForm(instance=riskData)
+    threatData = threatCatalogue.objects.filter(riskreg__riskId=msg).values(
+        "threatName", "threatlikelihood", "threatARO"
+    )
+    controlList = addRiskControlForm()
+    controlData = controlCatalogue.objects.filter(riskreg__riskId=msg).values(
+        "controlName", "controlCategory", "controlDescription"
+    )
+
+    context = {
+        "riskId": msg,
+        "form": riskData,
+        "controlList": controlList,
+        "controlData": controlData,
+        "threatData": threatData,
+    }
+    return render(request, "riskControlsAdd.html", context)
+
+
+@login_required
+def riskReport(request, msg):
+    context = {
+        "riskId": msg,
+    }
+    return render(request, "riskReport.html", context)
+
+
+@login_required
 def riskEdit(request, msg):
     riskData = riskReg.objects.get(riskId=msg)
     if request.method == "POST":
@@ -381,11 +428,6 @@ def riskEdit(request, msg):
 
     context = {"form": form, "riskId": msg}
     return render(request, "riskEdit.html", context)
-
-
-@login_required
-def riskControlsAdd(request, msg):
-    pass
 
 
 @login_required

@@ -34,11 +34,13 @@ class createResearchQuestion(forms.Form):
 
 
 class createResearchResponse(forms.Form):
+    interviewee_choices = [
+        (interviewee.interviewee_id, interviewee.interviewee_reference)
+        for interviewee in interviewee.objects.all()
+    ]
+
     interviewee = forms.ChoiceField(
-        choices=[
-            (obj.interviewee_id, obj.interviewee_reference)
-            for obj in interviewee.objects.all()
-        ],
+        choices=interviewee_choices,
         label="Select Interviewee",
     )
 

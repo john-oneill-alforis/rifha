@@ -55,9 +55,9 @@
         {% endif %}
 
         {% if entry.controlAnalysisStatus == 0 %}
-          <td scope="col"><a href="/rifha/riskAnalysisAdd/{{entry.riskId}}/">Incomplete</a></td>
+          <td scope="col"><a href="/rifha/riskControlsAdd/{{entry.riskId}}/">Incomplete</a></td>
         {% elif entry.controlAnalysisStatus == 1 %}
-          <td scope="col"><a href="/rifha/riskAnalysisAdd/{{entry.riskId}}/">Complete</a></td>
+          <td scope="col"><a href="/rifha/riskControlsAdd/{{entry.riskId}}/">Complete</a></td>
         {% endif %}
 
         

@@ -6,6 +6,7 @@ from .models import (
     staff,
     riskReg,
     threatCatalogue,
+    controlCatalogue,
 )
 from django.forms import DateInput
 
@@ -240,4 +241,20 @@ class addRiskThreatForm(forms.ModelForm):
         self.fields["riskThreats"].widget = forms.Select(
             choices=[("", "---------")]
             + list(threatCatalogue.objects.values_list("threatId", "threatName")),
+        )
+
+
+class addRiskControlForm(forms.ModelForm):
+    class Meta:
+        model = riskReg
+        fields = [
+            "riskControls",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["riskControls"].widget = forms.Select(
+            choices=[("", "---------")]
+            + list(controlCatalogue.objects.values_list("controlId", "controlName")),
         )

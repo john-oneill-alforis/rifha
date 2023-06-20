@@ -37,64 +37,29 @@
 
 
 
+
         <div class="col-3 d-flex justify-content-left p-2">
-            <h6>Question 1</h6>
+
         </div>
                 <div class="row g-2">
-                    <div class="col-2 d-flex justify-content-left p-2"><h6>Negativity Score</h6></div>
-                    <div class="col-2 d-flex justify-content-left p-2"><h6>Neutrality Score</h6></div>
+                    <div class="col-2 d-flex justify-content-left p-2">&nbsp;</h6></div>
                     <div class="col-2 d-flex justify-content-left p-2"><h6>Positivity Score</h6></div>
+                    <div class="col-2 d-flex justify-content-left p-2"><h6>Neutrality Score</h6></div>
+                    <div class="col-2 d-flex justify-content-left p-2"><h6>Negativity Score</h6></div>
                     <div class="col-2 d-flex justify-content-left p-2"><h6>Compound Score</h6></div>
                 </div>
    
-        {% for y in q1_sentiment %}
+        {% for y in data %}
     
         <div class="row g-2">
-            <div class="col-2 d-flex justify-content-left p-2">{{y.neg }}</div>
-            <div class="col-2 d-flex justify-content-left p-2">{{y.neu}}</div>
-            <div class="col-2 d-flex justify-content-left p-2">{{y.pos}}</div>
-            <div class="col-2 d-flex justify-content-left p-2">{{y.compound}}</div>
+            <div class="col-2 d-flex justify-content-left p-2">Question {{ forloop.counter }}</div>
+            <div class="col-2 d-flex justify-content-left p-2">{{y.positivity_score }}</div>
+            <div class="col-2 d-flex justify-content-left p-2">{{y.neutrality_score}}</div>
+            <div class="col-2 d-flex justify-content-left p-2">{{y.negativity_score}}</div>
+            <div class="col-2 d-flex justify-content-left p-2">{{y.compound_score}}</div>
         </div>
 
         {% endfor %}
-
-        <div class="col-3 d-flex justify-content-left p-2">
-            <h6>Question 2</h6>
-        </div>
-                <div class="row g-2">
-                    <div class="col-2 d-flex justify-content-left p-2"><h6>Negativity Score</h6></div>
-                    <div class="col-2 d-flex justify-content-left p-2"><h6>Neutrality Score</h6></div>
-                    <div class="col-2 d-flex justify-content-left p-2"><h6>Positivity Score</h6></div>
-                    <div class="col-2 d-flex justify-content-left p-2"><h6>Compound Score</h6></div>
-                </div>
-   
-        {% for y in q2_sentiment %}
-    
-        <div class="row g-2">
-            <div class="col-2 d-flex justify-content-left p-2">{{y.neg }}</div>
-            <div class="col-2 d-flex justify-content-left p-2">{{y.neu}}</div>
-            <div class="col-2 d-flex justify-content-left p-2">{{y.pos}}</div>
-            <div class="col-2 d-flex justify-content-left p-2">{{y.compound}}</div>
-        </div>
-
-        {% endfor %}
-            
-
-
-                  
-         
-
-            
-
-                   
-
-            
-
-
-           
-    
-
-       
     
  
     </div>
