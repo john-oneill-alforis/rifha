@@ -144,10 +144,10 @@ def controlAdd(request):
             # Handle successful form submission, e.g., redirect to a success page
             return HttpResponseRedirect("/rifha/controls/")
     else:
-        form = addAssetForm()
+        form = addRiskControlForm()
 
     context = {"form": form}
-    return render(request, "controlsDashboard.html", context)
+    return render(request, "controlsAdd.html", context)
 
 
 @login_required
