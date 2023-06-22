@@ -116,6 +116,31 @@ class addAssetForm(forms.ModelForm):
         )
 
 
+class addControlForm(forms.ModelForm):
+    class Meta:
+        model = controlCatalogue
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["assetType"].widget = forms.Select(
+            choices=[("", "---------")]
+            + list(assetsTypes.objects.values_list("assetTypeId", "assetTypeName"))
+        )
+        self.fields["assetClassification"].widget = forms.Select(
+            choices=[("", "---------")]
+            + list(
+                assetsClassifications.objects.values_list(
+                    "classification_Id", "classificationLabel"
+                )
+            )
+        )
+        self.fields["assetOwner"].widget = forms.Select(
+            choices=[("", "---------")]
+            + list(staff.objects.values_list("staffId", "fullName"))
+        )
+
+
 class addRiskForm(forms.ModelForm):
     class Meta:
         model = riskReg
