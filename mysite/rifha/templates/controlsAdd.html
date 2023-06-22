@@ -16,19 +16,14 @@
 
     {% load crispy_forms_tags %}
 
-      {{form.riskId|as_crispy_field}}
+      {{form.controlId|as_crispy_field}}
 
-      {{form.riskOwner|as_crispy_field}}
+      {{form.controlName|as_crispy_field}}
 
-      {{form.riskAsset|as_crispy_field}}
+      {{form.controlCategory|as_crispy_field}}
 
-      {{form.riskDescription|as_crispy_field}}
+      {{form.controlDescription|as_crispy_field}}
 
-      {{form.riskCreationDate|as_crispy_field}}
-
-      {{form.riskReviewDate|as_crispy_field}}
-
-      {{form.riskNotes|as_crispy_field}}
 
     
   <div class="col d-flex justify-content-right p-2"><input type="submit" value="Submit"
