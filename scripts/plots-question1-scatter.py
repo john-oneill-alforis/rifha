@@ -1,6 +1,7 @@
 import mysql.connector
 import matplotlib.pyplot as plt
 import os
+from pathlib import Path
 
 
 def create_scatter():
@@ -11,6 +12,9 @@ def create_scatter():
         password=(os.getenv("db_password")),  # Replace with your MySQL password
         database="thesis_vert",  # Replace with your database name
     )
+
+    # Path data to save to the plots folder
+    toplevel_path = Path(__file__).parents[1]
 
     # Create a cursor to interact with the database
     cursor = cnx.cursor()
@@ -52,7 +56,7 @@ def create_scatter():
     # Set the labels and title
     plt.xlabel("Interviewee ID")
     plt.ylabel("Score")
-    plt.title("Scatter Plot")
+    plt.title("Process Confidence")
 
     # Display legend
     plt.legend()
@@ -61,7 +65,7 @@ def create_scatter():
     plt.xticks([])
 
     # Show the plot
-    plt.show()
+    plt.savefig(toplevel_path / "plots/veris-national-distribution.png")
 
     # Close the cursor and database connection
     cursor.close()

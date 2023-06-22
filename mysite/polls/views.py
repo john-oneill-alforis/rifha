@@ -325,22 +325,6 @@ def get_interviewStats(request):
         compound_score=Avg("compound_score"),
     )
 
-    # Prepare scatter plot data
-    x = [entry["positivity_score"] for entry in response_data]
-    y = [entry["neutrality_score"] for entry in response_data]
-
-    # Create scatter plot
-    plt.scatter(x, y)
-    plt.xlabel("Process Knowledge")
-    plt.ylabel("Confidence")
-    plt.title("Process Knowledge Confidence")
-
-    # Save scatter plot to a file
-    plots_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "../plots"))
-    os.makedirs(plots_folder, exist_ok=True)
-    scatter_plot_path = os.path.join(plots_folder, "Process_Knowledge_Confidence.png")
-    plt.savefig(scatter_plot_path)
-
     context = {"data": response_data}
 
     template = loader.get_template("polls/interviewStats.html")
