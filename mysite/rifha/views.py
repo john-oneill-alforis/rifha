@@ -134,6 +134,23 @@ def controlsEdit(request, msg):
 
 
 @login_required
+def controlAdd(request):
+    context = {}
+    # if this is a POST request we need to process the form data
+    if request.method == "POST":
+        form = addRiskControlForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Handle successful form submission, e.g., redirect to a success page
+            return HttpResponseRedirect("/rifha/controls/")
+    else:
+        form = addAssetForm()
+
+    context = {"form": form}
+    return render(request, "controlsDashboard.html", context)
+
+
+@login_required
 def peopleHome(request):
     team = staff.objects.all().order_by("firstName")
 
