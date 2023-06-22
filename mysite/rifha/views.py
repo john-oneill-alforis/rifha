@@ -299,7 +299,7 @@ def riskHome(request):
     context = {
         "risks": all_risks,
     }
-    template = loader.get_template("riskDashboard.html")
+    template = loader.get_template("peopleDashboard.html")
     return HttpResponse(template.render(context, request))
 
 
