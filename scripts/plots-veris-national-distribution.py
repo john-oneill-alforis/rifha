@@ -32,21 +32,6 @@ def process_veris_information():
         except:
             print(p.name)
 
-    # Grab the data from the submitted reports
-    # for p in veris_submitted_data.rglob("*.json"):
-
-    # Load the data from the json file
-    # json_file = veris_submitted_data / p.name
-
-    # try:
-    #    data = json.loads(json_file.read_bytes())
-    #    for x in data["victim"]["country"]:
-    #        print(x)
-    #        veris_geo_count.append(x)
-
-    # except:
-    #    print(p.name)
-
     df = pd.DataFrame(veris_geo_count, columns=["Location"])
 
     # The count of the entries per year. This is a count so wont

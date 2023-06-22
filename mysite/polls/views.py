@@ -1,12 +1,15 @@
-from django.shortcuts import render, redirect, reverse
-from django.db.models import Count, DateTimeField
-from datetime import date, timezone, datetime, timedelta
+from django.shortcuts import render, redirect
+from django.db.models import Count
 from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect
 from collections import defaultdict
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from math import log
+import os
+import matplotlib.pyplot as plt
+
+
 from django.db.models import Avg, F
 from .models import trainingCorpus
 from .models import textLabels
@@ -314,127 +317,6 @@ def errorLog(request):
 def get_interviewStats(request):
     template = loader.get_template("polls/interviewStats.html")
 
-    """question1_sentiment = (
-        interviewQuestions.objects.all().values("question_1").order_by("id")
-    )
-
-    question2_sentiment = (
-        interviewQuestions.objects.all().values("question_2").order_by("id")
-    )
-
-    question3_sentiment = (
-        interviewQuestions.objects.all().values("question_3").order_by("id")
-    )
-
-    question4_sentiment = (
-        interviewQuestions.objects.all().values("question_4").order_by("id")
-    )
-
-    question5_sentiment = (
-        interviewQuestions.objects.all().values("question_5").order_by("id")
-    )
-
-    question6_sentiment = (
-        interviewQuestions.objects.all().values("question_6").order_by("id")
-    )
-
-    question7_sentiment = (
-        interviewQuestions.objects.all().values("question_7").order_by("id")
-    )
-
-    question8_sentiment = (
-        interviewQuestions.objects.all().values("question_8").order_by("id")
-    )
-
-    question9_sentiment = (
-        interviewQuestions.objects.all().values("question_9").order_by("id")
-    )
-
-    q1_sentiment = []
-    for x in question1_sentiment:
-        analyzer = SentimentIntensityAnalyzer()
-        sentiment_scores = analyzer.polarity_scores(x["question_1"])
-
-        q1_sentiment.append(sentiment_scores)
-
-    q2_sentiment = []
-    for x in question2_sentiment:
-        analyzer = SentimentIntensityAnalyzer()
-        sentiment_scores = analyzer.polarity_scores(x["question_2"])
-
-        q2_sentiment.append(sentiment_scores)
-
-    q3_sentiment = []
-    for x in question3_sentiment:
-        analyzer = SentimentIntensityAnalyzer()
-        sentiment_scores = analyzer.polarity_scores(x["question_3"])
-
-        q3_sentiment.append(sentiment_scores)
-
-    q4_sentiment = []
-    for x in question4_sentiment:
-        analyzer = SentimentIntensityAnalyzer()
-        sentiment_scores = analyzer.polarity_scores(x["question_4"])
-
-        q4_sentiment.append(sentiment_scores)
-
-    q5_sentiment = []
-    for x in question5_sentiment:
-        analyzer = SentimentIntensityAnalyzer()
-        sentiment_scores = analyzer.polarity_scores(x["question_5"])
-
-        q5_sentiment.append(sentiment_scores)
-
-    q6_sentiment = []
-    for x in question6_sentiment:
-        analyzer = SentimentIntensityAnalyzer()
-        sentiment_scores = analyzer.polarity_scores(x["question_6"])
-
-        q6_sentiment.append(sentiment_scores)
-
-    q7_sentiment = []
-    for x in question7_sentiment:
-        analyzer = SentimentIntensityAnalyzer()
-        sentiment_scores = analyzer.polarity_scores(x["question_7"])
-
-        q7_sentiment.append(sentiment_scores)
-
-    q8_sentiment = []
-    for x in question8_sentiment:
-        analyzer = SentimentIntensityAnalyzer()
-        sentiment_scores = analyzer.polarity_scores(x["question_8"])
-
-        q8_sentiment.append(sentiment_scores)
-
-    q9_sentiment = []
-    for x in question9_sentiment:
-        analyzer = SentimentIntensityAnalyzer()
-        sentiment_scores = analyzer.polarity_scores(x["question_9"])
-
-        q9_sentiment.append(sentiment_scores)
-
-    responseData = (
-        interviewQuestions.objects.all()
-        .values("interviewee_Id", "date_created")
-        .order_by("id")
-    )
-
-    context = {
-        "entries": responseData,
-        "q1_sentiment": q1_sentiment,
-        "q2_sentiment": q2_sentiment,
-        "q3_sentiment": q3_sentiment,
-        "q4_sentiment": q4_sentiment,
-        "q5_sentiment": q5_sentiment,
-        "q6_sentiment": q6_sentiment,
-        "q7_sentiment": q7_sentiment,
-        "q8_sentiment": q8_sentiment,
-        "q9_sentiment": q9_sentiment,
-        "questions": question1_sentiment,
-    }
-
-    return HttpResponse(template.render(context, request))"""
-
     response_data = intervieweeResponse.objects.values("question_id_id").annotate(
         answer_text=F("answer_text"),
         positivity_score=Avg("positivity_score"),
@@ -442,6 +324,22 @@ def get_interviewStats(request):
         negativity_score=Avg("negativity_score"),
         compound_score=Avg("compound_score"),
     )
+
+    # Prepare scatter plot data
+    x = [entry["positivity_score"] for entry in response_data]
+    y = [entry["neutrality_score"] for entry in response_data]
+
+    # Create scatter plot
+    plt.scatter(x, y)
+    plt.xlabel("Process Knowledge")
+    plt.ylabel("Confidence")
+    plt.title("Process Knowledge Confidence")
+
+    # Save scatter plot to a file
+    plots_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "../plots"))
+    os.makedirs(plots_folder, exist_ok=True)
+    scatter_plot_path = os.path.join(plots_folder, "Process_Knowledge_Confidence.png")
+    plt.savefig(scatter_plot_path)
 
     context = {"data": response_data}
 
