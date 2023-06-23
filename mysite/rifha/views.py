@@ -41,6 +41,7 @@ from .forms import (
     addRiskAnalysisForm,
     addRiskThreatForm,
     addRiskControlForm,
+    addControlForm,
 )
 from django.shortcuts import get_object_or_404
 
@@ -108,7 +109,7 @@ def assettEdit(request, msg):
 
 @login_required
 def controlsHome(request):
-    all_controls = controlCatalogue.objects.order_by("controlCategory")
+    all_controls = controlCatalogue.objects.select_related("controlCategory").all()
     context = {
         "controls": all_controls,
     }
@@ -116,7 +117,7 @@ def controlsHome(request):
     return HttpResponse(template.render(context, request))
 
 
-"""@login_required
+@login_required
 def controlsEdit(request, msg):
     controlData = controlCatalogue.objects.get(controlId=msg)
 
@@ -125,12 +126,12 @@ def controlsEdit(request, msg):
         if form.is_valid():
             form.save()
 
-        return HttpResponseRedirect("/rifha/controlEdit/" + msg)
+        return HttpResponseRedirect("/rifha/controlsEdit/" + msg)
     else:
-        form = addAssetForm(instance=controlData)
+        form = addControlForm(instance=controlData)
 
     context = {"form": form, "controlId": msg}
-    return render(request, "controlEdit.html", context)"""
+    return render(request, "controlsEdit.html", context)
 
 
 @login_required
@@ -138,13 +139,13 @@ def controlAdd(request):
     context = {}
     # if this is a POST request we need to process the form data
     if request.method == "POST":
-        form = addRiskControlForm(request.POST)
+        form = addControlForm(request.POST)
         if form.is_valid():
             form.save()
             # Handle successful form submission, e.g., redirect to a success page
             return HttpResponseRedirect("/rifha/controls/")
     else:
-        form = addRiskControlForm()
+        form = addControlForm()
 
     context = {"form": form}
     return render(request, "controlsAdd.html", context)
@@ -503,3 +504,8 @@ def populateThreatInformation(request):
 
     context = {"results_dict": results_dict, "category": category}
     return render(request, "adminDashboard.html", context)
+
+
+@login_required
+def processesHome(request):
+    pass

@@ -136,8 +136,50 @@ class controlCatalogue(models.Model):
     )
 
     controlName = models.CharField(max_length=200)
-    controlCategory = models.CharField(max_length=200)
+    controlCategory = models.ForeignKey(
+        "controlTypes",
+        on_delete=models.CASCADE,
+        default="00545586-f865-48f5-9c33-19394977b783",
+    )
     controlDescription = models.TextField(max_length=2000)
+
+    def __unicode__(self):
+        return self.name
+
+
+class controlTypes(models.Model):
+    controlTypeId = models.CharField(
+        primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
+    )
+    controlTypeName = models.CharField(max_length=100)
+    controlTypeDescription = models.CharField(max_length=2000)
+
+    def __unicode__(self):
+        return self.name
+
+
+class processes(models.Model):
+    processeId = models.CharField(
+        primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
+    )
+    processName = models.CharField(max_length=100)
+    processDescription = models.CharField(max_length=2000)
+    processCriticality = models.ForeignKey(
+        "processCriticality",
+        on_delete=models.CASCADE,
+        default="1",
+    )
+
+    def __unicode__(self):
+        return self.name
+
+
+class processCriticality(models.Model):
+    processeId = models.CharField(
+        primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
+    )
+    processCriticality = models.CharField(max_length=100)
+    processCriticalityDescription = models.CharField(max_length=2000)
 
     def __unicode__(self):
         return self.name

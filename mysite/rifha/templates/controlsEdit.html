@@ -8,11 +8,11 @@
 
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Edit Asset</h1>
+    <h1 class="h2">Edit Security Control</h1>
   </div>
 
 
-  <form method="post" action="/rifha/assettEdit/{{assetId}}/">
+  <form method="post" action="/rifha/controlsEdit/{{controlId}}/">
 
 
           {% csrf_token %}
@@ -20,17 +20,13 @@
           {% load crispy_forms_tags %}
 
 
-          {{form.assetId|as_crispy_field}}
+          {{form.controlId|as_crispy_field}}
 
-          {{form.assetName|as_crispy_field}}
+          {{form.controlName|as_crispy_field}}
 
-          {{form.assetDescription|as_crispy_field}}
+          {{form.controlCategory|as_crispy_field}}
 
-          {{form.assetType|as_crispy_field}}
-
-          {{form.assetClassification|as_crispy_field}}
-
-          {{form.assetOwner|as_crispy_field}}
+          {{form.controlDescription|as_crispy_field}}
 
 
   <div class="col d-flex justify-content-right p-2"><input type="submit" value="Update"

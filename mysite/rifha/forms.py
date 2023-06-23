@@ -7,6 +7,7 @@ from .models import (
     riskReg,
     threatCatalogue,
     controlCatalogue,
+    controlTypes,
 )
 from django.forms import DateInput
 
@@ -119,25 +120,22 @@ class addAssetForm(forms.ModelForm):
 class addControlForm(forms.ModelForm):
     class Meta:
         model = controlCatalogue
-        fields = "__all__"
+        fields = [
+            "controlId",
+            "controlName",
+            "controlCategory",
+            "controlDescription",
+        ]
+
+        widgets = {
+            "controlId": forms.TextInput(attrs={"readonly": "readonly"}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["assetType"].widget = forms.Select(
+        self.fields["controlCategory"].widget = forms.Select(
             choices=[("", "---------")]
-            + list(assetsTypes.objects.values_list("assetTypeId", "assetTypeName"))
-        )
-        self.fields["assetClassification"].widget = forms.Select(
-            choices=[("", "---------")]
-            + list(
-                assetsClassifications.objects.values_list(
-                    "classification_Id", "classificationLabel"
-                )
-            )
-        )
-        self.fields["assetOwner"].widget = forms.Select(
-            choices=[("", "---------")]
-            + list(staff.objects.values_list("staffId", "fullName"))
+            + list(controlTypes.objects.values_list("controlTypeId", "controlTypeName"))
         )
 
 
