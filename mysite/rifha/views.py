@@ -17,6 +17,7 @@ from .models import (
     riskReg,
     threatCatalogue,
     controlCatalogue,
+    businessProcess,
 )
 from polls.models import (
     veris_action_malware_variety,
@@ -42,6 +43,7 @@ from .forms import (
     addRiskThreatForm,
     addRiskControlForm,
     addControlForm,
+    addBusinessProcessForm,
 )
 from django.shortcuts import get_object_or_404
 
@@ -509,28 +511,48 @@ def populateThreatInformation(request):
 @login_required
 def processesHome(request):
     pass
-    """all_processes = processes.objects.select_related("processCriticality").all()
+    all_processes = businessProcess.objects.select_related(
+        "businessProcessCriticality"
+    ).all()
 
     context = {
         "processes": all_processes,
     }
     template = loader.get_template("processDashboard.html")
-    return HttpResponse(template.render(context, request))"""
+    return HttpResponse(template.render(context, request))
 
 
 @login_required
 def processAdd(request):
-    pass
-    """context = {}
+    context = {}
     # if this is a POST request we need to process the form data
     if request.method == "POST":
-        form = addProcessForm(request.POST)
+        form = addBusinessProcessForm(request.POST)
         if form.is_valid():
             form.save()
             # Handle successful form submission, e.g., redirect to a success page
             return HttpResponseRedirect("/rifha/processes/")
     else:
-        form = addProcessForm()
+        form = addBusinessProcessForm()
 
     context = {"form": form}
-    return render(request, "processAdd.html", context)"""
+    return render(request, "processAdd.html", context)
+
+
+@login_required
+def processEdit(request, msg):
+    businessProcessData = businessProcess.objects.get(businessProcessId=msg)
+    if request.method == "POST":
+        form = addBusinessProcessForm(request.POST, instance=businessProcessData)
+        if form.is_valid():
+            form.save()
+
+        return HttpResponseRedirect("/rifha/processEdit/" + msg)
+    else:
+        form = addBusinessProcessForm(instance=businessProcessData)
+
+    context = {"form": form, "businessProcessId": msg}
+    return render(request, "processEdit.html", context)
+
+
+processEdit

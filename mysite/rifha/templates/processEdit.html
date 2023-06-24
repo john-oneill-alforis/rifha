@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Edit Process Record</h1>
+  </div>
+
+  
+            
+  <form method="POST" action="/rifha/processEdit/{{businessProcessId}}/">
+      
+    {% csrf_token %}
+      {% load crispy_forms_tags %}
+
+        {{ form.businessProcessId | as_crispy_field}}
+
+        {{ form.businessProcessName | as_crispy_field}}
+
+        {{ form.businessProcessDescription | as_crispy_field}}
+
+        {{ form.businessProcessCriticality | as_crispy_field}}
+
+        {{ form.businessProcessOwner | as_crispy_field}}
+    
+      <div class="col d-flex justify-content-right p-2"><input type="submit" value="Update" class="btn btn-outline-secondary"></div>  
+
+
+   
+</form>      
+ </div>
+{% endblock %}

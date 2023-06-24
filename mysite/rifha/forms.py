@@ -8,6 +8,8 @@ from .models import (
     threatCatalogue,
     controlCatalogue,
     controlTypes,
+    businessProcess,
+    businessProcessCriticality,
 )
 from django.forms import DateInput
 
@@ -162,18 +164,7 @@ class addRiskForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        """self.fields["assetType"].widget = forms.Select(
-            choices=[("", "---------")]
-            + list(assetsTypes.objects.values_list("assetTypeId", "assetTypeName"))
-        )
-        self.fields["assetClassification"].widget = forms.Select(
-            choices=[("", "---------")]
-            + list(
-                assetsClassifications.objects.values_list(
-                    "classification_Id", "classificationLabel"
-                )
-            )
-        )"""
+
         self.fields["riskAsset"].widget = forms.Select(
             choices=[("", "---------")]
             + list(assets.objects.values_list("assetId", "assetName"))
@@ -182,29 +173,6 @@ class addRiskForm(forms.ModelForm):
             choices=[("", "---------")]
             + list(staff.objects.values_list("staffId", "fullName"))
         )
-        # Retrieve all unique threat categories from the threatCatalogue model
-        """threat_categories = threatCatalogue.objects.values_list(
-            "threatCategory", flat=True
-        ).distinct()
-
-        # Create a choices list organized by threat category
-        choices = [("", "---------")]
-        for category in threat_categories:
-            threats = threatCatalogue.objects.filter(threatCategory=category)
-            threat_choices = [
-                (threat.threatId, threat.threatName) for threat in threats
-            ]
-            choices.append((category, threat_choices))
-
-        # Assign the choices to the riskThreats widget
-        self.fields["riskThreats"].widget.choices = choices
-        self.fields["riskThreats"].widget.attrs["size"] = 10
-        self.fields["riskThreats"].required = False"""
-
-        """if self.instance:
-            self.fields["riskThreats"].queryset = threatCatalogue.objects.all()
-            self.fields["riskThreats"].initial = self.instance.riskThreats.all()
-            self.fields["riskThreats"].widget.attrs["size"] = 10"""
 
 
 class addRiskAnalysisForm(forms.ModelForm):
@@ -280,4 +248,37 @@ class addRiskControlForm(forms.ModelForm):
         self.fields["riskControls"].widget = forms.Select(
             choices=[("", "---------")]
             + list(controlCatalogue.objects.values_list("controlId", "controlName")),
+        )
+
+
+class addBusinessProcessForm(forms.ModelForm):
+    class Meta:
+        model = businessProcess
+        fields = [
+            "businessProcessId",
+            "businessProcessName",
+            "businessProcessDescription",
+            "businessProcessCriticality",
+            "businessProcessOwner",
+        ]
+
+        widgets = {
+            "businessProcessId": forms.TextInput(attrs={"readonly": "readonly"}),
+            "businessProcessDescription": forms.Textarea(attrs={"rows": 3, "cols": 30}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["businessProcessCriticality"].widget = forms.Select(
+            choices=[("", "---------")]
+            + list(
+                businessProcessCriticality.objects.values_list(
+                    "businessProcessCriticalityId", "businessProcessCriticality"
+                )
+            )
+        )
+
+        self.fields["businessProcessOwner"].widget = forms.Select(
+            choices=[("", "---------")]
+            + list(staff.objects.values_list("staffId", "fullName"))
         )

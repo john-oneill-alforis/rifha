@@ -156,3 +156,31 @@ class controlTypes(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+class businessProcess(models.Model):
+    businessProcessId = models.CharField(
+        primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
+    )
+    businessProcessName = models.CharField(max_length=100)
+    businessProcessDescription = models.CharField(max_length=2000)
+    businessProcessCriticality = models.ForeignKey(
+        "businessProcessCriticality",
+        on_delete=models.CASCADE,
+    )
+
+    businessProcessOwner = models.CharField(max_length=36)
+
+    def __unicode__(self):
+        return self.name
+
+
+class businessProcessCriticality(models.Model):
+    businessProcessCriticalityId = models.CharField(
+        primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
+    )
+    businessProcessCriticality = models.CharField(max_length=100)
+    businessProcessCriticalityDescription = models.CharField(max_length=2000)
+
+    def __unicode__(self):
+        return self.name

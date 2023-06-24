@@ -35,9 +35,10 @@
       {% for entry in processes %}
 
         <tr>
-          <td>{{entry.processName}}</td>
-          <td>{{entry.processDescription}}</td>
-          <td>{{entry.processCriticality.processCriticality}}</td>
+          <td><a href="/rifha/processEdit/{{entry.businessProcessId}}">{{entry.businessProcessName}}</a></td>
+          <td>{{entry.businessProcessDescription}}</td>
+          <td>{{entry.businessProcessCriticality.businessProcessCriticality}}</td>
+          <td>{{entry.businessProcessCriticality.businessProcessOwner}}</td>
        
         </tr>
        
