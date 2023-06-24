@@ -8,6 +8,8 @@ from .models import (
     threatCatalogue,
     controlCatalogue,
     controlTypes,
+    processes,
+    processCriticality,
 )
 from django.forms import DateInput
 
@@ -280,4 +282,31 @@ class addRiskControlForm(forms.ModelForm):
         self.fields["riskControls"].widget = forms.Select(
             choices=[("", "---------")]
             + list(controlCatalogue.objects.values_list("controlId", "controlName")),
+        )
+
+
+class addProcessForm(forms.ModelForm):
+    class Meta:
+        model = processes
+        fields = [
+            "processeId",
+            "processName",
+            "processDescription",
+            "processCriticality",
+        ]
+
+        widgets = {
+            "processeId": forms.TextInput(attrs={"readonly": "readonly"}),
+            "processDescription": forms.Textarea(attrs={"rows": 3, "cols": 30}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["processCriticality"].widget = forms.Select(
+            choices=[("", "---------")]
+            + list(
+                processCriticality.objects.values_list(
+                    "processeCriticalityId", "processCriticality"
+                )
+            )
         )

@@ -159,7 +159,7 @@ class controlTypes(models.Model):
 
 
 class processes(models.Model):
-    processeId = models.CharField(
+    processId = models.CharField(
         primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
     )
     processName = models.CharField(max_length=100)
@@ -167,7 +167,6 @@ class processes(models.Model):
     processCriticality = models.ForeignKey(
         "processCriticality",
         on_delete=models.CASCADE,
-        default="1",
     )
 
     def __unicode__(self):
@@ -175,7 +174,7 @@ class processes(models.Model):
 
 
 class processCriticality(models.Model):
-    processeId = models.CharField(
+    processCriticalityId = models.CharField(
         primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
     )
     processCriticality = models.CharField(max_length=100)

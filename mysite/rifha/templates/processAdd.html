@@ -16,11 +16,17 @@
   
   
 
-  <form action="/peopleUpdate/{{ x.staffId }}" method="post">
+  <form action="/processUpdate/{{ x.staffId }}" method="post">
     {% csrf_token %}
 
+    {% load crispy_forms_tags %}
+
+
+
     
-    {{peopleAdd}}
+    {{ form.processeId | as_crispy_field}}
+
+
 
 
 

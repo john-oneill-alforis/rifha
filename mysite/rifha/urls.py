@@ -39,4 +39,5 @@ urlpatterns = [
     path("controlsEdit/<str:msg>/", views.controlsEdit, name="controlsEdit"),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("processes", views.processesHome, name="processesHome"),
+    path("processAdd", views.processAdd, name="processAdd"),
 ]
