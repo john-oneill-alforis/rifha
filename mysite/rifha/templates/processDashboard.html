@@ -26,8 +26,10 @@
       <thead>
         <tr>
           <th scope="col">Process Name</th>
-          <th scope="col">Process Criticality</th>
+          
           <th scope="col">Process Description</th>
+          <th scope="col">Process Process Owner</th>
+          <th scope="col">Process Criticality</th>
         </tr>
       </thead>
       <tbody>
@@ -37,8 +39,9 @@
         <tr>
           <td><a href="/rifha/processEdit/{{entry.businessProcessId}}">{{entry.businessProcessName}}</a></td>
           <td>{{entry.businessProcessDescription}}</td>
+          <td>{{entry.businessProcessOwner.fullName}}</td>
           <td>{{entry.businessProcessCriticality.businessProcessCriticality}}</td>
-          <td>{{entry.businessProcessCriticality.businessProcessOwner}}</td>
+          
        
         </tr>
        

@@ -169,7 +169,10 @@ class businessProcess(models.Model):
         on_delete=models.CASCADE,
     )
 
-    businessProcessOwner = models.CharField(max_length=36)
+    businessProcessOwner = models.ForeignKey(
+        "staff",
+        on_delete=models.CASCADE,
+    )
 
     def __unicode__(self):
         return self.name
