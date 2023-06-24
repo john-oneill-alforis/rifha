@@ -159,7 +159,7 @@ class controlTypes(models.Model):
 
 
 class processes(models.Model):
-    processId = models.CharField(
+    processeId = models.CharField(
         primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
     )
     processName = models.CharField(max_length=100)
