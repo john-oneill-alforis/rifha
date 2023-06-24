@@ -17,7 +17,6 @@ from .models import (
     riskReg,
     threatCatalogue,
     controlCatalogue,
-    processes,
 )
 from polls.models import (
     veris_action_malware_variety,
@@ -43,7 +42,6 @@ from .forms import (
     addRiskThreatForm,
     addRiskControlForm,
     addControlForm,
-    addProcessForm,
 )
 from django.shortcuts import get_object_or_404
 
@@ -510,18 +508,20 @@ def populateThreatInformation(request):
 
 @login_required
 def processesHome(request):
-    all_processes = processes.objects.select_related("processCriticality").all()
+    pass
+    """all_processes = processes.objects.select_related("processCriticality").all()
 
     context = {
         "processes": all_processes,
     }
     template = loader.get_template("processDashboard.html")
-    return HttpResponse(template.render(context, request))
+    return HttpResponse(template.render(context, request))"""
 
 
 @login_required
 def processAdd(request):
-    context = {}
+    pass
+    """context = {}
     # if this is a POST request we need to process the form data
     if request.method == "POST":
         form = addProcessForm(request.POST)
@@ -533,4 +533,4 @@ def processAdd(request):
         form = addProcessForm()
 
     context = {"form": form}
-    return render(request, "processAdd.html", context)
+    return render(request, "processAdd.html", context)"""

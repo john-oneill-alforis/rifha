@@ -156,29 +156,3 @@ class controlTypes(models.Model):
 
     def __unicode__(self):
         return self.name
-
-
-class processes(models.Model):
-    processeId = models.CharField(
-        primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
-    )
-    processName = models.CharField(max_length=100)
-    processDescription = models.CharField(max_length=2000)
-    processCriticality = models.ForeignKey(
-        "processCriticality",
-        on_delete=models.CASCADE,
-    )
-
-    def __unicode__(self):
-        return self.name
-
-
-class processCriticality(models.Model):
-    processCriticalityId = models.CharField(
-        primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
-    )
-    processCriticality = models.CharField(max_length=100)
-    processCriticalityDescription = models.CharField(max_length=2000)
-
-    def __unicode__(self):
-        return self.name
