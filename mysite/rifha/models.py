@@ -96,15 +96,13 @@ class riskReg(models.Model):
     riskCreationDate = models.DateField()
     riskReviewDate = models.DateField()
     riskNotes = models.TextField(max_length=2000, null=True, blank=True)
+    riskImpactCost = models.DecimalField(max_digits=10, decimal_places=2)
     riskAnalysisStatus = models.BooleanField(
         default=False, verbose_name="Analysis Completed"
     )
     controlAnalysisStatus = models.BooleanField(
         default=False, verbose_name="Analysis Completed"
     )
-    """riskThreats = models.CharField(
-        default="a5eb6a73-22ca-450b-a6b8-c2273f994ef3", max_length=36
-    )"""
     riskThreats = models.ManyToManyField(
         "threatCatalogue",
     )

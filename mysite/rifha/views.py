@@ -409,11 +409,16 @@ def riskControlsAdd(request, msg):
 
     riskData = addRiskAnalysisForm(instance=riskData)
     threatData = threatCatalogue.objects.filter(riskreg__riskId=msg).values(
-        "threatName", "threatlikelihood", "threatARO"
+        "threatName",
+        "threatlikelihood",
+        "threatARO",
     )
+
+    # controlCatalogue.objects.select_related("controlCategory").all()
+
     controlList = addRiskControlForm()
     controlData = controlCatalogue.objects.filter(riskreg__riskId=msg).values(
-        "controlName", "controlCategory", "controlDescription"
+        "controlName", "controlCategory__controlTypeName", "controlDescription"
     )
 
     context = {
@@ -428,9 +433,7 @@ def riskControlsAdd(request, msg):
 
 @login_required
 def riskReport(request, msg):
-    context = {
-        "riskId": msg,
-    }
+    context = {"riskId": msg, "impact_cost": 2000}
     return render(request, "riskReport.html", context)
 
 
@@ -553,6 +556,3 @@ def processEdit(request, msg):
 
     context = {"form": form, "businessProcessId": msg}
     return render(request, "processEdit.html", context)
-
-
-processEdit

@@ -152,6 +152,7 @@ class addRiskForm(forms.ModelForm):
             "riskReviewDate",
             "riskNotes",
             "riskDescription",
+            "riskImpactCost",
         ]
 
         widgets = {

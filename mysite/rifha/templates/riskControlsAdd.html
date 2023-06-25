@@ -85,13 +85,15 @@
         </thead>
         <tbody>
           
+         
+
           {% for control in controlData %}
 
 
 
           <tr>
             <td scope="col">{{control.controlName}}</td>
-            <td scope="col">{{control.controlCategory}}</td>
+            <td scope="col">{{control.controlCategory__controlTypeName}}</td>
             <td scope="col">{{control.controlDescription}}</td>
           </tr>
 
