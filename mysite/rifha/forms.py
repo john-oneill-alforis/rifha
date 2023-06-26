@@ -161,6 +161,7 @@ class addRiskForm(forms.ModelForm):
             "riskReviewDate": DateInput(attrs={"type": "date"}),
             "riskNotes": forms.Textarea(attrs={"rows": 3, "cols": 30}),
             "riskDescription": forms.Textarea(attrs={"rows": 3, "cols": 30}),
+            "riskImpactCost": forms.TextInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -183,6 +184,7 @@ class addRiskAnalysisForm(forms.ModelForm):
             "riskId",
             "riskAsset",
             "riskOwner",
+            "riskImpactCost",
             "riskCreationDate",
             "riskReviewDate",
             "riskNotes",
@@ -194,6 +196,7 @@ class addRiskAnalysisForm(forms.ModelForm):
         widgets = {
             "riskId": forms.TextInput(attrs={"readonly": "readonly"}),
             "riskCreationDate": DateInput(attrs={"disabled": "disabled"}),
+            "riskImpactCost": forms.TextInput(attrs={"disabled": "disabled"}),
             "riskReviewDate": DateInput(attrs={"disabled": "disabled"}),
             "riskNotes": forms.Textarea(attrs={"rows": 3, "cols": 30}),
             "riskDescription": forms.Textarea(
@@ -283,3 +286,13 @@ class addBusinessProcessForm(forms.ModelForm):
             choices=[("", "---------")]
             + list(staff.objects.values_list("staffId", "fullName"))
         )
+
+
+class residualRiskOffsetForm(forms.ModelForm):
+    class Meta:
+        model = riskReg
+        fields = ["residualRiskOffset"]
+
+        widgets = {
+            "residualRiskOffset": forms.TextInput(attrs={"class": "form-control"}),
+        }

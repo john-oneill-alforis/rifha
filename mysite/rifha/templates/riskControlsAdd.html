@@ -15,11 +15,13 @@
 
   {% load crispy_forms_tags %}
 
-      {{riskId}}
+    
 
-      {{form.riskAsset | as_crispy_field}}
+    {{form.riskAsset | as_crispy_field}}
 
     {{form.riskOwner | as_crispy_field}}
+
+    {{form.riskImpactCost | as_crispy_field}}
 
     {{form.riskCreationDate | as_crispy_field}}
 
@@ -97,22 +99,35 @@
             <td scope="col">{{control.controlDescription}}</td>
           </tr>
 
+
+
           {% endfor %}
 
+         
+         
         </tbody>
       </table>
     </div>
 
     <div>
 
+      
+
       <form action="/rifha/riskReport/{{riskId}}/" method="post">
 
         {% csrf_token %}
-      
+
+        <div><h4> Control Impact Value </h4></div>
+
+
+        {{residualRiskOffsetForm}}
+
+
         <div>
-          <div class="col-md-2"><input type="submit" value="Complete Controls Analysis"
+          <div class="col d-flex justify-content-right p-2"><input type="submit" value="Complete Controls Analysis"
             class="btn btn-outline-secondary">
           </div>
+         
         </div>
       
       </form> 

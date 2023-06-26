@@ -96,7 +96,7 @@ class riskReg(models.Model):
     riskCreationDate = models.DateField()
     riskReviewDate = models.DateField()
     riskNotes = models.TextField(max_length=2000, null=True, blank=True)
-    riskImpactCost = models.DecimalField(max_digits=10, decimal_places=2)
+    riskImpactCost = models.IntegerField()
     riskAnalysisStatus = models.BooleanField(
         default=False, verbose_name="Analysis Completed"
     )
@@ -109,6 +109,7 @@ class riskReg(models.Model):
     riskControls = models.ManyToManyField(
         "controlCatalogue",
     )
+    residualRiskOffset = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __unicode__(self):
         return self.name

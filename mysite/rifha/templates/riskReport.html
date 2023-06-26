@@ -11,18 +11,26 @@
       <h4>Risk Report</h4>
   </div>
 
+  {% load crispy_forms_tags %}
       
-            
-      {{riskId}}
+  
 
-      {{impact_cost}}
+  <h1>Risk Report - Risk ID: {{ riskId }}</h1>
 
+    <h2>Risk Data</h2>
+    <p>ARO: {{ riskData.aro }}</p>
+    <p>Max Cost: {{ riskData.riskImpactCost }}</p>
 
-      <canvas id="myCanvas">
-        Your browser does not support the canvas tag.
-        </canvas>
+    <h2>Loss Exceedance Curve</h2>
+    <div id="loss-exceedance-curve" style="width: 400px; height: 500px;"></div>
 
-                   
+    <script>
+        var graphData = "{{ graphData|safe }}";  // Retrieve the graph data from the context
+
+        // Render the loss exceedance curve using Plotly.js
+        Plotly.newPlot('loss-exceedance-curve', graphData, {});
+    </script>
+  
 </main>
 
 {% endblock %}

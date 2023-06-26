@@ -1,7 +1,11 @@
-import uuid
 from math import log
 from django.shortcuts import render
 from collections import defaultdict
+import plotly.graph_objects as go
+from plotly.offline import plot
+import numpy as np
+import pandas as pd
+import random
 
 # from django.db.models import Count, DateTimeField
 from datetime import date, datetime, timedelta
@@ -44,6 +48,7 @@ from .forms import (
     addRiskControlForm,
     addControlForm,
     addBusinessProcessForm,
+    residualRiskOffsetForm,
 )
 from django.shortcuts import get_object_or_404
 
@@ -405,7 +410,15 @@ def riskControlsAdd(request, msg):
             control = controlCatalogue.objects.get(controlId=control_id)
             riskData.riskControls.add(control)
 
-        # return HttpResponseRedirect("/rifha/riskControlsAdd/" + msg)
+    if request.method == "POST":
+        # Process the form data
+        residual_risk_offset_form = residualRiskOffsetForm(
+            request.POST, instance=riskData
+        )
+        if residual_risk_offset_form.is_valid():
+            residual_risk_offset_form.save()
+    else:
+        residual_risk_offset_form = residualRiskOffsetForm(instance=riskData)
 
     riskData = addRiskAnalysisForm(instance=riskData)
     threatData = threatCatalogue.objects.filter(riskreg__riskId=msg).values(
@@ -427,13 +440,68 @@ def riskControlsAdd(request, msg):
         "controlList": controlList,
         "controlData": controlData,
         "threatData": threatData,
+        "residualRiskOffsetForm": residual_risk_offset_form,
     }
     return render(request, "riskControlsAdd.html", context)
 
 
 @login_required
 def riskReport(request, msg):
-    context = {"riskId": msg, "impact_cost": 2000}
+    riskData = riskReg.objects.get(riskId=msg)
+    threatAroList = threatCatalogue.objects.filter(riskreg__riskId=msg).values_list(
+        "threatlikelihood", flat=True
+    )
+
+    maxCost = riskData.riskImpactCost
+    lowerCost = riskData.riskImpactCost * 0.25
+
+    # Convert the fetched probabilities to floats
+    threat_probabilities = [float(prob) for prob in threatAroList]
+    num_simulations = 50000
+
+    # Calculate the combined risk
+    combined_risk = 1.0
+    for prob in threat_probabilities:
+        combined_risk *= prob
+
+    # Calculate the probability of either threat happening
+    either_threat_prob = sum(threat_probabilities)
+
+    # Perform Monte Carlo simulation
+    simulated_costs = []
+    for _ in range(num_simulations):
+        if np.random.rand() <= either_threat_prob:
+            mean = (maxCost + lowerCost) / 2
+            std_dev = (maxCost - lowerCost) / 6
+            cost = np.random.normal(mean, std_dev)
+            if cost < lowerCost:
+                cost = lowerCost
+            elif cost > maxCost:
+                cost = maxCost
+            simulated_costs.append(cost)
+
+    simulated_costs = sorted(
+        simulated_costs, reverse=True
+    )  # Sort the simulated costs in descending order
+    num_losses = len(simulated_costs)
+    exceedance_prob = np.arange(1, num_losses + 1) / num_losses
+
+    # Create the loss exceedance curve plot using Plotly
+    fig = go.Figure(data=go.Scatter(x=simulated_costs, y=exceedance_prob))
+    fig.update_layout(
+        plot_bgcolor="white",
+        xaxis_title="Cost",
+        yaxis_title="Exceedance Probability",
+        title="Loss Exceedance Curve",
+        yaxis=dict(
+            tickmode="linear",
+            tick0=0,
+            dtick=0.1,
+        ),
+    )
+    graph_data = fig.to_html(full_html=False, include_plotlyjs=True)
+
+    context = {"riskId": msg, "riskData": riskData, "graphData": graph_data}
     return render(request, "riskReport.html", context)
 
 
