@@ -2,10 +2,10 @@ from math import log
 from django.shortcuts import render
 from collections import defaultdict
 import plotly.graph_objects as go
-from plotly.offline import plot
 import numpy as np
 import pandas as pd
-import random
+from decimal import Decimal
+import json, random
 
 # from django.db.models import Count, DateTimeField
 from datetime import date, datetime, timedelta
@@ -447,61 +447,122 @@ def riskControlsAdd(request, msg):
 
 @login_required
 def riskReport(request, msg):
+    # Fetch risk data from the database
+
     riskData = riskReg.objects.get(riskId=msg)
-    threatAroList = threatCatalogue.objects.filter(riskreg__riskId=msg).values_list(
-        "threatlikelihood", flat=True
+
+    # Retrieve threat data from the database
+    threats = threatCatalogue.objects.filter(riskreg__riskId=msg).values(
+        "threatName",
+        "threatlikelihood",
+        "threatMinCost",
+        "threatMaxCost",
     )
 
-    maxCost = riskData.riskImpactCost
-    lowerCost = riskData.riskImpactCost * 0.25
+    # Set a number to represent the reduction in risk gained
+    # from control maturity
+    controlMaturity = 0.98
 
-    # Convert the fetched probabilities to floats
-    threat_probabilities = [float(prob) for prob in threatAroList]
-    num_simulations = 50000
+    # Set the number of Monte Carlo simulation iterations
+    numIterations = 5000
 
-    # Calculate the combined risk
-    combined_risk = 1.0
-    for prob in threat_probabilities:
-        combined_risk *= prob
+    inherentProbValue = []
+    inherentCalculatedLosses = []
 
-    # Calculate the probability of either threat happening
-    either_threat_prob = sum(threat_probabilities)
+    # Generate scenarios and combine financial outcomes for each series
+    for threat in threats:
+        probability = threat["threatlikelihood"]
+        lower_limit = threat["threatMinCost"]
+        upper_limit = threat["threatMaxCost"]
 
-    # Perform Monte Carlo simulation
-    simulated_costs = []
-    for _ in range(num_simulations):
-        if np.random.rand() <= either_threat_prob:
-            mean = (maxCost + lowerCost) / 2
-            std_dev = (maxCost - lowerCost) / 6
-            cost = np.random.normal(mean, std_dev)
-            if cost < lowerCost:
-                cost = lowerCost
-            elif cost > maxCost:
-                cost = maxCost
-            simulated_costs.append(cost)
+        randomProbability = np.random.uniform(0, 1, numIterations)
 
-    simulated_costs = sorted(
-        simulated_costs, reverse=True
-    )  # Sort the simulated costs in descending order
-    num_losses = len(simulated_costs)
-    exceedance_prob = np.arange(1, num_losses + 1) / num_losses
+        for x in randomProbability:
+            if x <= probability:
+                mean = (np.log(lower_limit) + np.log(upper_limit)) / 2.0
+                std_dv = (np.log(upper_limit) - np.log(lower_limit)) / 3.29
 
-    # Create the loss exceedance curve plot using Plotly
-    fig = go.Figure(data=go.Scatter(x=simulated_costs, y=exceedance_prob))
-    fig.update_layout(
-        plot_bgcolor="white",
-        xaxis_title="Cost",
-        yaxis_title="Exceedance Probability",
-        title="Loss Exceedance Curve",
-        yaxis=dict(
-            tickmode="linear",
-            tick0=0,
-            dtick=0.1,
-        ),
+                inherentProbValue.append(x)
+                inherentCalculatedLosses.append(np.random.lognormal(mean, std_dv))
+
+    residualProbValue = []
+    residualCalculatedLosses = []
+    # Generate scenarios and combine financial outcomes for each series
+    for threat in threats:
+        probability = threat["threatlikelihood"] - (
+            threat["threatlikelihood"] * controlMaturity
+        )
+        lower_limit = threat["threatMinCost"]
+        upper_limit = threat["threatMaxCost"]
+
+        randomProbability = np.random.uniform(0, 1, numIterations)
+
+        for x in randomProbability:
+            if x <= probability:
+                mean = (np.log(lower_limit) + np.log(upper_limit)) / 2.0
+                std_dv = (np.log(upper_limit) - np.log(lower_limit)) / 3.29
+
+                residualProbValue.append(x)
+                residualCalculatedLosses.append(np.random.lognormal(mean, std_dv))
+
+    inherentCalculatedLosses.sort(reverse=True)
+    residualCalculatedLosses.sort(reverse=True)
+
+    inherentProbValue.sort()
+    residualProbValue.sort()
+
+    # Prepare data
+    y_data1 = inherentProbValue
+    y_data2 = residualProbValue
+    x_data1 = inherentCalculatedLosses
+    x_data2 = residualCalculatedLosses
+
+    # Create Plotly graph with multiple line graphs
+    graph = go.Figure()
+    graph.add_trace(
+        go.Scatter(
+            x=x_data1,
+            y=y_data1,
+            mode="lines",
+            name="Inherent Risk - Loss Exceedence Curve",
+        )
     )
-    graph_data = fig.to_html(full_html=False, include_plotlyjs=True)
+    graph.add_trace(
+        go.Scatter(
+            x=x_data2,
+            y=y_data2,
+            mode="lines",
+            name="Residual Risk - Loss Exceedence Curve",
+        )
+    )
 
-    context = {"riskId": msg, "riskData": riskData, "graphData": graph_data}
+    graph.update_layout(
+        width=1600,
+        height=800,
+        plot_bgcolor="rgba(0,0,0,0)",
+    )
+
+    # Convert the graph to JSON
+    graph_json = graph.to_json()
+
+    averageInherent = max(inherentCalculatedLosses)
+    averageResidual = max(residualCalculatedLosses)
+
+    minInherent = min(inherentCalculatedLosses)
+    minResidual = min(residualCalculatedLosses)
+
+    context = {
+        "inherentCalculatedLosses": inherentCalculatedLosses,
+        "residualCalculatedLosses": residualCalculatedLosses,
+        "inherentProbValue": inherentProbValue,
+        "residualProbValue": residualProbValue,
+        "graph_json": graph_json,
+        "averageInherent": averageInherent,
+        "averageResidual": averageResidual,
+        "minInherent": minInherent,
+        "minResidual": minResidual,
+        "riskData": riskData,
+    }
     return render(request, "riskReport.html", context)
 
 

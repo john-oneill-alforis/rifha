@@ -109,7 +109,7 @@ class riskReg(models.Model):
     riskControls = models.ManyToManyField(
         "controlCatalogue",
     )
-    residualRiskOffset = models.DecimalField(max_digits=10, decimal_places=2)
+    residualRiskOffset = models.DecimalField(max_digits=4, decimal_places=2)
 
     def __unicode__(self):
         return self.name
@@ -122,8 +122,10 @@ class threatCatalogue(models.Model):
 
     threatName = models.CharField(max_length=200)
     threatCategory = models.CharField(max_length=200)
-    threatlikelihood = models.FloatField()
+    threatlikelihood = models.DecimalField(max_digits=6, decimal_places=2)
     threatARO = models.FloatField()
+    threatMinCost = models.DecimalField(max_digits=10, decimal_places=2)
+    threatMaxCost = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __unicode__(self):
         return self.name
