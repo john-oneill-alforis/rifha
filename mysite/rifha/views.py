@@ -5,7 +5,8 @@ import plotly.graph_objects as go
 import numpy as np
 import pandas as pd
 from decimal import Decimal
-import json, random
+import json, random, kaleido
+import os
 
 # from django.db.models import Count, DateTimeField
 from datetime import date, datetime, timedelta
@@ -22,6 +23,7 @@ from .models import (
     threatCatalogue,
     controlCatalogue,
     businessProcess,
+    businessProcessCriticality,
 )
 from polls.models import (
     veris_action_malware_variety,
@@ -33,6 +35,7 @@ from polls.models import (
 )
 
 from django.db.models.functions import Trunc, TruncYear
+from django.templatetags.static import static
 from django.contrib.auth.decorators import login_required
 from .forms import (
     peopleAddForm,
@@ -59,8 +62,42 @@ from django.shortcuts import get_object_or_404
 def dashboard(request):
     date_today = date.today().strftime("%Y-%m-%d")
 
+    assetCount = assets.objects.all().count
+    riskOwners = riskReg.objects.values("riskOwner").distinct().count()
+    processCount = businessProcess.objects.all().count
+    controlCount = controlCatalogue.objects.all().count
+
+    ####################################################################
+    # Calcualte the % of completed risk assessments
+    ####################################################################
+
+    totalCount = riskReg.objects.count()
+    completedCount = riskReg.objects.filter(riskAnalysisStatus=1).count()
+
+    if totalCount > 0:
+        completionPercentage = (completedCount / totalCount) * 100
+    else:
+        completionPercentage = 0.0
+
+    incompletePercentage = 100 - completionPercentage
+
+    ####################################################################
+    # Retrieve the business processes and the criticality of each
+    ####################################################################
+
+    criticalityCounts = businessProcessCriticality.objects.annotate(
+        count=Count("businessprocess")
+    )
+
     context = {
         "date": date_today,
+        "assetCount": assetCount,
+        "riskOwners": riskOwners,
+        "processCount": processCount,
+        "controlCount": controlCount,
+        "completionPercentage": completionPercentage,
+        "incompletePercentage": incompletePercentage,
+        "criticalityCounts": criticalityCounts,
     }
     template = loader.get_template("index.html")
     return HttpResponse(template.render(context, request))
@@ -459,15 +496,23 @@ def riskReport(request, msg):
         "threatMaxCost",
     )
 
-    # Set a number to represent the reduction in risk gained
+    """# Set a number to represent the reduction in risk gained
     # from control maturity
-    controlMaturity = 0.98
+
+    controlMaturity = float(riskData.residualRiskOffset)
 
     # Set the number of Monte Carlo simulation iterations
-    numIterations = 5000
+    numIterations = 10000
 
+    # Generate the randdom probabilities and add them to a list
+
+    randomProbability = np.random.uniform(0, 1, numIterations)
+
+    # Create empty lists to hold values to plot later
     inherentProbValue = []
     inherentCalculatedLosses = []
+    residualProbValue = []
+    residualCalculatedLosses = []
 
     # Generate scenarios and combine financial outcomes for each series
     for threat in threats:
@@ -475,7 +520,75 @@ def riskReport(request, msg):
         lower_limit = threat["threatMinCost"]
         upper_limit = threat["threatMaxCost"]
 
-        randomProbability = np.random.uniform(0, 1, numIterations)
+        # Calcualte the inhernet probability losses
+        for x in randomProbability:
+            if x <= probability:
+                mean = (np.log(lower_limit) + np.log(upper_limit)) / 2.0
+                std_dv = (np.log(upper_limit) - np.log(lower_limit)) / 3.29
+
+                inherentProbValue.append(x)
+                inherentCalculatedLosses.append(np.random.lognormal(mean, std_dv))
+
+    # Second loop to deal with the residual risk
+    for threat in threats:
+        probability = threat["threatlikelihood"] - (
+            threat["threatlikelihood"] * controlMaturity / 100
+        )
+        lower_limit = threat["threatMinCost"]
+        upper_limit = threat["threatMaxCost"]
+
+        for x in randomProbability:
+            if x <= probability:
+                mean = (np.log(lower_limit) + np.log(upper_limit)) / 2.0
+                std_dv = (np.log(upper_limit) - np.log(lower_limit)) / 3.29
+                residualProbValue.append(x)
+                residualCalculatedLosses.append(np.random.lognormal(mean, std_dv))
+
+    # Loss Exceedance Curve Calculations
+
+    np.cumsum(inherentCalculatedLosses)
+
+    inherentCalculatedLosses.sort()
+    residualCalculatedLosses.sort()
+
+    inherentProbValue.sort()
+    residualProbValue.sort()
+
+    avgCostInherent = (sum(inherentCalculatedLosses) / len(inherentCalculatedLosses), 2)
+    avgCostResidual = (sum(residualCalculatedLosses) / len(residualCalculatedLosses), 2)
+
+    yData = inherentProbValue + residualProbValue
+
+    inherentRiskDist = go.Figure(
+        data=[
+            go.Histogram(
+                x=inherentCalculatedLosses, y=yData, name="Inherent Risk", nbinsx=50
+            ),
+            go.Histogram(x=residualCalculatedLosses, name="Residual Risk", nbinsy=50),
+        ]
+    )
+
+    inherentRiskDist.update_layout(
+        title="Inherent Risk Distribution",
+        xaxis_title="Risk Impact",
+        yaxis_title="f(x) Distribution",
+        legend_title="Legend Title",
+    )"""
+
+    # Set the number of Monte Carlo simulation iterations
+    numIterations = 10000
+
+    inherentProbValue = []
+    inherentCalculatedLosses = []
+    threatOffset = riskData.residualRiskOffset
+
+    randomProbability = np.random.uniform(0, 1, numIterations)
+
+    # Generate scenarios and combine financial outcomes for each series
+    for threat in threats:
+        probability = threat["threatlikelihood"]
+        lower_limit = threat["threatMinCost"]
+        upper_limit = threat["threatMaxCost"]
 
         for x in randomProbability:
             if x <= probability:
@@ -489,79 +602,144 @@ def riskReport(request, msg):
     residualCalculatedLosses = []
     # Generate scenarios and combine financial outcomes for each series
     for threat in threats:
-        probability = threat["threatlikelihood"] - (
-            threat["threatlikelihood"] * controlMaturity
+        rProbability = threat["threatlikelihood"] - (
+            threat["threatlikelihood"] * threatOffset
         )
+
         lower_limit = threat["threatMinCost"]
         upper_limit = threat["threatMaxCost"]
 
-        randomProbability = np.random.uniform(0, 1, numIterations)
-
         for x in randomProbability:
-            if x <= probability:
+            if x <= rProbability:
                 mean = (np.log(lower_limit) + np.log(upper_limit)) / 2.0
                 std_dv = (np.log(upper_limit) - np.log(lower_limit)) / 3.29
 
                 residualProbValue.append(x)
                 residualCalculatedLosses.append(np.random.lognormal(mean, std_dv))
 
-    inherentCalculatedLosses.sort(reverse=True)
-    residualCalculatedLosses.sort(reverse=True)
+    iLec = inherentCalculatedLosses.sort(reverse=True)
+    rLec = residualCalculatedLosses.sort(reverse=True)
+
+    riProbValue = inherentProbValue.sort(reverse=True)
+    rrProbValue = residualProbValue.sort(reverse=True)
+
+    inherentCalculatedLosses.sort()
+    residualCalculatedLosses.sort()
 
     inherentProbValue.sort()
     residualProbValue.sort()
 
-    # Prepare data
-    y_data1 = inherentProbValue
-    y_data2 = residualProbValue
-    x_data1 = inherentCalculatedLosses
-    x_data2 = residualCalculatedLosses
+    ##########################################################################################
+    # Probability Distribution
+    ##########################################################################################
 
-    # Create Plotly graph with multiple line graphs
-    graph = go.Figure()
-    graph.add_trace(
-        go.Scatter(
-            x=x_data1,
-            y=y_data1,
-            mode="lines",
-            name="Inherent Risk - Loss Exceedence Curve",
+    figPD = go.Figure()
+
+    figPD.add_trace(
+        go.Histogram(
+            x=residualCalculatedLosses, name="Residual Probability Distribution"
         )
     )
-    graph.add_trace(
-        go.Scatter(
-            x=x_data2,
-            y=y_data2,
-            mode="lines",
-            name="Residual Risk - Loss Exceedence Curve",
+    figPD.add_trace(
+        go.Histogram(
+            x=inherentCalculatedLosses, name="Inherent Probability Distribution"
         )
     )
 
-    graph.update_layout(
-        width=1600,
-        height=800,
-        plot_bgcolor="rgba(0,0,0,0)",
+    # The two histograms are drawn on top of another
+    figPD.update_layout(barmode="stack")
+
+    figPD.write_image("images/" + msg + "-PD.png")
+
+    ##########################################################################################
+    # Probability Curve
+    ##########################################################################################
+
+    figPC = go.Figure()
+
+    figPC.add_trace(
+        go.Scatter(
+            x=residualCalculatedLosses,
+            y=residualProbValue,
+            mode="lines",
+            name="Residual Probability",
+        )
     )
 
-    # Convert the graph to JSON
-    graph_json = graph.to_json()
+    figPC.add_trace(
+        go.Scatter(
+            x=inherentCalculatedLosses,
+            y=inherentProbValue,
+            mode="lines",
+            name="Inherent",
+        )
+    )
 
-    averageInherent = max(inherentCalculatedLosses)
-    averageResidual = max(residualCalculatedLosses)
+    figPC.write_image("images/" + msg + "-PC.png")
 
-    minInherent = min(inherentCalculatedLosses)
-    minResidual = min(residualCalculatedLosses)
+    ##########################################################################################
+    # LEC Curve
+    ##########################################################################################
+
+    # Sort the Probability Array
+
+    sortedRandomProbability = np.sort(randomProbability)
+
+    # Sort the probabilities and costs in ascending order of costs
+    inherentSortedIndices = np.argsort(inherentCalculatedLosses)
+    inherentSortedProbabilities = np.array(sortedRandomProbability)[
+        inherentSortedIndices
+    ]
+    inherentSortedCosts = np.array(inherentCalculatedLosses)[inherentSortedIndices]
+
+    # Calculate exceedance probabilities
+    inherentExceedanceProbs = 1 - inherentSortedProbabilities
+
+    ##########################################################################################
+    # Residual
+    ##########################################################################################
+    residualSortedIndices = np.argsort(residualCalculatedLosses)
+    residualSortedProbabilities = np.array(sortedRandomProbability)[
+        residualSortedIndices
+    ]
+    residualSortedCosts = np.array(residualCalculatedLosses)[residualSortedIndices]
+
+    # Calculate exceedance probabilities
+    residualExceedanceProbs = 1 - residualSortedProbabilities
+
+    figLEC = go.Figure()
+
+    figLEC.add_trace(
+        go.Scatter(
+            x=inherentSortedCosts,
+            y=inherentExceedanceProbs,
+            mode="lines",
+            name="Inherent",
+        )
+    )
+
+    figLEC.add_trace(
+        go.Scatter(
+            x=residualSortedCosts,
+            y=residualExceedanceProbs,
+            mode="lines",
+            name="Residual",
+        )
+    )
+
+    figLEC.write_image("images/" + msg + "-LEC.png")
 
     context = {
-        "inherentCalculatedLosses": inherentCalculatedLosses,
-        "residualCalculatedLosses": residualCalculatedLosses,
-        "inherentProbValue": inherentProbValue,
-        "residualProbValue": residualProbValue,
-        "graph_json": graph_json,
-        "averageInherent": averageInherent,
-        "averageResidual": averageResidual,
-        "minInherent": minInherent,
-        "minResidual": minResidual,
         "riskData": riskData,
+        "RiskDist": figPD.to_html(
+            full_html=False,
+        ),
+        "ProabilityCurve": figPC.to_html(
+            full_html=False,
+        ),
+        "epCurve": figLEC.to_html(
+            full_html=False,
+        ),
     }
     return render(request, "riskReport.html", context)
 

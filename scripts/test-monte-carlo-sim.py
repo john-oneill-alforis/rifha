@@ -1,26 +1,52 @@
-import pandas as pd
+import random
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import gaussian_kde
 
+risk = 0.3
+min_loss = 10000
+max_loss = 100000
+num_iterations = 5000  # Number of iterations
 
-# Define the ARO figure and cost
-aro = 0.3843
-cost = 10000
+losses = []
+for _ in range(num_iterations):
+    random_number = random.uniform(0, 1)
+    if random_number <= risk:
+        loss = random.uniform(min_loss, max_loss)
+        losses.append(loss)
 
-# Define the number of iterations for the simulation
-num_iterations = 500
+losses = np.array(losses)
+losses_sorted = np.sort(losses)
+num_losses = len(losses_sorted)
+exceedance = np.arange(1, num_losses + 1) / num_losses
 
-# Generate random samples from a normal distribution
-random_samples = np.random.normal(
-    aro, 0.1, num_iterations
-)  # adjust the standard deviation as needed
+# Plot the histogram
+plt.figure(figsize=(15, 5))
 
-# Calculate the total cost for each random sample
-total_costs = random_samples * cost
-
-# Plot the histogram of total costs
-plt.hist(total_costs, bins=30, edgecolor="black")
-plt.xlabel("Total Cost")
+plt.subplot(1, 3, 1)
+plt.hist(losses, bins=50, density=True, alpha=0.7, color="skyblue")
+plt.xlabel("Loss")
 plt.ylabel("Frequency")
-plt.title("Risk Cost Model")
+plt.title("Monte Carlo Simulation - Loss Distribution")
+
+# Plot the probability distribution
+plt.subplot(1, 3, 2)
+kde = gaussian_kde(losses)
+x_vals = np.linspace(min_loss, max_loss, 100)
+plt.plot(x_vals, kde(x_vals), color="orange")
+plt.xlabel("Loss")
+plt.ylabel("Probability Density")
+plt.title("Probability Distribution")
+
+# Plot the loss exceedance curve
+plt.subplot(1, 3, 3)
+plt.plot(losses_sorted, 1 - exceedance, color="green")
+plt.xlabel("Loss")
+plt.ylabel("Exceedance Probability")
+plt.title("Loss Exceedance Curve")
+
+# Adjust the spacing between subplots
+plt.tight_layout()
+
+# Display the plot
 plt.show()

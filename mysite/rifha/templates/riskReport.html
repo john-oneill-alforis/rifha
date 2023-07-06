@@ -1,141 +1,151 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% load static %}
+
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    
     <h4>Risk Report</h4>
+
   </div>
 
   {% load crispy_forms_tags %}
 
+{{threatOffset}}
 
-
-
-
-
-
-
+{{rProbability}}
 
 <div class="container">
-  <div class="row">
-    <div class="col-sm, select form-control">
-      Risk ID: {{riskData.riskId}}
-    </div>
-    <div class="col-sm">
-      Risk Owner: {{riskData.riskOwner.fullName}}
-    </div>
-    <div class="col-sm">
-      One of three columns
-    </div>
+    <div class="row py-2">
+     
+        <div class="col-sm-4 mx-md-n5">
+          <h5>Risk Asset</h5>
+        </div>
+      
+        <div class="col-sm-4 mx-md-n5">
+          <h5>Risk Description</h5>
+        </div>
+
+        <div class="col-sm-4 mx-md-n5">
+          <h5>Risk Owner</h5>
+        </div>
+
   </div>
-</div>
-
-<div class="container">
-  <div class="row">
-    <div class="col-sm">
-      One of three columns
-    </div>
-    <div class="col-sm">
-      One of three columns
-    </div>
-    <div class="col-sm">
-      One of three columns
-    </div>
-  </div>
-</div>
-
-<div class="container">
-  <div class="row">
-    <div class="col-sm">
-      One of three columns
-    </div>
-    <div class="col-sm">
-      One of three columns
-    </div>
-    <div class="col-sm">
-      One of three columns
-    </div>
-  </div>
-</div>
- 
-  <!--<canvas id="lossExceedanceChart"></canvas>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      // Get the data from the server-side context
-      var exceedanceProbs = [{{ inherentProbValue | join:", " }}];
-      var lossValues = [{{ inherentCalcualtedLosses | join:", " }}];
-
-      var RexceedanceProbs = [{{ residualProbValue | join:", " }}];
-      var RlossValues = [{{ residualCalcualtedLosses | join:", " }}];
 
 
-      // Create the chart
-      var ctx = document.getElementById("lossExceedanceChart").getContext("2d");
-      new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: lossValues,
-          datasets: [{
-            label: "Inherent Risk",
-            data: exceedanceProbs,
-            backgroundColor: "rgba(0, 123, 255, 0.5)",
-            borderColor: "rgba(0, 123, 255, 1)",
-            borderWidth: 1,
-            pointRadius: 0,
-          },
-          {
-            label: "Residual Risk",
-            data: RexceedanceProbs,
-            backgroundColor: "rgba(0, 255, 0, 0.5)",
-            borderColor: "rgba(0, 255, 0, 1)",
-            borderWidth: 1,
-            pointRadius: 0,
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            x: {
-              type: "linear",
-              position: "bottom",
-              title: {
-                display: true,
-                text: "Loss Values"
-              }
-            },
-            y: {
-              type: "linear",
-              position: "left",
-              title: {
-                display: true,
-                text: "Exceedance Probability"
-              }
-            }
-          }
-        }
-      });
-    });
-  </script>-->
-
- 
-
-<div class="container">
- <div class="row">
-
-  <div id="graph-container"></div>
-  <script>
-    // Retrieve the graph JSON from the context variable
-    var graphJSON = JSON.parse('{{ graph_json|escapejs }}');
-
-    // Render the graph using Plotly
-    Plotly.newPlot('graph-container', graphJSON.data, graphJSON.layout);
-
+  <div class="row py-2">
+     
+      <div class="col-sm-4">
+        {{riskData.riskAsset.assetName}}
+      </div>
     
+      <div class="col-sm-4">
+        {{riskData.riskDescription}}
+      </div>
 
-</script>
+      <div class="col-sm-3">
+        {{riskData.riskOwner.fullName}}
+      </div>
+
+  </div>
+
+ 
+  <div class="row py-2">
+     
+    <div class="col-sm-4">
+      <h5>Risk Creation Date</h5>
+    </div>
+  
+    <div class="col-sm-4">
+      <h5>Risk Review Date</h5>
+    </div>
+
+    <div class="col-sm-4">
+      <h5>Current Residual Reduction</h5>
+    </div>
+
+  </div>
+
+  <div class="row py-2">
+     
+    <div class="col-sm-4">
+      {{riskData.riskCreationDate}}
+    </div>
+
+    <div class="col-sm-4">
+      {{riskData.riskReviewDate}}
+    </div>
+
+    <div class="col-sm-4">
+      {{riskData.residualRiskOffset}}
+    </div>
+
+  </div>
+
+
+  <div class="row py-2">
+     
+    <div class="col-sm-12">
+      <h5>Risk Notes</h5>
+    </div>
+  
+   
+
+  </div>
+
+  <div class="row py-2">
+     
+    <div class="col-sm-12">
+      {{riskData.riskNotes}}
+    </div>
+  </div>
+
+
+  <div class="row py-2"> 
+
+    <div class="col-sm-12">
+      <h5>Risk Distribution Data</h5>
+    </div>
+  
+  </div>
+
+  <div class="row py-2">
+     
+    <div class="col-sm-12">
+      {{ RiskDist|safe }}
+    </div>
+      
+  </div>
+
+
+  <div class="row">
+    <div class="col-sm-12">
+      <h5>Risk Probability Curve</h5>
+    </div>
+  </div>
+
+  <div class="row"> 
+    <div class="col-sm-12">
+          {{ ProabilityCurve|safe }}
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-sm-12">
+      <h5>Loss Exceedance Curve</h5>
+    </div>
+  </div>
+
+  <div class="row"> 
+    <div class="col-sm-12">
+          {{ epCurve|safe }}
+    </div>
+  </div>
 </div>
-</div>
+
 
 </main>
 {% endblock %}
