@@ -1,1 +1,183 @@
 {% extends 'base.html' %}
+
+
+
+{% block content %}
+
+  
+
+
+<main class="bg-light bg-opacity-50">
+    <div class="container">
+        <div class="justify-content-between pt-3 pb-2  border-bottom">
+            <p class="display-6">Program Overview</p>
+        </div>
+
+        <div class="row pt-1" >
+            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
+                <p class="h4">Controls  <i class="bi bi-speedometer text-success"></i></p>
+            </div>
+            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
+                <p class="h4">Processes  <i class="bi bi-briefcase-fill text-primary"></i></p>
+            </div>
+            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25  text-center rounded-top">
+                <p class="h4">Risk Owners  <i class="bi bi-people-fill text-warning"></i></p>
+            </div>
+            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
+                <p class="h4">Assets <i class="bi bi-laptop text-info"></i></p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col p-2 m-1 mt-0 text-center border border-top-0" style="height: 125px; display: flex; justify-content: center; align-items: center;">
+                <p class="h4">{{controlCount}}</p>
+            </div>
+            <div class="col p-2 m-1 mt-0 text-center border border-top-0" style="height: 125px; display: flex; justify-content: center; align-items: center;">
+                <p class="h4">{{processCount}}</p>
+            </div>
+            <div class="col p-2 m-1 mt-0 text-center border border-top-0" style="height: 125px; display: flex; justify-content: center; align-items: center;">
+                <p class="h4">{{riskOwners}}</p>
+            </div>
+            <div class="col p-2 m-1 mt-0 text-center border border-top-0" style="height: 125px; display: flex; justify-content: center; align-items: center;">
+                <p class="h4">{{assetCount}}</p>
+            </div>
+        </div>
+
+        <div class="row pt-1" >
+            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
+                <p class="h4">Assessments Completed <i class="bi bi-clipboard-check-fill text-info"></i></p>
+            </div>
+    
+            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
+                <p class="h4">Process Categories <i class="bi bi-briefcase-fill text-primary"></i></p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col p-2 m-1 mt-0 text-center border border-top-0" style="height: 400px; width:568px; display: flex; justify-content: center; align-items: center;">
+                <canvas id="errorTotalCount"></canvas>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script>
+                        const ctx_errorCount = document.getElementById('errorTotalCount').getContext('2d');
+                        const labelCount = new Chart(ctx_errorCount, {
+                            type: 'doughnut',
+                            data: {
+                                labels : ["Complete","Incomplete"],
+                                datasets: [{
+                                    label: "% Assessments Completed",
+                                    data : [{{completionPercentage}},{{incompletePercentage}}],
+                                    hoverOffset: 4,
+                                    borderWidth: 1,
+                                    backgroundColor: [
+                                                    'rgb(31, 63, 73)',
+                                                    'rgb(106, 177, 135)',
+                                    ],
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                 x: {
+                                   display: false, 
+                                   grid: {
+                                     display: false,
+                                     
+                                   }
+                                 },
+                                 y: {
+                                display: false,
+                                   grid: {
+                                     display: false
+                                   }
+                                 }
+                               }
+                             }
+                        });
+                </script>
+            </div>
+            
+            <div class="col p-2 m-1 mt-0 text-center border border-top-0" style="height: 400px; width:568px; display: flex; justify-content: center; align-items: center;">
+                <canvas id="processCategories"></canvas>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script>
+                        const ctx_processCategories = document.getElementById('processCategories').getContext('2d');
+                        const processCategories = new Chart(ctx_processCategories, {
+                            type: 'doughnut',
+                            data: {
+                                
+                                labels : [{% for x in criticalityCounts %}"{{ x.businessProcessCriticality }}",{% endfor %}],
+                                datasets: [{
+                                    label: "Category Count",
+                                    data : [{% for x in criticalityCounts %}"{{ x.count }}",{% endfor %}],
+                                    borderWidth: 1,
+                                    hoverOffset: 4,
+                                    backgroundColor: [
+                                                    'rgb(126, 144, 154)',
+                                                    'rgb(234, 106, 71)',
+                                                    'rgb(28, 78, 128)',
+                                                    'rgb(0, 145, 213)',
+                                    ],
+                                }]
+                            },
+                            options: {
+                                plugins: {
+                                    datalabels: { // This code is used to display data values
+                                        anchor: 'end',
+                                        align: 'top',
+                                        formatter: Math.round,
+                                        font: {
+                                            weight: 'bold',
+                                            size: 16
+                                        }
+                                    }
+                                },                              
+                                scales: {
+                                 x: {
+                                   display: false, 
+                                   grid: {
+                                     display: false,
+                                   }
+                                 },
+                                 y: {
+                                display: false,
+                                   grid: {
+                                     display: false
+                                   }
+                                 }
+                               }
+                             }
+                        });
+                </script>
+               
+            </div>
+        </div>
+
+        <div class="row pt-1" >
+            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
+                <p class="h4">Risk Valuation <i class="bi bi-currency-euro"></i></p>
+            </div>
+        </div>
+
+        <div class="row">    
+            <div class="col p-2 m-1 mt-0 text-center border border-top-0" style="height: 400px; width:568px; display: flex; justify-content: center; align-items: center;">
+            </div>
+           
+        </div>
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+        
+
+    </div>           
+</main>
+
+{% endblock %}
