@@ -30,16 +30,16 @@
 
         <div class="row">
             <div class="col p-2 m-1 mt-0 text-center border border-top-0" style="height: 125px; display: flex; justify-content: center; align-items: center;">
-                <p class="h4">{{controlCount}}</p>
+                <p class="h3">{{controlCount}}</p>
             </div>
             <div class="col p-2 m-1 mt-0 text-center border border-top-0" style="height: 125px; display: flex; justify-content: center; align-items: center;">
-                <p class="h4">{{processCount}}</p>
+                <p class="h3">{{processCount}}</p>
             </div>
             <div class="col p-2 m-1 mt-0 text-center border border-top-0" style="height: 125px; display: flex; justify-content: center; align-items: center;">
-                <p class="h4">{{riskOwners}}</p>
+                <p class="h3">{{riskOwners}}</p>
             </div>
             <div class="col p-2 m-1 mt-0 text-center border border-top-0" style="height: 125px; display: flex; justify-content: center; align-items: center;">
-                <p class="h4">{{assetCount}}</p>
+                <p class="h3">{{assetCount}}</p>
             </div>
         </div>
 
@@ -56,7 +56,6 @@
         <div class="row">
             <div class="col p-2 m-1 mt-0 text-center border border-top-0" style="height: 400px; width:568px; display: flex; justify-content: center; align-items: center;">
                 <canvas id="errorTotalCount"></canvas>
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                 <script>
                         const ctx_errorCount = document.getElementById('errorTotalCount').getContext('2d');
                         const labelCount = new Chart(ctx_errorCount, {
@@ -97,7 +96,6 @@
             
             <div class="col p-2 m-1 mt-0 text-center border border-top-0" style="height: 400px; width:568px; display: flex; justify-content: center; align-items: center;">
                 <canvas id="processCategories"></canvas>
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                 <script>
                         const ctx_processCategories = document.getElementById('processCategories').getContext('2d');
                         const processCategories = new Chart(ctx_processCategories, {
@@ -118,18 +116,7 @@
                                     ],
                                 }]
                             },
-                            options: {
-                                plugins: {
-                                    datalabels: { // This code is used to display data values
-                                        anchor: 'end',
-                                        align: 'top',
-                                        formatter: Math.round,
-                                        font: {
-                                            weight: 'bold',
-                                            size: 16
-                                        }
-                                    }
-                                },                              
+                            options: {                           
                                 scales: {
                                  x: {
                                    display: false, 
@@ -160,7 +147,9 @@
         <div class="row">    
             <div class="col p-2 m-1 mt-0 text-center border border-top-0" style="height: 400px; width:568px; display: flex; justify-content: center; align-items: center;">
             </div>
-           
+           <div>
+            
+           </div>
         </div>
 
 
