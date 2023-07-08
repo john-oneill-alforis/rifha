@@ -1,52 +1,56 @@
-import random
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import gaussian_kde
+import plotly.graph_objects as go
 
-risk = 0.3
-min_loss = 10000
-max_loss = 100000
-num_iterations = 5000  # Number of iterations
+# Define parameters
+num_simulations = 10000
+residual_reduction = 0.3
 
-losses = []
-for _ in range(num_iterations):
-    random_number = random.uniform(0, 1)
-    if random_number <= risk:
-        loss = random.uniform(min_loss, max_loss)
-        losses.append(loss)
+# Define threat details
+threats = {
+    'SQLi': {
+        'probability': 0.6,
+        'lower_cost': 100,
+        'upper_cost': 10000
+    },
+    'XSS': {
+        'probability': 0.4,
+        'lower_cost': 500,
+        'upper_cost': 7500
+    }
+}
 
-losses = np.array(losses)
-losses_sorted = np.sort(losses)
-num_losses = len(losses_sorted)
-exceedance = np.arange(1, num_losses + 1) / num_losses
+# Perform Monte Carlo simulation
+simulated_inherent_losses = []
+simulated_residual_losses = []
+for _ in range(num_simulations):
+    inherent_loss = 0
+    residual_loss = 0
+    for threat, details in threats.items():
+        if np.random.uniform() <= details['probability']:
+            threat_loss = np.random.uniform(details['lower_cost'], details['upper_cost'])
+            inherent_loss += threat_loss
+            residual_loss += threat_loss * (1 - residual_reduction)
+            simulated_inherent_losses.append(inherent_loss)
+            simulated_residual_losses.append(residual_loss)
 
-# Plot the histogram
-plt.figure(figsize=(15, 5))
+# Sort the losses in descending order
+sorted_inherent_losses = np.sort(simulated_inherent_losses)[::-1]
+sorted_residual_losses = np.sort(simulated_residual_losses)[::-1]
 
-plt.subplot(1, 3, 1)
-plt.hist(losses, bins=50, density=True, alpha=0.7, color="skyblue")
-plt.xlabel("Loss")
-plt.ylabel("Frequency")
-plt.title("Monte Carlo Simulation - Loss Distribution")
+# Calculate the exceedance probabilities
+exceedance_probs = (np.arange(1, num_simulations + 1) - 0.5) / num_simulations
 
-# Plot the probability distribution
-plt.subplot(1, 3, 2)
-kde = gaussian_kde(losses)
-x_vals = np.linspace(min_loss, max_loss, 100)
-plt.plot(x_vals, kde(x_vals), color="orange")
-plt.xlabel("Loss")
-plt.ylabel("Probability Density")
-plt.title("Probability Distribution")
+# Create the loss exceedance curve plot
+fig = go.Figure()
+fig.add_trace(go.Scatter(x=sorted_inherent_losses, y=exceedance_probs, name='Inherent Loss', mode='lines'))
+fig.add_trace(go.Scatter(x=sorted_residual_losses, y=exceedance_probs, name='Residual Loss', mode='lines'))
 
-# Plot the loss exceedance curve
-plt.subplot(1, 3, 3)
-plt.plot(losses_sorted, 1 - exceedance, color="green")
-plt.xlabel("Loss")
-plt.ylabel("Exceedance Probability")
-plt.title("Loss Exceedance Curve")
+# Update layout
+fig.update_layout(
+    title='Loss Exceedance Curve',
+    xaxis_title='Loss',
+    yaxis_title='Exceedance Probability',
+)
 
-# Adjust the spacing between subplots
-plt.tight_layout()
-
-# Display the plot
-plt.show()
+# Show the plot
+fig.show()

@@ -103,6 +103,9 @@ class riskReg(models.Model):
     controlAnalysisStatus = models.BooleanField(
         default=False, verbose_name="Analysis Completed"
     )
+    riskAssessmentStatus = models.BooleanField(
+        default=False, verbose_name="Analysis Completed"
+    )
     riskThreats = models.ManyToManyField(
         "threatCatalogue",
     )

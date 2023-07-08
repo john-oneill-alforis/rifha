@@ -22,6 +22,14 @@ class peopleAddForm(forms.Form):
     jobTitle = forms.CharField(widget=forms.TextInput)
     contactNumber = forms.CharField(widget=forms.TextInput)
 
+    labels = {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email Address",
+        "jobTitle": "Job Title",
+        "contactNumber": "Contact Number",
+    }
+
 
 class peopleEditForm(forms.ModelForm):
     class Meta:
@@ -33,6 +41,14 @@ class peopleEditForm(forms.ModelForm):
             "email": forms.EmailInput(),
             "jobTitle": forms.TextInput(),
             "contactNumber": forms.TextInput(),
+        }
+
+        labels = {
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "email": "Email Address",
+            "jobTitle": "Job Title",
+            "contactNumber": "Contact Number",
         }
 
 
@@ -52,6 +68,11 @@ class classificationEditForm(forms.ModelForm):
         widgets = {
             "classificationLabel": forms.TextInput(),
             "classificationDescription": forms.Textarea,
+        }
+
+        labels = {
+            "classificationLabel": "Classification Label",
+            "classificationDescription": "Classification Description",
         }
 
 

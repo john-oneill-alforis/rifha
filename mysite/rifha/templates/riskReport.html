@@ -20,15 +20,15 @@
 <div class="container">
     <div class="row py-2">
      
-        <div class="col-sm-4 mx-md-n5">
+        <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
           <h5>Risk Asset</h5>
         </div>
       
-        <div class="col-sm-4 mx-md-n5">
+        <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
           <h5>Risk Description</h5>
         </div>
 
-        <div class="col-sm-4 mx-md-n5">
+        <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
           <h5>Risk Owner</h5>
         </div>
 
@@ -54,15 +54,15 @@
  
   <div class="row py-2">
      
-    <div class="col-sm-4">
+    <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
       <h5>Risk Creation Date</h5>
     </div>
   
-    <div class="col-sm-4">
+    <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
       <h5>Risk Review Date</h5>
     </div>
 
-    <div class="col-sm-4">
+    <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
       <h5>Current Residual Reduction</h5>
     </div>
 
@@ -87,13 +87,70 @@
 
   <div class="row py-2">
      
-    <div class="col-sm-12">
-      <h5>Risk Notes</h5>
+    <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
+      <h5>Min Inherent Cost</h5>
     </div>
-  
-   
+
+    <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
+      <h5>Avg Inherent Cost</h5>
+    </div>
+
+    <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
+      <h5>Max Inherent Cost</h5>
+    </div>
+
+ 
+    <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
+      <h5>Min Residual Cost</h5>
+    </div>
+
+    <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
+      <h5>Avg Residual Cost</h5>
+    </div>
+
+    <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
+      <h5>Max Residual Cost</h5>
+    </div>
 
   </div>
+
+  <div class="row py-2">
+
+    <div class="col">
+      €{{minInherent |floatformat:2 }}
+    </div>
+
+    <div class="col">
+      €{{avgInherent |floatformat:2 }}
+    </div>
+
+    <div class="col">
+      €{{maxInherent |floatformat:2 }}
+    </div>
+
+
+
+    <div class="col">
+      €{{minResidual |floatformat:2 }}
+    </div>
+
+    <div class="col">
+        €{{avgResidual |floatformat:2 }}
+    </div>
+
+    <div class="col">
+      €{{maxResidual | floatformat:2 }}
+    </div>
+
+  </div>
+
+  <div class="row py-2">
+     
+    <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
+      <h5>Risk Notes</h5>
+    </div>
+  </div>
+
 
   <div class="row py-2">
      
@@ -105,7 +162,7 @@
 
   <div class="row py-2"> 
 
-    <div class="col-sm-12">
+    <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 rounded-top">
       <h5>Risk Distribution Data</h5>
     </div>
   
@@ -113,7 +170,7 @@
 
   <div class="row py-2">
      
-    <div class="col-sm-12">
+    <div class="col">
       {{ RiskDist|safe }}
     </div>
       
@@ -121,31 +178,17 @@
 
 
   <div class="row">
-    <div class="col-sm-12">
-      <h5>Risk Probability Curve</h5>
-    </div>
-  </div>
-
-  <div class="row"> 
-    <div class="col-sm-12">
-          {{ ProabilityCurve|safe }}
-    </div>
-  </div>
-
-
-  <div class="row">
-    <div class="col-sm-12">
+    <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 rounded-top">
       <h5>Loss Exceedance Curve</h5>
     </div>
   </div>
 
   <div class="row"> 
-    <div class="col-sm-12">
-          {{ epCurve|safe }}
+    <div class="col">
+          {{ LECCurve|safe }}
     </div>
   </div>
 </div>
-
 
 </main>
 {% endblock %}
