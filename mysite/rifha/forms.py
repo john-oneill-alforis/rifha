@@ -77,7 +77,7 @@ class classificationEditForm(forms.ModelForm):
 
 
 class assettTypeAddForm(forms.Form):
-    assetTypeLabel = forms.CharField(widget=forms.TextInput, label="Asset Type Label")
+    assetTypeLabel = forms.CharField(widget=forms.TextInput, label="Asset Type")
     assettTypeDescription = forms.CharField(
         widget=forms.Textarea, label="Asset Type Description"
     )
@@ -173,7 +173,7 @@ class addRiskForm(forms.ModelForm):
             "riskReviewDate",
             "riskNotes",
             "riskDescription",
-            "riskImpactCost",
+         
         ]
 
         widgets = {
@@ -182,7 +182,7 @@ class addRiskForm(forms.ModelForm):
             "riskReviewDate": DateInput(attrs={"type": "date"}),
             "riskNotes": forms.Textarea(attrs={"rows": 3, "cols": 30}),
             "riskDescription": forms.Textarea(attrs={"rows": 3, "cols": 30}),
-            "riskImpactCost": forms.TextInput(),
+         
         }
 
     def __init__(self, *args, **kwargs):
@@ -205,7 +205,7 @@ class addRiskAnalysisForm(forms.ModelForm):
             "riskId",
             "riskAsset",
             "riskOwner",
-            "riskImpactCost",
+          
             "riskCreationDate",
             "riskReviewDate",
             "riskNotes",

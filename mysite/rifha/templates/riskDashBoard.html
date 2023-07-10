@@ -24,7 +24,6 @@
             <tr>
               <th scope="col">Asset Name</th>
               <th scope="col">Risk Description</th>
-              <th scope="col">Risk Cost</th>
               <th scope="col">Risk Owner</th>
               <th scope="col">Review Date</th>
               <th scope="col">Threat Analysis</th>
@@ -46,7 +45,7 @@
       <tr>
         <td scope="col"><a href="/rifha/riskEdit/{{entry.riskId}}/">{{ entry.riskAsset.assetName }}<a></td>
         <td scope="col">{{ entry.riskDescription }}</td>
-        <td scope="col">{{entry.riskImpactCost}}</td>
+      
         <td scope="col">{{ entry.riskOwner.fullName }}</td>
         <td scope="col">{{ entry.riskReviewDate }}</td>
 
@@ -60,6 +59,12 @@
           <td scope="col"><a href="/rifha/riskControlsAdd/{{entry.riskId}}/">Incomplete</a></td>
         {% elif entry.controlAnalysisStatus == 1 %}
           <td scope="col"><a href="/rifha/riskControlsAdd/{{entry.riskId}}/">Complete</a></td>
+        {% endif %}
+
+        {% if entry.riskAssessmentStatus == 0 %}
+          <td scope="col">Incomplete</td>
+        {% elif entry.riskAssessmentStatus == 1 %}
+          <td scope="col"><a href="/rifha/riskReport/{{entry.riskId}}/">Complete</a></td>
         {% endif %}
 
         

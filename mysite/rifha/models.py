@@ -96,7 +96,6 @@ class riskReg(models.Model):
     riskCreationDate = models.DateField()
     riskReviewDate = models.DateField()
     riskNotes = models.TextField(max_length=2000, null=True, blank=True)
-    riskImpactCost = models.IntegerField()
     riskAnalysisStatus = models.BooleanField(
         default=False, verbose_name="Analysis Completed"
     )
@@ -112,7 +111,15 @@ class riskReg(models.Model):
     riskControls = models.ManyToManyField(
         "controlCatalogue",
     )
-    residualRiskOffset = models.DecimalField(decimal_places=2, max_digits=10)
+    residualRiskOffset = models.DecimalField(decimal_places=2, max_digits=10,default=0)
+    minInherent = models.FloatField(default=0.00)
+    avgInherent = models.FloatField(default=0.00)
+    maxInherent = models.FloatField(default=0.00)
+
+    minResidual = models.FloatField(default=0.00)
+    avgResidual = models.FloatField(default=0.00)
+    maxResidual = models.FloatField(default=0.00)
+
 
     def __unicode__(self):
         return self.name
@@ -127,8 +134,8 @@ class threatCatalogue(models.Model):
     threatCategory = models.CharField(max_length=200)
     threatlikelihood = models.FloatField()
     threatARO = models.FloatField()
-    threatMinCost = models.FloatField()
-    threatMaxCost = models.FloatField()
+    threatMinCost = models.DecimalField(max_digits=8, decimal_places=2)
+    threatMaxCost = models.DecimalField(max_digits=8, decimal_places=2)
 
     def __unicode__(self):
         return self.name

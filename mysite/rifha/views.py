@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 import numpy as np
 import pandas as pd
 from decimal import Decimal
-import json, random, kaleido
+import json, random, kaleido, decimal
 from scipy.stats import norm
 import os
 from statistics import mean, median
@@ -63,7 +63,7 @@ from django.shortcuts import get_object_or_404
 
 @login_required
 def dashboard(request):
-    date_today = date.today().strftime("%Y-%m-%d")
+    riskData = riskReg.objects.all().order_by("-avgResidual")
 
     assetCount = assets.objects.all().count
     riskOwners = riskReg.objects.values("riskOwner").distinct().count()
@@ -93,7 +93,7 @@ def dashboard(request):
     )
 
     context = {
-        "date": date_today,
+        "riskData":riskData,
         "assetCount": assetCount,
         "riskOwners": riskOwners,
         "processCount": processCount,
@@ -360,7 +360,7 @@ def assettTypeEdit(request, msg):
 
 @login_required
 def riskHome(request):
-    all_risks = riskReg.objects.all()
+    all_risks = riskReg.objects.all().order_by("avgResidual")
     context = {
         "risks": all_risks,
     }
@@ -500,6 +500,7 @@ def riskReport(request, msg):
         riskOffset = request.POST.get("residualRiskOffset")
         # Update the riskOffsetValue field of MyModel objects
         riskReg.objects.filter(riskId=msg).update(residualRiskOffset=riskOffset)
+        return HttpResponseRedirect("/rifha/riskReport/" + msg)
 
     if riskAssessmentStatus["riskAssessmentStatus"] == False:
         # Retrieve threat data from the database
@@ -585,11 +586,11 @@ def riskReport(request, msg):
     # Derive Max and Average
     minInherent= min(simulated_inherent_losses)
     maxInherent = max(simulated_inherent_losses)
-    avgInherent = np.average(simulated_inherent_losses)
+    avgInherent = round(np.percentile(simulated_inherent_losses, 97),2)
 
     minResidual = min(simulated_residual_losses)
     maxResidual = max(simulated_residual_losses)
-    avgResidual = np.average(simulated_residual_losses)
+    avgResidual = round(np.percentile(simulated_residual_losses, 97),2)
 
 
     ##########################################################################################
@@ -681,6 +682,14 @@ def riskReport(request, msg):
     }
 
     
+    riskReg.objects.filter(riskId=msg).update(avgInherent=avgInherent)
+    riskReg.objects.filter(riskId=msg).update(avgResidual=avgResidual)
+
+    riskReg.objects.filter(riskId=msg).update(maxInherent=maxInherent)
+    riskReg.objects.filter(riskId=msg).update(maxResidual=maxResidual)
+
+    riskReg.objects.filter(riskId=msg).update(minInherent=minInherent)
+    riskReg.objects.filter(riskId=msg).update(minResidual=minResidual)
 
     riskReg.objects.filter(riskId=msg).update(controlAnalysisStatus=1)
     riskReg.objects.filter(riskId=msg).update(riskAssessmentStatus=1)
@@ -729,6 +738,14 @@ def populateThreatInformation(request):
             variety__icontains="other"
         )
 
+        # Static upper and lower limits for each risk
+        minLower = 500
+        minUpper = 10000
+
+        maxLower = 10001
+        maxUpper = 250000
+
+
         # Create a dictionary to store the frequency of each value
         frequency_dict = defaultdict(int)
         for instance in data:
@@ -754,6 +771,8 @@ def populateThreatInformation(request):
                 threatName=key,
                 threatlikelihood=round(probability, 4),
                 threatARO=round(annualized_rate, 4),
+                threatMaxCost = round(decimal.Decimal(np.random.uniform(maxLower, maxUpper)),2),
+                threatMinCost = round(decimal.Decimal(np.random.uniform(minLower, minUpper)),2)
             )
 
             en.save()

@@ -138,33 +138,26 @@
             </div>
         </div>
 
-        <div class="row pt-1" >
-            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
-                <p class="h4">Risk Valuation <i class="bi bi-currency-euro"></i></p>
-            </div>
-        </div>
-
-        <div class="row">    
-            <div class="col p-2 m-1 mt-0 text-center border border-top-0" style="height: 400px; width:568px; display: flex; justify-content: center; align-items: center;">
-            </div>
-           <div>
-            
-           </div>
-        </div>
-
-
-        </div>
-
-
-
-
-
-
-
-
-
-
         
+
+
+        <div class="row pt-1">    
+            <div class="col-3 border mb-1 bg-secondary text-dark bg-opacity-25 text-center rounded-top"><p class="h5">Risk Ref</p></div>
+            <div class="col border mb-1 bg-secondary text-dark bg-opacity-25 text-center rounded-top"><p class="h5">Risk Owner</p></div>
+            <div class="col border mb-1 bg-secondary text-dark bg-opacity-25 text-center rounded-top"><p class="h5">Asset</p></div>
+            <div class="col border mb-1 bg-secondary text-dark bg-opacity-25 text-center rounded-top"><p class="h5">Inherent 97th % Cost</p></div>
+            <div class="col border mb-1 bg-secondary text-dark bg-opacity-25 text-center rounded-top"><p class="h">Residual 97th % Cost</p></div>
+        </div>
+       
+        {% for entry in riskData%}
+        <div class="row">    
+            <div class="col-3 mb-1">{{entry.riskId}}</div>
+            <div class="col mb-1">{{entry.riskOwner.fullName}}</div>
+            <div class="col mb-1">{{entry.riskAsset.assetName}}</div>
+            <div class="col mb-1">€{{entry.avgInherent}}</div>
+            <div class="col mb-1">€{{entry.avgResidual}}</div>
+        </div>
+        {% endfor %}
 
     </div>           
 </main>
