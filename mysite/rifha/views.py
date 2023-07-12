@@ -502,7 +502,7 @@ def riskReport(request, msg):
         riskReg.objects.filter(riskId=msg).update(residualRiskOffset=riskOffset)
         return HttpResponseRedirect("/rifha/riskReport/" + msg)
 
-    if riskAssessmentStatus["riskAssessmentStatus"] == False:
+    if riskAssessmentStatus["riskAssessmentStatus"] == False or request.POST.get("residualRiskOffset") != riskData.residualRiskOffset:
         # Retrieve threat data from the database
         threats = threatCatalogue.objects.filter(riskreg__riskId=msg).values(
             "threatName",
