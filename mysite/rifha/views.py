@@ -536,8 +536,11 @@ def riskReport(request, msg):
                 upper_cost = threat["threatMaxCost"]
                 if np.random.uniform(0,1) <= probability:
 
-                    mean = (np.log(lower_cost)) + (np.log(upper_cost)) / 2.0
-                    std_dv = (np.log(upper_cost)) - (np.log(lower_cost)) / 3.29
+                    lower_cost = float(lower_cost)
+                    upper_cost = float(upper_cost)
+
+                    mean = np.log(lower_cost) + np.log(upper_cost) / 2.0
+                    std_dv = np.log(upper_cost) - np.log(lower_cost) / 3.29
 
                     threat_loss = np.random.lognormal(mean, std_dv)
                     inherent_loss += threat_loss
