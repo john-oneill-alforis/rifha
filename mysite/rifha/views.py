@@ -496,88 +496,64 @@ def riskReport(request, msg):
     numSims = 10000
     riskOffset = riskData.residualRiskOffset
 
-    if request.method == 'POST':
-        riskOffset = request.POST.get("residualRiskOffset")
-        # Update the riskOffsetValue field of MyModel objects
-        riskReg.objects.filter(riskId=msg).update(residualRiskOffset=riskOffset)
-        return HttpResponseRedirect("/rifha/riskReport/" + msg)
+    ##########################################################################################
+    # Create a Monte Carlo Simulation to produce data from which to create the plots
+    # I am also thinking that this is about as close as I will ever get to Monte Carlo
+    ##########################################################################################
 
-    if riskAssessmentStatus["riskAssessmentStatus"] == False or request.POST.get("residualRiskOffset") != riskData.residualRiskOffset:
-        # Retrieve threat data from the database
-        threats = threatCatalogue.objects.filter(riskreg__riskId=msg).values(
-            "threatName",
-            "threatlikelihood",
-            "threatMinCost",
-            "threatMaxCost",
-        )
+    # Fetch threat details from the ORM catalog
+    threats = threatCatalogue.objects.filter(riskreg__riskId=msg).values(
+        "threatName",
+        "threatlikelihood",
+        "threatMinCost",
+        "threatMaxCost",
+    )
 
-        ##########################################################################################
-        # Create a Monte Carlo Simulation to produce data from which to create the plots
-        # I am also thinking that this is about as close as I will ever get to Monte Carlo
-        ##########################################################################################
+    # Perform Monte Carlo simulation
+    simulated_inherent_losses = []
+    simulated_residual_losses = []
+    randomProbabilityValues = []
 
-        # Fetch threat details from the ORM catalog
-        threats = threatCatalogue.objects.filter(riskreg__riskId=msg).values(
-            "threatName",
-            "threatlikelihood",
-            "threatMinCost",
-            "threatMaxCost",
-        )
+    for _ in range(numSims):
+      
+        for threat in threats:
+            probability = threat["threatlikelihood"]
+            lower_limit = threat["threatMinCost"]
+            upper_limit = threat["threatMaxCost"]
 
-        # Perform Monte Carlo simulation
-        simulated_inherent_losses = []
-        simulated_residual_losses = []
-        for _ in range(numSims):
-            inherent_loss = 0
-            residual_loss = 0
-            for threat in threats:
-                probability = threat["threatlikelihood"]
-                lower_cost = threat["threatMinCost"]
-                upper_cost = threat["threatMaxCost"]
-                if np.random.uniform(0,1) <= probability:
+            randomProbability = np.random.uniform(0,1)
+            if randomProbability < probability:
 
-                    lower_cost = float(lower_cost)
-                    upper_cost = float(upper_cost)
+                mean = (np.log(lower_limit) + np.log(upper_limit)) / 2.0
+                std_dv = (np.log(upper_limit) - np.log(lower_limit)) / 3.29
 
-                    mean = np.log(lower_cost) + np.log(upper_cost) / 2.0
-                    std_dv = np.log(upper_cost) - np.log(lower_cost) / 3.29
+                threat_loss = np.random.lognormal(mean, std_dv)
+                residual_loss = threat_loss * (1 - float(riskOffset))
 
-                    threat_loss = np.random.lognormal(mean, std_dv)
-                    inherent_loss += threat_loss
-                    residual_loss += threat_loss * (1 - float(riskOffset))
+                randomProbabilityValues.append(randomProbability) 
+                simulated_inherent_losses.append(threat_loss)
+                simulated_residual_losses.append(residual_loss)
 
-                    simulated_inherent_losses.append(inherent_loss)
-                    simulated_residual_losses.append(residual_loss)
-
-        # Save the data in JSON filed so we can revisit the risk without
         
-        inherentData = json.dumps(simulated_inherent_losses)
-        residualData = json.dumps(simulated_residual_losses)
-     
-        fileI=open(os.path.join(settings.STATIC_ROOT, msg+'_inherent_values.json'),'w')
-        fileR=open(os.path.join(settings.STATIC_ROOT, msg+'_residual_values.json'),'w')
-
-        fileI.write(inherentData)
-        fileR.write(residualData)
+    # Save the data in JSON filed so we can revisit the risk without
+    # regnerating the data
         
-        fileI.close()
-        fileR.close()
+    inherentData = json.dumps(simulated_inherent_losses)
+    residualData = json.dumps(simulated_residual_losses)
+    probabilityData = json.dumps(randomProbabilityValues)
+    
+    fileI=open(os.path.join(settings.STATIC_ROOT, msg+'_inherent_values.json'),'w')
+    fileR=open(os.path.join(settings.STATIC_ROOT, msg+'_residual_values.json'),'w')
+    fileP=open(os.path.join(settings.STATIC_ROOT, msg+'_probability_values.json'),'w')
 
-    else:
+    fileI.write(inherentData)
+    fileR.write(residualData)
+    fileP.write(probabilityData)
+    
+    fileI.close()
+    fileR.close()
+    fileP.close()
 
-        inherentData = os.path.join(settings.STATIC_ROOT, f"{msg}_inherent_values.json")
-        residualData = os.path.join(settings.STATIC_ROOT, f"{msg}_residual_values.json")
-
-        # Read the contents of the JSON file
-        with open(inherentData, "r") as ifile:
-            json_data = json.load(ifile)            
-            simulated_inherent_losses = json_data
-
-        with open(residualData, "r") as rfile:
-            json_data = json.load(rfile)
-
-            # Place the JSON data into a list called sorted_inherent_losses
-            simulated_residual_losses = json_data
 
     # Sort losses in descending order
     sorted_inherent_losses = np.sort(simulated_inherent_losses)[::-1]
@@ -604,16 +580,16 @@ def riskReport(request, msg):
     fig = go.Figure()
     fig.add_trace(
         go.Scatter(
-            x=sorted_inherent_losses,
-            y=exceedance_probs,
+            x=simulated_inherent_losses,
+            y=probabilityData,
             name="Inherent Loss",
             fill='tozeroy'
         )
     )
     fig.add_trace(
         go.Scatter(
-            x=sorted_residual_losses,
-            y=exceedance_probs,
+            x=simulated_residual_losses,
+            y=probabilityData,
             name="Residual Loss",
             fill='tozeroy'
         )
@@ -628,6 +604,24 @@ def riskReport(request, msg):
         paper_bgcolor = "rgba(0,0,0,0)"
     )
     fig.update_yaxes(tickvals=np.arange(0, 1.1, 0.2), tickformat=".0%")
+
+    ##########################################################################################
+    # Probability Distribution
+    ##########################################################################################
+
+    figProbCurve = go.Figure()
+
+    figProbCurve.add_trace(
+        go.Histogram(x=simulated_inherent_losses, name="Residual Probability Distribution")
+    )
+    figProbCurve.add_trace(
+        go.Histogram(x=simulated_residual_losses, name="Inherent Probability Distribution")
+    )
+
+
+    # The two histograms are drawn on top of another
+    figProbCurve.update_layout(barmode="stack")
+    figProbCurve.show()
     
 
     ##########################################################################################
@@ -635,7 +629,7 @@ def riskReport(request, msg):
     ##########################################################################################
 
     # Fit normal distributions to the data
-    inherent_mean, inherent_std = norm.fit(simulated_inherent_losses)
+    '''inherent_mean, inherent_std = norm.fit(simulated_inherent_losses)
     residual_mean, residual_std = norm.fit(simulated_residual_losses)
 
     # Generate x-axis values for the normal distribution curves
@@ -643,8 +637,8 @@ def riskReport(request, msg):
                     max(max(simulated_inherent_losses), max(simulated_residual_losses)), 100)
 
     # Calculate the y-values for the normal distribution curves
-    y_inherent = norm.pdf(x, inherent_mean, inherent_std)
-    y_residual = norm.pdf(x, residual_mean, residual_std)
+    y_inherent = norm.pdf(probabilityData)
+    y_residual = norm.pdf(probabilityData)
 
     # Create the plot with normal distribution curves
     figPD = go.Figure()
@@ -658,7 +652,7 @@ def riskReport(request, msg):
         yaxis_title='Probability Density',
         plot_bgcolor = "rgba(0,0,0,0)",
         paper_bgcolor = "rgba(0,0,0,0)"
-    )
+    )'''
 
     #########################################################################################
     # Send the Context
@@ -678,9 +672,10 @@ def riskReport(request, msg):
         "LECCurve": fig.to_html(
             full_html=False,
         ),
-         "RiskDist": figPD.to_html(
+        "probCurve": figProbCurve.to_html(
             full_html=False,
-        ),
+        )
+       
       
     }
 

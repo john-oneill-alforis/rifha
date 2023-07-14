@@ -134,8 +134,8 @@ class threatCatalogue(models.Model):
     threatCategory = models.CharField(max_length=200)
     threatlikelihood = models.FloatField()
     threatARO = models.FloatField()
-    threatMinCost = models.DecimalField(max_digits=10,decimal_places=2)
-    threatMaxCost = models.DecimalField(max_digits=10,decimal_places=2)
+    threatMinCost = models.FloatField()
+    threatMaxCost = models.FloatField()
 
     def __unicode__(self):
         return self.name
