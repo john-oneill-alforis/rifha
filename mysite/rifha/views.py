@@ -588,47 +588,20 @@ def riskReport(request, msg):
     # Probability Distribution
     ##########################################################################################
 
-    
-    meanI = np.average(simulated_inherent_losses, weights=randomProbabilityValues)
-    meanR = np.average(simulated_residual_losses, weights=randomProbabilityValues)
-
-    std_devI = np.sqrt(np.average((simulated_inherent_losses - meanI)**2, weights=randomProbabilityValues))
-    std_devR = np.sqrt(np.average((simulated_residual_losses - meanR)**2, weights=randomProbabilityValues))
-
-    xI = np.linspace(meanI - 3 * std_devI, meanI + 3 * std_devI, 100)
-    xR = np.linspace(meanR - 3 * std_devR, meanR + 3 * std_devR, 100)
-    
-    pdfI = (1 / (std_devI * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((xI - meanI) / std_devI)**2)
-    pdfR = (1 / (std_devR * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((xR - meanR) / std_devR)**2)
-
-    
-    
     figProbCurve = go.Figure()
 
-    # Plot the normal distribution line
-    figProbCurve.add_trace(go.Scatter(x=xI, y=pdfI, mode='lines', name='Normal Distribution Inherent', fill='tozeroy'))
-    figProbCurve.add_trace(go.Scatter(x=xR, y=pdfR, mode='lines', name='Normal Distribution Residual', fill='tozeroy', opacity=0.75))
 
-
-    # Set layout
-    figProbCurve.update_layout(
-        title='Normal Distribution Line Chart',
-        xaxis_title='Value',
-        yaxis_title='Probability Density',
+    figProbCurve.add_trace(
+    go.Histogram(x=simulated_residual_losses, name="Residual Probability Distribution")
+    )
+    figProbCurve.add_trace(
+        go.Histogram(x=simulated_inherent_losses, name="Inherent Probability Distribution")
     )
 
-   
 
-
+    # The two histograms are drawn on top of another
+    figProbCurve.update_layout(barmode="stack")
     
-    
-    
-    
-    
-
-   
-    
-
     #########################################################################################
     # Send the Context
     #########################################################################################
