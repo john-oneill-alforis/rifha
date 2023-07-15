@@ -592,10 +592,10 @@ def riskReport(request, msg):
 
 
     figProbCurve.add_trace(
-    go.Histogram(x=simulated_residual_losses, name="Residual Probability Distribution", nbinsx=100)
+    go.Histogram(x=simulated_residual_losses, name="Residual Probability Distribution", nbinsx=100, opacity=.75)
     )
     figProbCurve.add_trace(
-        go.Histogram(x=simulated_inherent_losses, name="Inherent Probability Distribution", nbinsx=100)
+        go.Histogram(x=simulated_inherent_losses, name="Inherent Probability Distribution", nbinsx=100, opacity=.75)
     )
 
 
