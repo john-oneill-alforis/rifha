@@ -555,12 +555,14 @@ def riskReport(request, msg):
     fileP.close()
 
 
-    # Sort losses in descending order
-    sorted_inherent_losses = np.sort(simulated_inherent_losses)[::-1]
-    sorted_residual_losses = np.sort(simulated_residual_losses)[::-1]
+    simulated_inherent_losses.sort()
+    simulated_residual_losses.sort()
+
 
     # Calculate exceedance probabilities
-    exceedance_probs = (np.arange(1, numSims + 1) - 0.5) / numSims
+
+    exceedanceProbInherent = [(len(simulated_inherent_losses) - i) / len(simulated_inherent_losses) * 100 for i in range(len(simulated_inherent_losses))]
+    exceedanceProbResidual = [(len(simulated_residual_losses) - i) / len(simulated_residual_losses) * 100 for i in range(len(simulated_residual_losses))]
 
     # Derive Max and Average
     minInherent= min(simulated_inherent_losses)
@@ -576,83 +578,56 @@ def riskReport(request, msg):
     # Create the loss excedence curve
     ##########################################################################################
 
-    # Create loss exceedance curve plot using Plotly
     fig = go.Figure()
-    fig.add_trace(
-        go.Scatter(
-            x=simulated_inherent_losses,
-            y=probabilityData,
-            name="Inherent Loss",
-            fill='tozeroy'
-        )
-    )
-    fig.add_trace(
-        go.Scatter(
-            x=simulated_residual_losses,
-            y=probabilityData,
-            name="Residual Loss",
-            fill='tozeroy'
-        )
-    )
-    fig.update_layout(
-        title="Loss Exceedance Curve",
-        xaxis_title="Loss",
-        yaxis_title="Exceedance Probability (%)",
-        yaxis_tickformat="%",
-        height=500,
-        plot_bgcolor = "rgba(0,0,0,0)",
-        paper_bgcolor = "rgba(0,0,0,0)"
-    )
-    fig.update_yaxes(tickvals=np.arange(0, 1.1, 0.2), tickformat=".0%")
+    fig.add_trace(go.Scatter(x=simulated_inherent_losses, y=exceedanceProbInherent, mode='lines', name='Inherent Risk'))
+    fig.add_trace(go.Scatter(x=simulated_residual_losses, y=exceedanceProbResidual, mode='lines', name='Residual Risk'))
+    fig.update_layout(title='Loss Exceedance Curve', xaxis_title='Loss', yaxis_title='Exceedance Probability (%)')
+
 
     ##########################################################################################
     # Probability Distribution
     ##########################################################################################
 
+    
+    meanI = np.average(simulated_inherent_losses, weights=randomProbabilityValues)
+    meanR = np.average(simulated_residual_losses, weights=randomProbabilityValues)
+
+    std_devI = np.sqrt(np.average((simulated_inherent_losses - meanI)**2, weights=randomProbabilityValues))
+    std_devR = np.sqrt(np.average((simulated_residual_losses - meanR)**2, weights=randomProbabilityValues))
+
+    xI = np.linspace(meanI - 3 * std_devI, meanI + 3 * std_devI, 100)
+    xR = np.linspace(meanR - 3 * std_devR, meanR + 3 * std_devR, 100)
+    
+    pdfI = (1 / (std_devI * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((xI - meanI) / std_devI)**2)
+    pdfR = (1 / (std_devR * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((xR - meanR) / std_devR)**2)
+
+    
+    
     figProbCurve = go.Figure()
 
-    figProbCurve.add_trace(
-        go.Histogram(x=simulated_inherent_losses, name="Residual Probability Distribution")
-    )
-    figProbCurve.add_trace(
-        go.Histogram(x=simulated_residual_losses, name="Inherent Probability Distribution")
-    )
+    # Plot the normal distribution line
+    figProbCurve.add_trace(go.Scatter(x=xI, y=pdfI, mode='lines', name='Normal Distribution Inherent', fill='tozeroy'))
+    figProbCurve.add_trace(go.Scatter(x=xR, y=pdfR, mode='lines', name='Normal Distribution Residual', fill='tozeroy', opacity=0.75))
 
 
-    # The two histograms are drawn on top of another
-    figProbCurve.update_layout(barmode="stack")
-    figProbCurve.show()
+    # Set layout
+    figProbCurve.update_layout(
+        title='Normal Distribution Line Chart',
+        xaxis_title='Value',
+        yaxis_title='Probability Density',
+    )
+
+   
+
+
+    
+    
+    
+    
     
 
-    ##########################################################################################
-    # Probability Distribution Histogram
-    ##########################################################################################
-
-    # Fit normal distributions to the data
-    '''inherent_mean, inherent_std = norm.fit(simulated_inherent_losses)
-    residual_mean, residual_std = norm.fit(simulated_residual_losses)
-
-    # Generate x-axis values for the normal distribution curves
-    x = np.linspace(min(min(simulated_inherent_losses), min(simulated_residual_losses)),
-                    max(max(simulated_inherent_losses), max(simulated_residual_losses)), 100)
-
-    # Calculate the y-values for the normal distribution curves
-    y_inherent = norm.pdf(probabilityData)
-    y_residual = norm.pdf(probabilityData)
-
-    # Create the plot with normal distribution curves
-    figPD = go.Figure()
-    figPD.add_trace(go.Scatter(x=x, y=y_inherent, mode='lines', name='Inherent Loss (PDF)' ,fill='tozeroy'))
-    figPD.add_trace(go.Scatter(x=x, y=y_residual, mode='lines', name='Residual Loss (PDF)' ,fill='tozeroy'))
-
-    # Update layout
-    figPD.update_layout(
-        title='Normal Distribution of Inherent and Residual Losses',
-        xaxis_title='Loss',
-        yaxis_title='Probability Density',
-        plot_bgcolor = "rgba(0,0,0,0)",
-        paper_bgcolor = "rgba(0,0,0,0)"
-    )'''
+   
+    
 
     #########################################################################################
     # Send the Context
@@ -668,7 +643,7 @@ def riskReport(request, msg):
         "maxResidual" :maxResidual,
         "avgResidual" :avgResidual,
 
-        "static": static,
+        #"static": static,
         "LECCurve": fig.to_html(
             full_html=False,
         ),
