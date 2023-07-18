@@ -485,6 +485,14 @@ def riskControlsAdd(request, msg):
     }
     return render(request, "riskControlsAdd.html", context)
 
+@login_required
+def riskDelete(request, msg):
+
+    riskReg.objects.get(riskId=msg).delete()
+    return HttpResponseRedirect("/rifha/riskReg/")
+
+    
+
 
 @login_required
 def riskReport(request, msg):

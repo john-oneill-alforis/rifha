@@ -89,9 +89,8 @@ class riskReg(models.Model):
     riskId = models.CharField(
         primary_key=True, auto_created=True, default=uuid.uuid4, max_length=36
     )
-
-    riskOwner = models.ForeignKey("staff", on_delete=models.CASCADE, default=1)
-    riskAsset = models.ForeignKey("assets", on_delete=models.CASCADE, default=1)
+    riskOwner = models.ForeignKey("staff", on_delete=models.PROTECT, default=1)
+    riskAsset = models.ForeignKey("assets", on_delete=models.PROTECT, default=1)
     riskDescription = models.TextField(max_length=2000)
     riskCreationDate = models.DateField()
     riskReviewDate = models.DateField()

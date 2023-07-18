@@ -67,6 +67,12 @@
           <td scope="col"><a href="/rifha/riskReport/{{entry.riskId}}/">Complete</a></td>
         {% endif %}
 
+        {% if entry.riskAnalysisStatus == 0 %}
+          <td scope="col">Delete</td>
+        {% elif entry.riskAnalysisStatus == 1 %}
+          <td scope="col"><a href="/rifha/riskDelete/{{entry.riskId}}/"><i class="bi bi-x-octagon"></i><a></td>
+        {% endif %}
+
         
         <td scope="col">&nbsp;</td>
         

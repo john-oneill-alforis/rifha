@@ -27,7 +27,7 @@ urlpatterns = [
     path("riskControlsAdd/<str:msg>/", views.riskControlsAdd, name="riskControlsAdd"),
     path("riskthreatAdd/<str:msg>/", views.riskthreatAdd, name="riskthreatAdd"),
     path("riskReport/<str:msg>/", views.riskReport, name="riskReport"),
-    # path("riskAdd/", views.riskAdd, name="riskAdd"),
+    path("riskDelete/<str:msg>/", views.riskDelete, name="riskDelete"),
     # path("riskEdit/<str:msg>/", views.riskEdit, name="riskEdit"),
     # Threat Information
     path(
