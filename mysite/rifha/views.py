@@ -498,74 +498,91 @@ def riskReport(request, msg):
         riskData.residualRiskOffset = request.POST.get("residualRiskOffset")
         riskData.save()
 
-    numSims = 10000
-    riskOffset = riskData.residualRiskOffset
-
-    # Get the risk data again as we may have updated it 
-
-    riskData = riskReg.objects.get(riskId=msg)
-
-    ##########################################################################################
-    # Create a Monte Carlo Simulation to produce data from which to create the plots
-    # I am also thinking that this is about as close as I will ever get to Monte Carlo
-    ##########################################################################################
-
-    # Fetch threat details from the ORM catalog
-    threats = threatCatalogue.objects.filter(riskreg__riskId=msg).values(
-        "threatName",
-        "threatlikelihood",
-        "threatMinCost",
-        "threatMaxCost",
-    )
-
-    # Perform Monte Carlo simulation
-    simulated_inherent_losses = []
-    simulated_residual_losses = []
-    randomProbabilityValues = []
-
-    for _ in range(numSims):
-      
-        for threat in threats:
-            probability = threat["threatlikelihood"]
-            lower_limit = threat["threatMinCost"]
-            upper_limit = threat["threatMaxCost"]
-
-            randomProbability = np.random.uniform(0,1)
-            if randomProbability < probability:
-
-                mean = (np.log(lower_limit) + np.log(upper_limit)) / 2.0
-                std_dv = (np.log(upper_limit) - np.log(lower_limit)) / 3.29
-
-                threat_loss = np.random.lognormal(mean, std_dv)
-                residual_loss = threat_loss * (1 - float(riskOffset))
-
-                randomProbabilityValues.append(randomProbability) 
-                simulated_inherent_losses.append(threat_loss)
-                simulated_residual_losses.append(residual_loss)
+        numSims = 10000
+        riskOffset = riskData.residualRiskOffset
 
         
-    # Save the data in JSON filed so we can revisit the risk without
-    # regnerating the data
+        # Get the risk data again as we may have updated it 
+
+        riskData = riskReg.objects.get(riskId=msg)
+
+        ##########################################################################################
+        # Create a Monte Carlo Simulation to produce data from which to create the plots
+        # I am also thinking that this is about as close as I will ever get to Monte Carlo
+        ##########################################################################################
+
+        # Fetch threat details from the ORM catalog
+        threats = threatCatalogue.objects.filter(riskreg__riskId=msg).values(
+            "threatName",
+            "threatlikelihood",
+            "threatMinCost",
+            "threatMaxCost",
+        )
+
+        # Perform Monte Carlo simulation
+        simulated_inherent_losses = []
+        simulated_residual_losses = []
+        randomProbabilityValues = []
+
+        for _ in range(numSims):
         
-    inherentData = json.dumps(simulated_inherent_losses)
-    residualData = json.dumps(simulated_residual_losses)
-    probabilityData = json.dumps(randomProbabilityValues)
-    
-    fileI=open(os.path.join(settings.STATIC_ROOT, msg+'_inherent_values.json'),'w')
-    fileR=open(os.path.join(settings.STATIC_ROOT, msg+'_residual_values.json'),'w')
-    fileP=open(os.path.join(settings.STATIC_ROOT, msg+'_probability_values.json'),'w')
+            for threat in threats:
+                probability = threat["threatlikelihood"]
+                lower_limit = threat["threatMinCost"]
+                upper_limit = threat["threatMaxCost"]
 
-    fileI.write(inherentData)
-    fileR.write(residualData)
-    fileP.write(probabilityData)
-    
-    fileI.close()
-    fileR.close()
-    fileP.close()
+                randomProbability = np.random.uniform(0,1)
+                if randomProbability < probability:
+
+                    mean = (np.log(lower_limit) + np.log(upper_limit)) / 2.0
+                    std_dv = (np.log(upper_limit) - np.log(lower_limit)) / 3.29
+
+                    threat_loss = np.random.lognormal(mean, std_dv)
+                    residual_loss = threat_loss * (1 - float(riskOffset))
+
+                    randomProbabilityValues.append(randomProbability) 
+                    simulated_inherent_losses.append(threat_loss)
+                    simulated_residual_losses.append(residual_loss)
+
+            
+        # Save the data in JSON filed so we can revisit the risk without
+        # regnerating the data
+            
+        inherentData = json.dumps(simulated_inherent_losses)
+        residualData = json.dumps(simulated_residual_losses)
+        probabilityData = json.dumps(randomProbabilityValues)
+        
+        fileI=open(os.path.join(settings.STATIC_ROOT, msg+'_inherent_values.json'),'w')
+        fileR=open(os.path.join(settings.STATIC_ROOT, msg+'_residual_values.json'),'w')
+        fileP=open(os.path.join(settings.STATIC_ROOT, msg+'_probability_values.json'),'w')
+
+        fileI.write(inherentData)
+        fileR.write(residualData)
+        fileP.write(probabilityData)
+        
+        fileI.close()
+        fileR.close()
+        fileP.close()
 
 
-    simulated_inherent_losses.sort()
-    simulated_residual_losses.sort()
+        simulated_inherent_losses.sort()
+        simulated_residual_losses.sort()
+
+    else:
+
+        inherentData = os.path.join(settings.STATIC_ROOT, f"{msg}_inherent_values.json")
+        residualData = os.path.join(settings.STATIC_ROOT, f"{msg}_residual_values.json")
+
+        # Read the contents of the JSON file
+        with open(inherentData, "r") as ifile:
+            json_data = json.load(ifile)            
+            simulated_inherent_losses = json_data
+
+        with open(residualData, "r") as rfile:
+            json_data = json.load(rfile)
+
+            # Place the JSON data into a list called sorted_inherent_losses
+            simulated_residual_losses = json_data
 
 
     # Calculate exceedance probabilities
