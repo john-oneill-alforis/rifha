@@ -162,6 +162,7 @@ def controlsHome(request):
     }
     template = loader.get_template("controlsDashboard.html")
     return HttpResponse(template.render(context, request))
+   
 
 
 @login_required
@@ -729,7 +730,6 @@ def populateThreatInformation(request):
 
 @login_required
 def processesHome(request):
-    pass
     all_processes = businessProcess.objects.select_related(
         "businessProcessCriticality"
     ).all()
