@@ -493,9 +493,17 @@ def riskReport(request, msg):
     riskData = riskReg.objects.get(riskId=msg)
 
     riskAssessmentStatus = riskReg.objects.filter(riskId=msg).values('riskAssessmentStatus').first()
+    
+    if request.method == "POST":
+        riskData.residualRiskOffset = request.POST.get("residualRiskOffset")
+        riskData.save()
 
     numSims = 10000
     riskOffset = riskData.residualRiskOffset
+
+    # Get the risk data again as we may have updated it 
+
+    riskData = riskReg.objects.get(riskId=msg)
 
     ##########################################################################################
     # Create a Monte Carlo Simulation to produce data from which to create the plots
