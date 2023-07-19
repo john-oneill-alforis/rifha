@@ -55,6 +55,7 @@ from .forms import (
     addControlForm,
     addBusinessProcessForm,
     residualRiskOffsetForm,
+    addProcessAssetForm
 )
 from django.shortcuts import get_object_or_404
 
@@ -492,8 +493,6 @@ def riskDelete(request, msg):
     return HttpResponseRedirect("/rifha/riskReg/")
 
     
-
-
 @login_required
 def riskReport(request, msg):
     # Fetch risk data from the database
@@ -765,7 +764,7 @@ def populateThreatInformation(request):
 def processesHome(request):
     all_processes = businessProcess.objects.select_related(
         "businessProcessCriticality"
-    ).all()
+    ).annotate(num_assets=Count("businessProcessAssets")).all()
 
     context = {
         "processes": all_processes,
@@ -782,8 +781,8 @@ def processAdd(request):
         form = addBusinessProcessForm(request.POST)
         if form.is_valid():
             form.save()
-            # Handle successful form submission, e.g., redirect to a success page
-            return HttpResponseRedirect("/rifha/processes/")
+            
+            return HttpResponseRedirect("/rifha/processesAssetsAdd/" + form.cleaned_data["businessProcessId"])
     else:
         form = addBusinessProcessForm()
 
@@ -805,3 +804,34 @@ def processEdit(request, msg):
 
     context = {"form": form, "businessProcessId": msg}
     return render(request, "processEdit.html", context)
+
+@login_required
+def processesAssetsAdd(request,msg):
+    processData = businessProcess.objects.get(businessProcessId=msg)
+    
+    form = addBusinessProcessForm(instance=processData)
+
+    assetData = assets.objects.filter(businessprocess__businessProcessId=msg).values(
+        "assetName",
+    )
+
+    assetList = addProcessAssetForm()
+
+    if request.method == "POST":
+        # Get the list of threat IDs from the form data
+        bpAssets = request.POST.getlist("businessProcessAssets")
+
+        # Add selected threats to the risk
+        for x in bpAssets:
+            asset = assets.objects.get(assetId=x)
+            processData.businessProcessAssets.add(x)
+
+        return HttpResponseRedirect("/rifha/processesAssetsAdd/" + msg)
+
+    context = {"form":form,"processData":processData,"processId":msg, "assetData":assetData, "assetList":assetList}
+    return render(request, "processAssetsAdd.html", context)
+
+@login_required
+def processesDelete(request,msg):
+    businessProcess.objects.get(businessProcessId=msg).delete()
+    return HttpResponseRedirect("/rifha/processes/")

@@ -26,10 +26,11 @@
       <thead>
         <tr>
           <th scope="col">Process Name</th>
-          
           <th scope="col">Process Description</th>
+          <th scope="col">Asset Count</th>
           <th scope="col">Process Owner</th>
           <th scope="col">Process Criticality</th>
+          <th scope="col">&nbsp;</th>
         </tr>
       </thead>
       <tbody>
@@ -39,10 +40,10 @@
         <tr>
           <td><a href="/rifha/processEdit/{{entry.businessProcessId}}">{{entry.businessProcessName}}</a></td>
           <td>{{entry.businessProcessDescription}}</td>
+          <td><a href="/rifha/processesAssetsAdd/{{entry.businessProcessId}}">{{entry.num_assets}}</a></td>
           <td>{{entry.businessProcessOwner.fullName}}</td>
           <td>{{entry.businessProcessCriticality.businessProcessCriticality}}</td>
-          
-       
+          <td><a href="/rifha/processesDelete/{{entry.businessProcessId}}/"><i class="bi bi-x-octagon" style="color:red"></i><a><td>
         </tr>
        
       {% endfor %}

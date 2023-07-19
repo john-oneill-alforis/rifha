@@ -44,4 +44,7 @@ urlpatterns = [
     path("processes/", views.processesHome, name="processesHome"),
     path("processAdd/", views.processAdd, name="processAdd"),
     path("processEdit/<str:msg>/", views.processEdit, name="processEdit"),
+    path("processesAssetsAdd/<str:msg>/", views.processesAssetsAdd, name="processesAssetsAdd"),
+    path("processesDelete/<str:msg>/", views.processesDelete, name="processesDelete")
 ]
+

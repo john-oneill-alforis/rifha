@@ -39,11 +39,11 @@ class assets(models.Model):
     )
     assetName = models.CharField(max_length=100)
     assetDescription = models.TextField(max_length=1000)
-    assetType = models.ForeignKey("assetsTypes", on_delete=models.CASCADE, default=1)
+    assetType = models.ForeignKey("assetsTypes", on_delete=models.PROTECT, default=1)
     assetClassification = models.ForeignKey(
-        "assetsClassifications", on_delete=models.CASCADE, default=1
+        "assetsClassifications", on_delete=models.PROTECT, default=1
     )
-    assetOwner = models.ForeignKey("staff", on_delete=models.CASCADE, default=1)
+    assetOwner = models.ForeignKey("staff", on_delete=models.PROTECT, default=1)
 
     def __unicode__(self):
         return self.name
@@ -182,6 +182,10 @@ class businessProcess(models.Model):
     businessProcessOwner = models.ForeignKey(
         "staff",
         on_delete=models.CASCADE,
+    )
+
+    businessProcessAssets = models.ManyToManyField(
+        "assets",
     )
 
     def __unicode__(self):

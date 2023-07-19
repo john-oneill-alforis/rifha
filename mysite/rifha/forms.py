@@ -317,3 +317,18 @@ class residualRiskOffsetForm(forms.ModelForm):
         widgets = {
             "residualRiskOffset": forms.TextInput(attrs={"class": "form-control"}),
         }
+
+class addProcessAssetForm(forms.ModelForm):
+    class Meta:
+        model = businessProcess
+        fields = [
+            "businessProcessAssets",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["businessProcessAssets"].widget = forms.Select(
+            choices=[("", "---------")]
+            + list(assets.objects.values_list("assetId", "assetName")),
+        )
