@@ -106,7 +106,6 @@ def dashboard(request):
     template = loader.get_template("index.html")
     return HttpResponse(template.render(context, request))
 
-
 @login_required
 def assettHome(request):
     all_assets = assets.objects.select_related(
@@ -119,7 +118,6 @@ def assettHome(request):
     }
     template = loader.get_template("assetsDashboard.html")
     return HttpResponse(template.render(context, request))
-
 
 @login_required
 def assettAdd(request):
@@ -137,7 +135,6 @@ def assettAdd(request):
     context = {"form": form}
     return render(request, "assetsAdd.html", context)
 
-
 @login_required
 def assettEdit(request, msg):
     assetData = assets.objects.get(assetId=msg)
@@ -154,7 +151,6 @@ def assettEdit(request, msg):
     context = {"form": form, "assetId": msg}
     return render(request, "assetsEdit.html", context)
 
-
 @login_required
 def controlsHome(request):
     all_controls = controlCatalogue.objects.select_related("controlCategory").all()
@@ -164,8 +160,6 @@ def controlsHome(request):
     template = loader.get_template("controlsDashboard.html")
     return HttpResponse(template.render(context, request))
    
-
-
 @login_required
 def controlsEdit(request, msg):
     controlData = controlCatalogue.objects.get(controlId=msg)
@@ -181,7 +175,6 @@ def controlsEdit(request, msg):
 
     context = {"form": form, "controlId": msg}
     return render(request, "controlsEdit.html", context)
-
 
 @login_required
 def controlAdd(request):
@@ -199,7 +192,6 @@ def controlAdd(request):
     context = {"form": form}
     return render(request, "controlsAdd.html", context)
 
-
 @login_required
 def peopleHome(request):
     team = staff.objects.all().order_by("firstName")
@@ -209,7 +201,6 @@ def peopleHome(request):
     }
     template = loader.get_template("peopleDashboard.html")
     return HttpResponse(template.render(context, request))
-
 
 @login_required
 def peopleEdit(request, msg):
@@ -227,7 +218,6 @@ def peopleEdit(request, msg):
 
     context = {"form": form, "staffId": msg}
     return render(request, "peopleEdit.html", context)
-
 
 @login_required
 def peopleAdd(request):
@@ -258,7 +248,6 @@ def peopleAdd(request):
         context=context,
     )
 
-
 @login_required
 def admin(request):
     team = assetsClassifications.objects.all().order_by("-rank")
@@ -267,7 +256,6 @@ def admin(request):
     context = {"classifications": team, "assettTypes": asset_type}
     template = loader.get_template("adminDashboard.html")
     return HttpResponse(template.render(context, request))
-
 
 @login_required
 def classificationAdd(request):
@@ -298,7 +286,6 @@ def classificationAdd(request):
         context=context,
     )
 
-
 @login_required
 def classificationEdit(request, msg):
     classificatonData = assetsClassifications.objects.get(classification_Id=msg)
@@ -314,7 +301,6 @@ def classificationEdit(request, msg):
 
     context = {"form": form, "classification_Id": msg}
     return render(request, "classificationEdit.html", context)
-
 
 @login_required
 def assettTypeAdd(request):
@@ -342,7 +328,6 @@ def assettTypeAdd(request):
         context=context,
     )
 
-
 @login_required
 def assettTypeEdit(request, msg):
     assetTypeData = assetsTypes.objects.get(assetTypeId=msg)
@@ -359,7 +344,6 @@ def assettTypeEdit(request, msg):
     context = {"form": form, "assetTypeId": msg}
     return render(request, "assettTypeEdit.html", context)
 
-
 @login_required
 def riskHome(request):
     all_risks = riskReg.objects.all().order_by("avgResidual")
@@ -368,7 +352,6 @@ def riskHome(request):
     }
     template = loader.get_template("riskDashBoard.html")
     return HttpResponse(template.render(context, request))
-
 
 @login_required
 def riskAdd(request):
@@ -398,7 +381,6 @@ def riskAdd(request):
     context = {"form": form}
     return render(request, "riskAdd.html", context)
 
-
 @login_required
 def riskAnalysisAdd(request, msg):
     riskData = riskReg.objects.get(riskId=msg)
@@ -418,7 +400,6 @@ def riskAnalysisAdd(request, msg):
     }
     return render(request, "riskAnalysisAdd.html", context)
 
-
 @login_required
 def riskthreatAdd(request, msg):
     risk = riskReg.objects.get(riskId=msg)
@@ -433,7 +414,6 @@ def riskthreatAdd(request, msg):
             risk.riskThreats.add(threat)
 
     return HttpResponseRedirect("/rifha/riskAnalysisAdd/" + msg)
-
 
 @login_required
 def riskControlsAdd(request, msg):
@@ -492,7 +472,6 @@ def riskDelete(request, msg):
     riskReg.objects.get(riskId=msg).delete()
     return HttpResponseRedirect("/rifha/riskReg/")
 
-    
 @login_required
 def riskReport(request, msg):
     # Fetch risk data from the database
@@ -675,7 +654,6 @@ def riskReport(request, msg):
 
     return render(request, "riskReport.html", context)
 
-
 @login_required
 def riskEdit(request, msg):
     riskData = riskReg.objects.get(riskId=msg)
@@ -690,7 +668,6 @@ def riskEdit(request, msg):
 
     context = {"form": form, "riskId": msg}
     return render(request, "riskEdit.html", context)
-
 
 @login_required
 def populateThreatInformation(request):
@@ -759,7 +736,6 @@ def populateThreatInformation(request):
     context = {"results_dict": results_dict, "category": category}
     return render(request, "adminDashboard.html", context)
 
-
 @login_required
 def processesHome(request):
     all_processes = businessProcess.objects.select_related(
@@ -771,7 +747,6 @@ def processesHome(request):
     }
     template = loader.get_template("processDashboard.html")
     return HttpResponse(template.render(context, request))
-
 
 @login_required
 def processAdd(request):
@@ -788,7 +763,6 @@ def processAdd(request):
 
     context = {"form": form}
     return render(request, "processAdd.html", context)
-
 
 @login_required
 def processEdit(request, msg):
