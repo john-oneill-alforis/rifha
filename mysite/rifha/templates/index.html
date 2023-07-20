@@ -50,7 +50,7 @@
         </div>
 
         <div class="row">
-            <div class="col h-10 p-2 m-1 mt-0 text-center border border-top-0" style="height: 300px; display: flex; justify-content: center; align-items: center;">
+            <div class="col h-10 p-2 m-1 mt-0 text-center border border-top-0" style="height: 350px; display: flex; justify-content: center; align-items: center;">
                 <canvas id="myChart"></canvas>
 
                 <script>
@@ -60,7 +60,7 @@
                     datasets: [
                         {
                         label: "Inherent Max Value",
-                        data: [{% for x in riskOwnersIValue %}{{ x.totalMaxInherent }},{% endfor %}],
+                        data: [{% for x in riskOwnersIValue %}{{ x.totalMaxInherent | floatformat:2 }},{% endfor %}],
                         borderWidth: 1,
                         backgroundColor: [
                                             'rgb(7,43,81)',
@@ -77,7 +77,7 @@
                         },
                     ],
                     };
-
+                    Chart.register(ChartDataLabels);
                     const config = {
                     type: "bar",
                     data: data,
@@ -92,6 +92,15 @@
                         legend: {
                             display: true,
                         },
+                        datalabels: { // This code is used to display data values
+                            anchor: 'end',
+                            align: 'top',
+                            formatter: Math.round,
+                            font: {
+                                weight: 'normal',
+                                size: 10
+                            }
+                        }
                         },
                     },
                     };
