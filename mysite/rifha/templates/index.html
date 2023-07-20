@@ -14,16 +14,16 @@
         </div>
 
         <div class="row pt-1" >
-            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
+            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center">
                 <p class="h4">Controls  <i class="bi bi-speedometer text-success"></i></p>
             </div>
-            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
+            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center">
                 <p class="h4">Processes  <i class="bi bi-briefcase-fill text-primary"></i></p>
             </div>
-            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25  text-center rounded-top">
+            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25  text-center">
                 <p class="h4">Risk Owners  <i class="bi bi-people-fill text-warning"></i></p>
             </div>
-            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
+            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center">
                 <p class="h4">Assets <i class="bi bi-laptop text-info"></i></p>
             </div>
         </div>
@@ -44,17 +44,17 @@
         </div>
 
         <div class="row pt-1" >
-            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
+            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center">
                 <p class="h4">Assessments Completed <i class="bi bi-clipboard-check-fill text-info"></i></p>
             </div>
     
-            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center rounded-top">
+            <div class="col border m-1 mb-0 p-2 bg-secondary text-dark bg-opacity-25 text-center">
                 <p class="h4">Process Categories <i class="bi bi-briefcase-fill text-primary"></i></p>
             </div>
         </div>
 
         <div class="row">
-            <div class="col p-2 m-1 mt-0 text-center border border-top-0" style="height: 400px; width:568px; display: flex; justify-content: center; align-items: center;">
+            <div class="col h-10 p-2 m-1 mt-0 text-center border border-top-0" style="height: 400px; width:568px; display: flex; justify-content: center; align-items: center;">
                 <canvas id="errorTotalCount"></canvas>
                 <script>
                         const ctx_errorCount = document.getElementById('errorTotalCount').getContext('2d');
@@ -74,6 +74,7 @@
                                 }]
                             },
                             options: {
+                                responsive: true, 
                                 scales: {
                                  x: {
                                    display: false, 
@@ -116,7 +117,8 @@
                                     ],
                                 }]
                             },
-                            options: {                           
+                            options: {  
+                                responsive: true,                         
                                 scales: {
                                  x: {
                                    display: false, 
@@ -142,16 +144,16 @@
 
 
         <div class="row pt-1">    
-            <div class="col-3 border mb-1 bg-secondary text-dark bg-opacity-25 text-center rounded-top"><p class="h5">Risk Ref</p></div>
-            <div class="col border mb-1 bg-secondary text-dark bg-opacity-25 text-center rounded-top"><p class="h5">Risk Owner</p></div>
-            <div class="col border mb-1 bg-secondary text-dark bg-opacity-25 text-center rounded-top"><p class="h5">Asset</p></div>
-            <div class="col border mb-1 bg-secondary text-dark bg-opacity-25 text-center rounded-top"><p class="h5">Inherent 97th % Cost</p></div>
-            <div class="col border mb-1 bg-secondary text-dark bg-opacity-25 text-center rounded-top"><p class="h5">Residual 97th % Cost</p></div>
+            <div class="col border mb-1 bg-secondary text-dark bg-opacity-25 text-center"><p class="h5">Risk Ref</p></div>
+            <div class="col border mb-1 bg-secondary text-dark bg-opacity-25 text-center"><p class="h5">Risk Owner</p></div>
+            <div class="col border mb-1 bg-secondary text-dark bg-opacity-25 text-center"><p class="h5">Asset</p></div>
+            <div class="col border mb-1 bg-secondary text-dark bg-opacity-25 text-center"><p class="h5">Process</p></div>
+            <div class="col border mb-1 bg-secondary text-dark bg-opacity-25 text-center"><p class="h5">Residual 97th % Cost</p></div>
         </div>
        
         {% for entry in riskData%}
         <div class="row">    
-            <div class="col-3 mb-1">{{entry.riskId}}</div>
+            <div class="col mb-1">{{entry.riskId}}</div>
             <div class="col mb-3">{{entry.riskOwner.fullName}}</div>
             <div class="col mb-3">{{entry.riskAsset.assetName}}</div>
             {% if entry.riskAssessmentStatus == 1%}
