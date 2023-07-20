@@ -16,7 +16,7 @@ from datetime import date, datetime, timedelta
 from django.template import loader
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.db.models import Count
+from django.db.models import Count, Sum
 from .models import (
     staff,
     assetsClassifications,
@@ -64,8 +64,32 @@ from django.shortcuts import get_object_or_404
 
 @login_required
 def dashboard(request):
-    riskData = riskReg.objects.all().order_by("-avgResidual")
 
+    riskOwnersRValue = riskReg.objects.values("riskOwner__fullName").annotate(totalMaxResidual=Sum("maxResidual"))
+    riskOwnersIValue = riskReg.objects.values("riskOwner__fullName").annotate(totalMaxInherent=Sum("maxInherent"))
+
+    riskData = riskReg.objects.values(
+        "riskId",
+        "riskOwner__fullName",
+        "riskDescription",
+        "riskCreationDate",
+        "riskReviewDate",
+        "riskNotes",
+        "riskAnalysisStatus",
+        "controlAnalysisStatus",
+        "riskAssessmentStatus",
+        "riskAsset__assetName",
+        "riskAsset__businessprocess__businessProcessCriticality",
+        "riskAsset__assetClassification__classificationLabel",
+        "residualRiskOffset",
+        "minInherent",
+        "avgInherent",
+        "maxInherent",
+        "minResidual",
+        "avgResidual",
+        "maxResidual",
+    )
+  
     assetCount = assets.objects.all().count
     riskOwners = riskReg.objects.values("riskOwner").distinct().count()
     processCount = businessProcess.objects.all().count
@@ -102,6 +126,9 @@ def dashboard(request):
         "completionPercentage": completionPercentage,
         "incompletePercentage": incompletePercentage,
         "criticalityCounts": criticalityCounts,
+        "riskOwnersRValue":riskOwnersRValue,
+        "riskOwnersIValue":riskOwnersIValue
+
     }
     template = loader.get_template("index.html")
     return HttpResponse(template.render(context, request))
@@ -569,6 +596,9 @@ def riskReport(request, msg):
 
             # Place the JSON data into a list called sorted_inherent_losses
             simulated_residual_losses = json_data
+
+            simulated_inherent_losses.sort()
+            simulated_residual_losses.sort()
 
 
     # Calculate exceedance probabilities
