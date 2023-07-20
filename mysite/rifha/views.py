@@ -88,7 +88,7 @@ def dashboard(request):
         "minResidual",
         "avgResidual",
         "maxResidual",
-    )
+    ).order_by('-maxResidual')
   
     assetCount = assets.objects.all().count
     riskOwners = riskReg.objects.values("riskOwner").distinct().count()
