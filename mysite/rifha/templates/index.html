@@ -3,7 +3,7 @@
 
 
 {% block content %}
-
+{% load humanize %}
   
 
 
@@ -228,7 +228,7 @@
             <div class="col mb-3 text-center">{{entry.riskAsset__assetClassification__classificationLabel}}</div>
             
             {% if entry.riskAssessmentStatus == 1%}
-            <div class="col mb-3 text-center">€{{entry.avgResidual|floatformat:2}}</div>
+            <div class="col mb-3 text-center">€{{entry.maxResidual| floatformat:2 | intcomma}}</div>
                 {% else %}
             <div class="col mb-3 bg-warning bg-danger-75 text-center">Assessment Incomplete</div>
             {% endif %}
