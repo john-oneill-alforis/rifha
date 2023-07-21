@@ -78,6 +78,19 @@
                     ],
                     };
                     Chart.register(ChartDataLabels);
+
+                    function formatNumberAsCurrency(value) {
+                        // Convert the number to a string with two decimal places
+                        const formattedNumber = value.toFixed(2);
+                      
+                        // Add commas as thousand separators
+                        const parts = formattedNumber.split('.');
+                        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                      
+                        // Join the parts back together with a dot as the decimal separator and add the euro symbol
+                        return '€' + parts.join('.');
+                        }
+                      
                     const config = {
                     type: "bar",
                     data: data,
@@ -95,7 +108,7 @@
                         datalabels: { // This code is used to display data values
                             anchor: 'end',
                             align: 'top',
-                            formatter: Math.round,
+                            formatter: formatNumberAsCurrency,
                             font: {
                                 weight: 'normal',
                                 size: 10
