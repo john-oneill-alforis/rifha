@@ -628,25 +628,6 @@ class web_scraper_log(models.Model):
 ######################################################################
 
 
-# Error Captures
-class interviewQuestions(models.Model):
-    interviewee_Id = models.CharField(blank=False, max_length=100)
-    question_1 = models.TextField(blank=False)
-    question_2 = models.TextField(blank=False)
-    question_3 = models.TextField(blank=False)
-    question_4 = models.TextField(blank=False)
-    question_5 = models.TextField(blank=False)
-    question_6 = models.TextField(blank=False)
-    question_7 = models.TextField(blank=False)
-    question_8 = models.TextField(blank=False)
-    question_9 = models.TextField(blank=False)
-    question_10 = models.TextField(blank=False)
-    date_created = models.DateField(blank=False, auto_now=True)
-
-    def __unicode__(self):
-        return self.name
-
-
 class interviewee(models.Model):
     interviewee_id = models.AutoField(primary_key=True)
     interviewee_reference = models.UUIDField(blank=False)
@@ -664,13 +645,13 @@ class researchQuestion(models.Model):
 
     def __unicode__(self):
         return self.name
-
-
-class intervieweeResponse(models.Model):
-    answer_id = models.AutoField(primary_key=True)
-    interviewee_id = models.ForeignKey(interviewee, on_delete=models.CASCADE)
-    question_id = models.ForeignKey(researchQuestion, on_delete=models.CASCADE)
-    answer_text = models.TextField()
+    
+class transcriptCapture(models.Model):
+    response_id = models.AutoField(primary_key=True)
+    interviewee_id = models.IntegerField(null=False,default=1)
+    question_id = models.IntegerField(null=False,default=1)
+    primary_answer_text = models.TextField()
+    secondary_answer_text = models.TextField()
     positivity_score = models.FloatField()
     neutrality_score = models.FloatField()
     negativity_score = models.FloatField()

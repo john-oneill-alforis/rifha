@@ -17,20 +17,19 @@ from .models import veris_incident_details
 from .models import veris_incident_action_details
 from .models import errorCapture
 from .models import web_scraper_log
-from .models import veris_asset_variety
-from .models import interviewQuestions
-from .models import interviewee
-from .models import researchQuestion
-from .models import intervieweeResponse
+from .models import veris_asset_variety,transcriptCapture
+
+#from .models import interviewee
+#from .models import researchQuestion
+#from .models import intervieweeResponse
 
 from django.db.models import Count
 from django.db.models.functions import TruncDate, TruncYear, Cast, TruncDay
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-from .forms import createInterviewee
-from .forms import createResearchQuestion
-from .forms import createResearchResponse
+from .forms import createInterviewee,createResearchQuestion,logResearchResponse
+
 
 # data_dict = {}
 
@@ -317,8 +316,8 @@ def errorLog(request):
 def get_interviewStats(request):
     template = loader.get_template("polls/interviewStats.html")
 
-    response_data = intervieweeResponse.objects.values("question_id_id").annotate(
-        answer_text=F("answer_text"),
+    response_data = transcriptCapture.objects.values("question_id").annotate(
+        answer_text=F("primary_answer_text"),
         positivity_score=Avg("positivity_score"),
         neutrality_score=Avg("neutrality_score"),
         negativity_score=Avg("negativity_score"),
@@ -394,45 +393,52 @@ def get_interviewResponses(request):
     context = {}
     # if this is a POST request we need to process the form data
     if request.method == "POST":
-        form = createResearchResponse(request.POST)
+        # Initialize the Vader sentiment analyzer
+        
+        analyzer = SentimentIntensityAnalyzer()
+        form = logResearchResponse(request.POST)
         if form.is_valid():
-            interviewee_id = form.cleaned_data["interviewee"]
-            # Initialize the Vader sentiment analyzer
-            analyzer = SentimentIntensityAnalyzer()
+            interviewee_id = form.cleaned_data["interviewee_id"]
+            
+            # Extract the number and text from the field name
+            question_number = form.cleaned_data["question_id"]
+            primary_answer_text = form.cleaned_data["primary_answer_text"]
+            secondary_answer_text = form.cleaned_data["secondary_answer_text"]
 
-            for key, value in form.cleaned_data.items():
-                if key.startswith("question_"):
-                    # Extract the number and text from the field name
-                    question_number = key.split("_")[1]
-                    question_text = value
+            # Perform sentiment analysis on the question text
+            sentiment_scores = analyzer.polarity_scores(primary_answer_text)
+            positivity_score = sentiment_scores["pos"]
+            neutrality_score = sentiment_scores["neu"]
+            negativity_score = sentiment_scores["neg"]
+            compound_score = sentiment_scores["compound"]
 
-                    # Perform sentiment analysis on the question text
-                    sentiment_scores = analyzer.polarity_scores(question_text)
-                    positivity_score = sentiment_scores["pos"]
-                    neutrality_score = sentiment_scores["neu"]
-                    negativity_score = sentiment_scores["neg"]
-                    compound_score = sentiment_scores["compound"]
-
-                    # Save the number and text to the database
-                    en = intervieweeResponse(
-                        answer_text=question_text,
-                        positivity_score=positivity_score,
-                        neutrality_score=neutrality_score,
-                        negativity_score=negativity_score,
-                        interviewee_id_id=interviewee_id,
-                        question_id_id=question_number,
-                        compound_score=compound_score,
-                    )
-
-                    en.save()
+            # Save the number and text to the database
+            '''en = logResearchResponse(
+                primary_answer_text=primary_answer_text,
+                positivity_score=positivity_score,
+                neutrality_score=neutrality_score,
+                negativity_score=negativity_score,
+                compound_score=compound_score,
+                secondary_answer_text=secondary_answer_text,
+                interviewee_id_id=interviewee_id,
+                question_id_id=question_number,
+            )'''
+            response_instance = form.save(commit=False)
+            response_instance.positivity_score = positivity_score
+            response_instance.neutrality_score = neutrality_score
+            response_instance.negativity_score = negativity_score
+            response_instance.compound_score = compound_score
+            response_instance.save()
+            #en.save()
 
             return HttpResponseRedirect("/interviewStats/")
+        
     else:
-        responseForm = createResearchResponse()
+        responseForm = logResearchResponse()
         context = {"responseForm": responseForm}
 
     return render(
         request,
         "polls/createInterviewResponse.html",
-        context=context,
+        context,
     )

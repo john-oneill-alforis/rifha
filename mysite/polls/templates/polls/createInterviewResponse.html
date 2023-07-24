@@ -42,91 +42,51 @@
 
         </div>
 
-        <!---->
+     
 
         <div class="row">
        
             <form action="/createInterviewResponses/" method="post">
-                <div class="form-group">
+                
                 {% load crispy_forms_tags %}
                 {% csrf_token %}
 
-                <div class="row g-2">
-                    <div class="col d-flex justify-content-center p-2 ">
-                        {{responseForm.interviewee|as_crispy_field }}
-                    </div>
-                   
-                </div>
-
-                <div class="row g-2">
-                    
-                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_1 | as_crispy_field }}
-                    </div>
-
-                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_2 | as_crispy_field }}
-                    </div>
-
-                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_3|as_crispy_field }}
-                    </div>
-
-                </div>
-
-                <div class="row g-2">
-                    
-                    
-                   
-                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_4|as_crispy_field }}
-                    </div>
-
-                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_5|as_crispy_field }}
-                    </div>
-
-                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_6|as_crispy_field }}
-                    </div>
-
-                </div>
-
-                <div class="row g-2">
-                    
-                  
-
-                </div>
-
-                <div class="row g-2">
-                    
-                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_7|as_crispy_field }}
-                    </div>
-
-                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_8|as_crispy_field }}
-                    </div>
-
-                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_9|as_crispy_field }}
-                    </div>
-
-                </div>
-
-                <div class="row g-2">
-                    
-                    
-
-                    <div class="col d-flex justify-content-center p-2 ">{{responseForm.question_10|as_crispy_field }}
-                    </div>
-
-                </div>
-               
                 
+              
+                {{responseForm}}
+
+                <!--<div class="row g-2">
+
+                    <div class="col d-flex justify-content-left p-2 ">
+                    </div>
+
+                </div>
 
 
+                <div class="row g-2">
 
+                    <div class="col d-flex justify-content-left p-2 ">
+                    </div>
+
+                </div>
+
+                <div class="row g-2">
+
+                    <div class="col d-flex justify-content-left p-2 ">
+                    </div>
+
+                </div>-->
                
                 <input type="submit" value="Submit">
             </form>
 
           
-        </div> 
+        
 
         <div>
 
+
+            
        
 
 </body>

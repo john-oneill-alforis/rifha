@@ -30,7 +30,6 @@ class peopleAddForm(forms.Form):
         "contactNumber": "Contact Number",
     }
 
-
 class peopleEditForm(forms.ModelForm):
     class Meta:
         model = staff
@@ -51,7 +50,6 @@ class peopleEditForm(forms.ModelForm):
             "contactNumber": "Contact Number",
         }
 
-
 class classificationAddForm(forms.Form):
     classificationLabel = forms.CharField(
         widget=forms.TextInput, label="Classification Label"
@@ -59,7 +57,6 @@ class classificationAddForm(forms.Form):
     classificationDescription = forms.CharField(
         widget=forms.Textarea, label="Classification Description"
     )
-
 
 class classificationEditForm(forms.ModelForm):
     class Meta:
@@ -75,13 +72,11 @@ class classificationEditForm(forms.ModelForm):
             "classificationDescription": "Classification Description",
         }
 
-
 class assettTypeAddForm(forms.Form):
     assetTypeLabel = forms.CharField(widget=forms.TextInput, label="Asset Type")
     assettTypeDescription = forms.CharField(
         widget=forms.Textarea, label="Asset Type Description"
     )
-
 
 class assetTypesEditForm(forms.ModelForm):
     class Meta:
@@ -91,7 +86,6 @@ class assetTypesEditForm(forms.ModelForm):
             "assetTypeName": forms.TextInput(),
             "assetTypeDescription": forms.Textarea,
         }
-
 
 class assetEditForm(forms.ModelForm):
     assetName = forms.CharField(widget=forms.TextInput, label="Asset Type Label")
@@ -113,7 +107,6 @@ class assetEditForm(forms.ModelForm):
         queryset=staff.objects.all(),
         label="Asset Owner",
     )
-
 
 class addAssetForm(forms.ModelForm):
     class Meta:
@@ -139,7 +132,6 @@ class addAssetForm(forms.ModelForm):
             + list(staff.objects.values_list("staffId", "fullName"))
         )
 
-
 class addControlForm(forms.ModelForm):
     class Meta:
         model = controlCatalogue
@@ -160,7 +152,6 @@ class addControlForm(forms.ModelForm):
             choices=[("", "---------")]
             + list(controlTypes.objects.values_list("controlTypeId", "controlTypeName"))
         )
-
 
 class addRiskForm(forms.ModelForm):
     class Meta:
@@ -196,7 +187,6 @@ class addRiskForm(forms.ModelForm):
             choices=[("", "---------")]
             + list(staff.objects.values_list("staffId", "fullName"))
         )
-
 
 class addRiskAnalysisForm(forms.ModelForm):
     class Meta:
@@ -243,7 +233,6 @@ class addRiskAnalysisForm(forms.ModelForm):
             + list(threatCatalogue.objects.values_list("threatId", "threatName")),
         )
 
-
 class addRiskThreatForm(forms.ModelForm):
     class Meta:
         model = riskReg
@@ -259,7 +248,6 @@ class addRiskThreatForm(forms.ModelForm):
             + list(threatCatalogue.objects.values_list("threatId", "threatName")),
         )
 
-
 class addRiskControlForm(forms.ModelForm):
     class Meta:
         model = riskReg
@@ -274,7 +262,6 @@ class addRiskControlForm(forms.ModelForm):
             choices=[("", "---------")]
             + list(controlCatalogue.objects.values_list("controlId", "controlName")),
         )
-
 
 class addBusinessProcessForm(forms.ModelForm):
     class Meta:
@@ -307,7 +294,6 @@ class addBusinessProcessForm(forms.ModelForm):
             choices=[("", "---------")]
             + list(staff.objects.values_list("staffId", "fullName"))
         )
-
 
 class residualRiskOffsetForm(forms.ModelForm):
     class Meta:

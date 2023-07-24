@@ -1,5 +1,5 @@
 from django import forms
-from .models import interviewee
+from .models import interviewee,researchQuestion,transcriptCapture
 
 
 class interviewForm(forms.Form):
@@ -54,3 +54,36 @@ class createResearchResponse(forms.Form):
     question_8 = forms.CharField(widget=forms.Textarea)
     question_9 = forms.CharField(widget=forms.Textarea)
     question_10 = forms.CharField(widget=forms.Textarea)
+
+
+class logResearchResponse(forms.ModelForm):
+    class Meta:
+        model = transcriptCapture
+        fields = [
+            "interviewee_id",
+            "question_id",
+            "primary_answer_text",
+            "secondary_answer_text",
+        ]
+
+        widgets = {
+            "primary_answer_text": forms.Textarea(attrs={"rows": 10, "cols": 60}),
+            "secondary_answer_text": forms.Textarea(attrs={"rows": 10, "cols": 60}),
+        }
+
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields["interviewee_id"].widget = forms.Select(
+            #attrs={"disabled": "disabled"},
+            choices=[("", "---------")]
+            + list(interviewee.objects.values_list("interviewee_id", "interviewee_reference")),
+        )
+        self.fields["question_id"].widget = forms.Select(
+            #attrs={"disabled": "disabled"},
+            choices=[("", "---------")]
+            + list(researchQuestion.objects.values_list("question_id", "question_text")),
+        )
+
+       
