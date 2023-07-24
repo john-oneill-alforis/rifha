@@ -52,12 +52,10 @@
                 {% csrf_token %}
 
                 
-              
-                {{responseForm}}
 
-                <!--<div class="row g-2">
+                <div class="row g-2">
 
-                    <div class="col d-flex justify-content-left p-2 ">
+                    <div class="col d-flex justify-content-left p-2 ">{{responseForm.interviewee_id|as_crispy_field}}
                     </div>
 
                 </div>
@@ -65,17 +63,24 @@
 
                 <div class="row g-2">
 
-                    <div class="col d-flex justify-content-left p-2 ">
+                    <div class="col d-flex justify-content-left p-2 ">{{responseForm.question_id|as_crispy_field}}
                     </div>
 
                 </div>
 
                 <div class="row g-2">
 
-                    <div class="col d-flex justify-content-left p-2 ">
+                    <div class="col d-flex justify-content-left p-2 ">{{responseForm.primary_answer_text|as_crispy_field}}
                     </div>
 
-                </div>-->
+                </div>
+
+                <div class="row g-2">
+
+                    <div class="col d-flex justify-content-left p-2 ">{{responseForm.secondary_answer_text|as_crispy_field}}
+                    </div>
+
+                </div>
                
                 <input type="submit" value="Submit">
             </form>

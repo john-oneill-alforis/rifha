@@ -17,7 +17,7 @@ from .models import veris_incident_details
 from .models import veris_incident_action_details
 from .models import errorCapture
 from .models import web_scraper_log
-from .models import veris_asset_variety,transcriptCapture
+from .models import veris_asset_variety,transcriptCapture, interviewee
 
 #from .models import interviewee
 #from .models import researchQuestion
@@ -316,15 +316,21 @@ def errorLog(request):
 def get_interviewStats(request):
     template = loader.get_template("polls/interviewStats.html")
 
-    response_data = transcriptCapture.objects.values("question_id").annotate(
+
+    responseData = transcriptCapture.objects.select_related('interviewee_id').all().order_by('question_id')
+    '''response_data = transcriptCapture.objects.values("question_id").annotate(
         answer_text=F("primary_answer_text"),
         positivity_score=Avg("positivity_score"),
         neutrality_score=Avg("neutrality_score"),
         negativity_score=Avg("negativity_score"),
         compound_score=Avg("compound_score"),
-    )
+    )'''
 
-    context = {"data": response_data}
+    respondantData = interviewee.objects.filter(
+    transcriptcapture__interviewee_id__isnull=False
+).values('interviewee_reference').distinct()
+
+    context = {"data": responseData, "respondantData":respondantData}
 
     template = loader.get_template("polls/interviewStats.html")
     return HttpResponse(template.render(context, request))

@@ -648,7 +648,7 @@ class researchQuestion(models.Model):
     
 class transcriptCapture(models.Model):
     response_id = models.AutoField(primary_key=True)
-    interviewee_id = models.IntegerField(null=False,default=1)
+    interviewee_id = models.ForeignKey(interviewee, on_delete=models.CASCADE)
     question_id = models.IntegerField(null=False,default=1)
     primary_answer_text = models.TextField()
     secondary_answer_text = models.TextField()

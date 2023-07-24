@@ -42,25 +42,41 @@
         <div class="col-3 d-flex justify-content-left p-2">
 
         </div>
-                <div class="row g-2">
-                    <div class="col-2 d-flex justify-content-left p-2">&nbsp;</h6></div>
-                    <div class="col-2 d-flex justify-content-left p-2"><h6>Positivity Score</h6></div>
-                    <div class="col-2 d-flex justify-content-left p-2"><h6>Neutrality Score</h6></div>
-                    <div class="col-2 d-flex justify-content-left p-2"><h6>Negativity Score</h6></div>
-                    <div class="col-2 d-flex justify-content-left p-2"><h6>Compound Score</h6></div>
-                </div>
-   
-        {% for y in data %}
+
     
-        <div class="row g-2">
-            <div class="col-2 d-flex justify-content-left p-2">Question {{ forloop.counter }}</div>
-            <div class="col-2 d-flex justify-content-left p-2">{{y.positivity_score }}</div>
-            <div class="col-2 d-flex justify-content-left p-2">{{y.neutrality_score}}</div>
-            <div class="col-2 d-flex justify-content-left p-2">{{y.negativity_score}}</div>
-            <div class="col-2 d-flex justify-content-left p-2">{{y.compound_score}}</div>
-        </div>
+        
+        {% for x in respondantData%}
+
+            <div class="row">
+                <div class="col d-flex justify-content-left p-2"><h6>Interview Candidate</h6></div>
+            
+           
+                <div class="col d-flex justify-content-left p-2"><h6>Questions Answered</h6></div>
+            
+            </div>
+
+            <div class="row">
+                <div class="col d-flex justify-content-left p-2">{{ x.interviewee_reference }}</div>
+            
+          
+                <div class="col d-flex justify-content-left p-2">
+                    
+                    {% for y in data %}
+                                                                        {% if y.interviewee_id.interviewee_reference == x.interviewee_reference %}
+                                                                            {{ y.question_id }}
+                                                                        {% endif %}
+                                                                {% endfor %}
+                </div>
+            
+            </div>
 
         {% endfor %}
+
+       
+
+
+        
+       
     
  
     </div>
