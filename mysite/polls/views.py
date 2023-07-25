@@ -338,6 +338,7 @@ def get_interviewStats(request):
 
 @login_required
 def get_createInterviewee(request):
+    context = {}
     # if this is a POST request we need to process the form data
     if request.method == "POST":
         form = createInterviewee(request.POST)
@@ -348,19 +349,16 @@ def get_createInterviewee(request):
                 interviewee_fte=form.cleaned_data["interviewee_fte"],
                 interviewee_org_type=form.cleaned_data["interviewee_org_type"],
             )
-
             en.save()
-
             return HttpResponseRedirect("/interviewStats/")
 
         # if a GET (or any other method) we'll create a blank form
     else:
-        # form = interviewForm()
-        intervieweeForm = createInterviewee()
+        form = createInterviewee()
+        # intervieweeForm = createInterviewee()
         # question_texts = researchQuestion()
 
-        context = {"intervieweeForm": intervieweeForm}
-
+    context = {"intervieweeForm": form}
     return render(
         request,
         "polls/createInterviewee.html",
@@ -446,5 +444,17 @@ def get_interviewResponses(request):
     return render(
         request,
         "polls/createInterviewResponse.html",
+        context,
+    )
+
+
+@login_required
+def get_interviewees(request):
+    data = interviewee.objects.all
+
+    context = {"data":data}
+    return render(
+        request,
+        "polls/listInterviewee.html",
         context,
     )

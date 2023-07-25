@@ -26,4 +26,12 @@ urlpatterns = [
         views.get_interviewResponses,
         name="createInterviewResponses",
     ),
+    path(
+        "listInterviewee/",
+        views.get_interviewees,
+        name="listInterviewee",
+    ),
+
+
+    
 ]

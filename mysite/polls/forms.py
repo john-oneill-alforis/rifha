@@ -16,19 +16,14 @@ class interviewForm(forms.Form):
     question_10 = forms.CharField(widget=forms.Textarea)
 
 
-class createInterviewee(forms.Form):
-    interviewee_reference = forms.CharField(label="Subject UUID", max_length=36)
-    interviewee_role = forms.CharField(
-        label="Organisational Role", widget=forms.TextInput
-    )
-    interviewee_fte = forms.CharField(
-        label="Organisational FTE", widget=forms.TextInput
-    )
-    interviewee_org_type = forms.CharField(
-        label="Organisation Sector", widget=forms.TextInput
-    )
-
-
+class createInterviewee(forms.ModelForm):
+    class Meta:
+        model = interviewee
+        fields = ["interviewee_reference",
+                    "interviewee_role",
+                    "interviewee_fte",
+                    "interviewee_org_type"]
+        
 class createResearchQuestion(forms.Form):
     question_text = forms.CharField(label="Question Text", widget=forms.Textarea)
 
