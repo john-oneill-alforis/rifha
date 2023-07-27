@@ -332,13 +332,14 @@ def get_interviewStats(request):
     scoreData = transcriptCapture.objects.filter(question_id__in=question_ids)
     
     # Extract scores for plotting
-    questions = []
+    interviewee = []
     positivity_scores = []
     neutrality_scores = []
     negativity_scores = []
     compound_scores = []
 
     for x in scoreData:
+        interviewee.append(x.interviewee_id)
         positivity_scores.append(x.positivity_score)
         neutrality_scores.append(x.neutrality_score)
         negativity_scores.append(x.negativity_score)
@@ -350,7 +351,8 @@ def get_interviewStats(request):
     context = {"data": responseData, "respondantData":respondantData, "positivity_scores":positivity_scores,
         "neutrality_scores":neutrality_scores,
         "negativity_scores":negativity_scores,
-        "compound_scores":compound_scores}
+        "compound_scores":compound_scores,
+        "interviewee":interviewee}
 
     template = loader.get_template("polls/interviewStats.html")
     return HttpResponse(template.render(context, request))
