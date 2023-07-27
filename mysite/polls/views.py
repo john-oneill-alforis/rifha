@@ -348,7 +348,7 @@ def get_interviewStats(request):
         #positivity_scores.append(scoreData.positivity_score)
 
     # Create the plot using matplotlib
-    '''plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(10, 6))
     x = np.arange(len(questions))
     width = 0.2
 
@@ -370,7 +370,7 @@ def get_interviewStats(request):
     plt.savefig(plot_path)
 
     # Close the plot to free up resources
-    plt.close()'''
+    plt.close()
 
     respondantData = interviewee.objects.filter(
     transcriptcapture__interviewee_id__isnull=False).values('interviewee_reference').distinct()
