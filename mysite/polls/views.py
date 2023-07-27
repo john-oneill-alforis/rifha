@@ -6,8 +6,10 @@ from collections import defaultdict
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from math import log
-import os
+import os, numpy as np
 import matplotlib.pyplot as plt
+from django.conf import settings as settings
+
 
 
 from django.db.models import Avg, F
@@ -326,11 +328,54 @@ def get_interviewStats(request):
         compound_score=Avg("compound_score"),
     )'''
 
-    respondantData = interviewee.objects.filter(
-    transcriptcapture__interviewee_id__isnull=False
-).values('interviewee_reference').distinct()
+    question_ids=[1,2]
+    scoreData = transcriptCapture.objects.filter(question_id__in=question_ids)
+    
+    # Extract scores for plotting
+    questions = []
+    positivity_scores = []
+    neutrality_scores = []
+    negativity_scores = []
+    compound_scores = []
 
-    context = {"data": responseData, "respondantData":respondantData}
+    for x in scoreData:
+        positivity_scores.append(x.positivity_score)
+        neutrality_scores.append(x.neutrality_score)
+        negativity_scores.append(x.negativity_score)
+        compound_scores.append(x.compound_score)
+           
+       
+        #positivity_scores.append(scoreData.positivity_score)
+
+    # Create the plot using matplotlib
+    '''plt.figure(figsize=(10, 6))
+    x = np.arange(len(questions))
+    width = 0.2
+
+    plt.bar(x - width, positivity_scores, width, label='Positivity Score')
+    plt.bar(x, neutrality_scores, width, label='Neutrality Score')
+    plt.bar(x + width, negativity_scores, width, label='Negativity Score')
+    plt.bar(x + 2*width, compound_scores, width, label='Compound Score')
+
+    plt.xlabel('Question ID')
+    plt.ylabel('Average Score')
+    plt.title('Average Scores for Each Question')
+    plt.xticks(x, questions)
+    plt.legend()
+    plt.tight_layout()
+
+    # Save the plot to a temporary file or serve it directly in the response.
+    # For this example, let's save it to a temporary file and include the file path in the context.
+    plot_path = os.path.join(settings.STATIC_ROOT, "sentiment_scores.png")
+    plt.savefig(plot_path)
+
+    # Close the plot to free up resources
+    plt.close()'''
+
+    respondantData = interviewee.objects.filter(
+    transcriptcapture__interviewee_id__isnull=False).values('interviewee_reference').distinct()
+
+    context = {"data": responseData, "respondantData":respondantData,}
 
     template = loader.get_template("polls/interviewStats.html")
     return HttpResponse(template.render(context, request))
