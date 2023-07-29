@@ -76,78 +76,19 @@
        
 
         <div class="row">
-            <div class="col p-2" style="width: 200px; height: 500px">
+            
+            <div>
 
-                <canvas id="myChart"></canvas>
+                {% load static %}
+        
+                <img src="{% static '/plots/box-question-1.png' %}" alt="Question 1 - Responses Plot">
 
-                <script>
-                    // Sample data for the chart
-                    const data = {
-                    labels: [{% for x in interviewee_ids %}"{{ x.interviewee_id }}",{% endfor %}],
-                    datasets: [
-                        {
-                        label: "Positivity Scores",
-                        data: [{% for x in positivity_scores %}{{ x }},{% endfor %}],
-                        borderWidth: 1,
-                        backgroundColor: [
-                                            'rgb(7,43,81)',
-                                            
-                                    ],
-                        },
-                        {
-                        label: "Neutrality Scores",
-                        data: [{% for x in  neutrality_scores %}{{ x }},{% endfor %}],
-                        borderWidth: 1,
-                        backgroundColor: [
-                                            'rgb(129,174,208)',
-                                    ],
-                        },
-                        {
-                        label: "Negatiivty Scores",
-                        data: [{% for x in  negativity_scores %}{{ x}},{% endfor %}],
-                        borderWidth: 1,
-                        backgroundColor: [
-                                            'rgb(129,174,100)',
-                                    ],
-                        },
-                        {
-                        label: "Compund Scores",
-                        data: [{% for x in  compound_scores %}{{ x }},{% endfor %}],
-                        borderWidth: 1,
-                        backgroundColor: [
-                                            'rgb(129,174,50)',
-                                    ],
-                        },
-                    ],
-                    };
-                    Chart.register(ChartDataLabels);
-                      
-                    const config = {
-                    type: "bar",
-                    data: data,
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                    };
-
-                    // Create the chart
-                    const ctx = document.getElementById("myChart").getContext("2d");
-                    const myChart = new Chart(ctx, config);
-                </script>
 
             </div>
 
         </div> 
 
-        {% load static %}
-        
-        <img src="{% static '/plots/box-question-1.png' %}" alt="Question 1 - Responses Plot">
+       
       
 
 
