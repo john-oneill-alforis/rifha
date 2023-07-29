@@ -90,6 +90,8 @@ def box_plot_generate():
     # Combine the lists into one list of lists
     data_lists = [list1, list2, list3, list4]
 
+    print(list1,list2,list3,list4)
+
 
    # Create the horizontal box plot
     plt.figure(figsize=(10, 6))  # Optional: Adjust the figure size as needed
@@ -110,7 +112,7 @@ def box_plot_generate():
         # Explicitly show the plot
         
     plt.savefig(toplevel_path / "mysite/static/plots/box-question-1.png")
-    plt.show()
+    #plt.show()
     
 
 box_plot_generate()
