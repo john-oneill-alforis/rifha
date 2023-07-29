@@ -34,7 +34,7 @@ def box_plot_generate():
     cursor = cnx.cursor()
 
     # Execute the query for the first data series
-    query1 = """SELECT positivity_score FROM polls_transcriptCapture
+    query1 = """SELECT positivity_score FROM polls_transcriptcapture
                 WHERE question_id = 1;"""
 
     cursor.execute(query1)
@@ -46,7 +46,7 @@ def box_plot_generate():
     list1 = [row[0] for row in rows1]  # Assuming x values are in the first column
     
     # Execute the query for the second data series
-    query2 =  """SELECT neutrality_score FROM polls_transcriptCapture
+    query2 =  """SELECT neutrality_score FROM polls_transcriptcapture
                 WHERE question_id = 1;"""
 
     cursor.execute(query2)
@@ -59,7 +59,7 @@ def box_plot_generate():
 
 
     # Execute the query for the second data series
-    query3 =  """SELECT negativity_score FROM polls_transcriptCapture
+    query3 =  """SELECT negativity_score FROM polls_transcriptcapture
                 WHERE question_id = 1;"""
 
     cursor.execute(query3)
@@ -72,7 +72,7 @@ def box_plot_generate():
 
 
     # Execute the query for the second data series
-    query4 =  """SELECT compound_score FROM polls_transcriptCapture
+    query4 =  """SELECT compound_score FROM polls_transcriptcapture
                 WHERE question_id = 1;"""
 
     cursor.execute(query4)
