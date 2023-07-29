@@ -73,18 +73,21 @@
 
         {% endfor %}
 
-       
+       {% load static %}
 
         <div class="row">
             
             <div>
-
-                {% load static %}
-        
                 <img src="{% static '/plots/box-question-1.png' %}" alt="Question 1 - Responses Plot">
+            </div>
+
+        </div> 
+
+
+        <div class="row">
+            
+            <div>
                 <img src="{% static '/plots/box-question-2.png' %}" alt="Question 2 - Responses Plot">
-
-
             </div>
 
         </div> 
