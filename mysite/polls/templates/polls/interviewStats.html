@@ -145,11 +145,9 @@
 
         </div> 
 
-        {% for x in interviewee_ids %}"{{ x.interviewee_id }}",{% endfor %}
-        {{neutrality_scores}}
-        {{negativity_scores}}
-        {{compound_scores}}
-        {{positivity_scores}}
+        {% load static %}
+        
+        <img src="{% static '/plots/box-question-1.png' %}" alt="My image">
       
 
 
