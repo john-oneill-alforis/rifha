@@ -68,7 +68,7 @@ def box_plot_generate():
     rows3 = cursor.fetchall()
 
     # Extract the x and y coordinates from the fetched data for the second data series
-    list3 = [row[0] for row in rows2]  # Assuming x values are in the first column
+    list3 = [row[0] for row in rows3]  # Assuming x values are in the first column
 
 
     # Execute the query for the second data series
@@ -81,7 +81,7 @@ def box_plot_generate():
     rows4 = cursor.fetchall()
 
     # Extract the x and y coordinates from the fetched data for the second data series
-    list4 = [row[0] for row in rows2]  # Assuming x values are in the first column
+    list4 = [row[0] for row in rows4]  # Assuming x values are in the first column
 
 
      # Labels for each list
