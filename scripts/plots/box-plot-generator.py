@@ -109,7 +109,7 @@ def box_plot_generate():
 
         # Explicitly show the plot
         
-    plt.savefig(toplevel_path / "mysite/static/1.png")
+    plt.savefig(toplevel_path / "mysite/static/plots/box-question-1.png")
     plt.show()
     
 
