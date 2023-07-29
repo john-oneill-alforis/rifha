@@ -85,7 +85,7 @@ def box_plot_generate():
 
 
      # Labels for each list
-    labels = ["Positivity Score", "Neutrality Score", "Negativity Score", "Compund Score"]
+    labels = ["Positivity Score", "Neutrality Score", "Negativity Score", "Compound Score"]
 
     # Combine the lists into one list of lists
     data_lists = [list1, list2, list3, list4]
