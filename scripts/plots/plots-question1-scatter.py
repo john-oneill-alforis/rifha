@@ -65,7 +65,7 @@ def create_scatter():
     plt.xticks([])
 
     # Show the plot
-    plt.savefig(toplevel_path / "plots/veris-national-distribution.png")
+    plt.savefig(toplevel_path / "plots/1.png")
 
     # Close the cursor and database connection
     cursor.close()

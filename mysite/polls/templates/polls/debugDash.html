@@ -98,7 +98,7 @@
                         const actionCount = new Chart(ctx_actionCount, {
                             type: 'line',
                             data: {
-                                labels : [{% for x in logged_dates %} "{{x.date|date:'d-m'  }}" ,{% endfor %}],
+                                labels : [{% for x in interviewee_ids %} "{{x}}" ,{% endfor %}],
                                 datasets: [{
                                     label: "Bleeping Computer",
                                     data : [{% for x in actionCounts_BC %}{{ x.article_count }},{% endfor %}],

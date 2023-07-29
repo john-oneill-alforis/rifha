@@ -78,59 +78,78 @@
         <div class="row">
             <div class="col p-2" style="width: 200px; height: 500px">
 
-                <canvas id="actionTotalCount"></canvas>
-                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <canvas id="myChart"></canvas>
+
                 <script>
-                        const ctx_actionCount = document.getElementById('actionTotalCount').getContext('2d');
-                        const actionCount = new Chart(ctx_actionCount, {
-                            type: 'line',
-                            data: {
-                                labels : ["Question 1", "Question 2"],
-                                datasets: [{
-                                    label: "Positivity Scores",
-                                    data : [{% for x in positivity_scores %}{{ x }},{% endfor %}],
-                                    
-                                
-                                },
-                                {
-                                    label: "Neutrality Values",
-                                    data : [{% for x in neutrality_scores %}{{ x }},{% endfor %}],
-                                    
-                            
-                                },
-                                {
-                                    label: "Negativity Values",
-                                    data : [{% for x in negativity_scores %}{{ x }},{% endfor %}],
-                                    
-                            
-                                },
-                                {
-                                    label: "Compund Scores",
-                                    data : [{% for x in compound_scores %}{{ x }},{% endfor %}],
-                                    
-                            
-                                },
-                             ]
-                            },
-                            options: {
-                                responsive: true,
-                                plugins: {
-                                  legend: {
-                                    position: 'top',
-                                  },
-                                  title: {
-                                    display: true,
-                                  }
-                                }
-                              },
-                            });
+                    // Sample data for the chart
+                    const data = {
+                    labels: [{% for x in interviewee_ids %}"{{ x.interviewee_id }}",{% endfor %}],
+                    datasets: [
+                        {
+                        label: "Positivity Scores",
+                        data: [{% for x in positivity_scores %}{{ x }},{% endfor %}],
+                        borderWidth: 1,
+                        backgroundColor: [
+                                            'rgb(7,43,81)',
+                                            
+                                    ],
+                        },
+                        {
+                        label: "Neutrality Scores",
+                        data: [{% for x in  neutrality_scores %}{{ x }},{% endfor %}],
+                        borderWidth: 1,
+                        backgroundColor: [
+                                            'rgb(129,174,208)',
+                                    ],
+                        },
+                        {
+                        label: "Negatiivty Scores",
+                        data: [{% for x in  negativity_scores %}{{ x}},{% endfor %}],
+                        borderWidth: 1,
+                        backgroundColor: [
+                                            'rgb(129,174,100)',
+                                    ],
+                        },
+                        {
+                        label: "Compund Scores",
+                        data: [{% for x in  compound_scores %}{{ x }},{% endfor %}],
+                        borderWidth: 1,
+                        backgroundColor: [
+                                            'rgb(129,174,50)',
+                                    ],
+                        },
+                    ],
+                    };
+                    Chart.register(ChartDataLabels);
+                      
+                    const config = {
+                    type: "bar",
+                    data: data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                    };
+
+                    // Create the chart
+                    const ctx = document.getElementById("myChart").getContext("2d");
+                    const myChart = new Chart(ctx, config);
                 </script>
 
             </div>
 
         </div> 
 
-
+        {% for x in interviewee_ids %}"{{ x.interviewee_id }}",{% endfor %}
+        {{neutrality_scores}}
+        {{negativity_scores}}
+        {{compound_scores}}
+        {{positivity_scores}}
       
 
 
