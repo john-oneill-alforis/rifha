@@ -96,7 +96,7 @@ def box_plot_generate():
    # Create the horizontal box plot
     plt.figure(figsize=(10, 6))  # Optional: Adjust the figure size as needed
 
-    box_props = dict(facecolor="lightblue", edgecolor="black")  # Customize box color and edge color
+    box_props = dict(facecolor="blue", edgecolor="black")  # Customize box color and edge color
 
     # Fill the boxes with the specified color
     bplot = plt.boxplot(data_lists, vert=False, labels=labels, patch_artist=True, boxprops=box_props)
