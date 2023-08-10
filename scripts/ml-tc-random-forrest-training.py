@@ -26,7 +26,7 @@ def classify():
 
     # Fetch data from the database
     cur.execute(
-        """SELECT text, textLabel_id FROM polls_trainingcorpus JOIN polls_textlabels ON polls_trainingcorpus.textLabel_id = polls_textlabels.entryId WHERE polls_trainingcorpus.textLabel_id IN (2,8,11,16);"""
+        """SELECT text, textLabel_id FROM polls_trainingcorpus JOIN polls_textlabels ON polls_trainingcorpus.textLabel_id = polls_textlabels.entryId WHERE polls_trainingcorpus.textLabel_id IN (2,8,11);"""
     )
     rows = cur.fetchall()
 

@@ -12,16 +12,20 @@ def process_veris_information():
 
     # VERIS Data should be located on the same folder
     # level as the scripts folder
-    toplevel_path = Path(__file__).parents[1]
+    toplevel_path = Path(__file__).parents[2]
 
+ 
     # Concat paths for both the submitted and validated folders
     # veris_submitted_data = toplevel_path / "veris-data/data/json/submitted"
-    veris_validated_data = toplevel_path / "veris-data/VCDB/data/json/validated"
+
+    veris_validated_data = toplevel_path / "veris-data/data/json/validated"
+    print(veris_validated_data)
 
     # Grab the data from the validated reports
     for p in veris_validated_data.rglob("*.json"):
         # Load the data from the json file
         json_file = veris_validated_data / p.name
+
 
         try:
             data = json.loads(json_file.read_bytes())
@@ -53,6 +57,7 @@ def process_veris_information():
 
     print(df)
     df.plot.line(x="Year", y="Count")
+    plt.title("Contributed Veris Incidents Over Time")
     plt.savefig(toplevel_path / "plots/veris-entry-distribution-over-time.png")
 
 
